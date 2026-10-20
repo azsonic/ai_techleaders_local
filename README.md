@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DevMentor
 
-## Getting Started
+DevMentor is a web application built on Next.js, React and TypeScript, backed by PostgreSQL.
 
-First, run the development server:
+## Tech stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+| Concern | Technology |
+|---|---|
+| Framework | [Next.js](https://nextjs.org) (App Router), [React](https://react.dev), [TypeScript](https://www.typescriptlang.org) |
+| Database | [PostgreSQL](https://www.postgresql.org) |
+| ORM & migrations | [MikroORM](https://mikro-orm.io) v7 |
+| Dependency injection | [Awilix](https://github.com/jeffijoe/awilix) |
+| Frontend (public) styling | [Tailwind CSS](https://tailwindcss.com) |
+| Backend (admin) UI | [shadcn/ui](https://ui.shadcn.com) (Base UI) |
+| Monorepo | npm workspaces |
+
+## Architecture
+
+### Monorepo packages
+
+```
+packages/
+├── app/    @devmentor/app   Next.js application (routes, pages, feature modules, DI container)
+├── core/   @devmentor/core  Reusable, framework-agnostic code (domain types, errors, utilities)
+├── db/     @devmentor/db    MikroORM config, entities, repositories, migrations
+└── ui/     @devmentor/ui    Reusable React components (shadcn/ui primitives + frontend components)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Dependencies only point "downwards", so there are no cycles:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```mermaid
+graph TD
+  app["@devmentor/app"] --> core["@devmentor/core"]
+  app --> db["@devmentor/db"]
+  app --> ui["@devmentor/ui"]
+  db --> core
+  ui --> core
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **core** has no dependencies on other packages and no framework code.
+- **db** and **ui** may use **core** only.
+- **app** puts everything together and is the only package that knows about all the others.
 
-## Learn More
+### Application (`packages/app`)
 
-To learn more about Next.js, take a look at the following resources:
+- Uses the Next.js App Router, split into two route groups:
+  - `(frontend)`: public pages, styled with Tailwind.
+  - `(backend)/admin`: admin pages, built with shadcn/ui.
+- Business logic lives in feature modules (`src/modules/<feature>`). Pages, route handlers and server actions stay thin and delegate to services.
+- `GET /api/health` reports whether the app can reach the database (`200` when healthy, `503` when not).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Dependency injection
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Awilix builds the dependency container in one place (`packages/app/src/di/container.ts`).
+- Long-lived objects are **singletons**, such as the MikroORM instance and configuration.
+- Each request gets its own **scope**, containing a forked MikroORM `EntityManager` plus the repositories and services that use it. This keeps database state isolated between requests.
 
-## Deploy on Vercel
+### Data layer
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- PostgreSQL is accessed through MikroORM, with connection pooling configured centrally in `packages/db`.
+- All schema changes go through versioned, committed MikroORM migrations.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### UI
+
+- `packages/ui` contains the shadcn/ui primitives used by admin pages, plus the custom Tailwind components used by public pages.
+- Components are presentational: they receive data through props and never fetch it themselves.
+
+## Getting started
+
+Requires Node.js 22.17 or newer, and Docker (or any PostgreSQL instance).
+
+```bash
+npm install
+cp .env.example .env.local   # at the repo root; points DATABASE_URL at the Docker database
+docker compose up -d         # start PostgreSQL
+npm run db:migrate           # apply database migrations
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) for the public site and [http://localhost:3000/admin](http://localhost:3000/admin) for the admin area.
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the development server |
+| `npm run build` / `npm run start` | Production build / serve it |
+| `npm run lint` | Lint all packages |
+| `npm run typecheck` | Type-check all packages |
+| `npm run db:migration:create` | Generate a migration from entity changes |
+| `npm run db:migrate` | Apply pending migrations |
+| `npm run db:migration:list` | List applied migrations |
+| `npm run db:migration:down` | Roll back the last migration |
+| `npm run <script> -w @devmentor/<pkg>` | Run a script in a single package |
+
+To add a shadcn/ui component, run `npx shadcn@latest add <component>` from `packages/app`. The CLI installs it into `packages/ui`.
+
+## AI-assisted development
+
+This project uses spec-driven development with AI coding agents:
+
+- `AGENTS.md` holds the binding rules and architecture conventions for all agents. `CLAUDE.md` imports it.
+- `.ai/specs/` holds feature specifications (`YYYY-MM-DD-slug.md`), with `implemented/` and `archive/` subfolders.
+- `.ai/runs/` holds logs of autonomous AI runs.
+- `.ai/lessons.md` and `.ai/lessons/` hold lessons learned, the agents' long-term memory.

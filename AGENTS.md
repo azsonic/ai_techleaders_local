@@ -1,21 +1,98 @@
-<!-- BEGIN:nextjs-agent-rules -->
-
-## This is NOT the Next.js you know
-
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
-
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
-<!-- END:nextjs-agent-rules -->
-
 # Agent Guide
 
 This file is the single source of truth for every AI agent working in this repository (Cursor, Claude Code, Codex, etc.). `CLAUDE.md` imports it. If the two ever disagree, this file wins.
 
-## Project
+> **Next.js:** this is NOT the Next.js you know from training data. Before writing any Next.js code, read `packages/app/AGENTS.md` (managed by `next dev`, don't edit it by hand) and the relevant guide in `node_modules/next/dist/docs/`.
 
-- Next.js 16 (App Router, `app/`), React 19, TypeScript, Tailwind CSS 4.
-- Commands: `npm run dev`, `npm run build`, `npm run lint`.
+## Project: DevMentor
+
+These are binding architecture decisions. Do not introduce alternative frameworks, ORMs, DI containers or styling systems without an approved spec. See `README.md` for the human-oriented overview.
+
+### Stack
+
+| Concern | Choice |
+|---|---|
+| Framework | Next.js (latest, App Router), React (latest), TypeScript (strict) |
+| Database | PostgreSQL |
+| ORM | MikroORM (`@mikro-orm/postgresql`) — entities, migrations, connection pooling |
+| Dependency injection | Awilix |
+| Styling — frontend (public) pages | Tailwind CSS |
+| Styling — backend (admin) pages | shadcn/ui (built on Tailwind) |
+| Monorepo | npm workspaces (`packages/*`) |
+
+### Monorepo layout
+
+```
+packages/
+├── app/    @devmentor/app   Next.js application: routes, pages, server actions, feature modules, DI composition root
+├── core/   @devmentor/core  Reusable, framework-agnostic code: domain types, errors, utilities, DI helpers/types
+├── db/     @devmentor/db    MikroORM config, entities, repositories, migrations, seeders, DB helpers
+└── ui/     @devmentor/ui    Reusable React components: shadcn/ui primitives (backend) + frontend components
+```
+
+**Dependency rules** (enforce strictly — no cycles):
+
+- `core` depends on no other workspace package. No React, Next.js or MikroORM imports.
+- `db` may depend on `core` only.
+- `ui` may depend on `core` only (types, pure utils). No data access and no `db` imports.
+- `app` may depend on all packages. Nothing depends on `app`.
+- Import other packages only through their public entry (`@devmentor/<pkg>` or the subpaths declared in its `package.json` `exports`). Never use deep relative paths across packages (`../../db/src/...`).
+- Put code in the lowest package that fits. If two features need it and it is framework-agnostic, it belongs in `core`. If it renders UI and has no app-specific logic, it belongs in `ui`.
+- Install dependencies in the package that uses them (`npm install <dep> -w @devmentor/<pkg>`), not at the root. Root holds only shared dev tooling.
+
+### `packages/app` (Next.js)
+
+- App Router lives in `packages/app/src/app/`. Use route groups to separate the two UI worlds:
+  - `src/app/(frontend)/` — public pages, styled with Tailwind and `@devmentor/ui` frontend components.
+  - `src/app/(backend)/admin/` — admin/back-office pages, built from shadcn/ui components.
+- Business logic lives in feature modules: `src/modules/<feature>/` (services, validation, DI registrations). Pages, route handlers and server actions stay thin: they resolve a service and call it.
+- Database and DI code is server-only. Never import `@devmentor/db` or the container into a Client Component. Mark server-only modules with `import 'server-only'`.
+- `cacheComponents` is enabled. Route handlers and pages that must run per request (DB reads, health checks) call `await connection()` from `next/server` before doing I/O.
+- Workspace packages are transpiled automatically by Next.js. Don't add them to `transpilePackages`. MikroORM currently bundles fine. Add packages to `serverExternalPackages` only if bundling fails.
+- Env vars come from the root `.env.local`, loaded in `next.config.ts` with `process.loadEnvFile`. Don't use `@next/env`'s `loadEnvConfig` there: it caches Next's earlier call and silently does nothing.
+
+### `packages/db` (PostgreSQL + MikroORM)
+
+- MikroORM is **v7**: ESM-only and built on `kysely`, not knex. Check the installed `.d.ts` files rather than relying on v6 knowledge.
+- Config is split:
+  - `src/config.ts` — `createOrmConfig()`, the single runtime config. Reads `DATABASE_URL` and sets the connection pool via the `pool` option (`DATABASE_POOL_MAX`), never ad hoc.
+  - `src/mikro-orm.config.ts` — CLI entry only (auto-discovered by the CLI, run through `tsx`). Loads the root `.env.local` and adds the `Migrator` extension and migration paths. The app never imports it.
+- `import 'server-only'` goes only in runtime entry points (`src/orm.ts`). Never import it from anything the CLI loads, because it throws outside Next.js.
+- Define entities with `defineEntity` (no decorators), so they work under Turbopack/SWC without decorator metadata. Keep one entity per file in `src/entities/`, and register each in `src/entities/index.ts` (discovery is explicit).
+- Never use the global `EntityManager`. Every request or job uses a fork (`orm.em.fork()`), provided by the request-scoped DI container.
+- `getOrm()` returns the single `MikroORM` instance per process, cached on `globalThis` so hot reload doesn't open new pools. Never call `MikroORM.init` anywhere else.
+- Schema changes **only** through migrations in `src/migrations/`, generated with the MikroORM CLI. Commit them. Never edit a migration that has already been applied; add a new one. Never use `schema:update` against shared databases.
+- Repositories expose intention-revealing methods. Don't leak query-builder details into `app`.
+
+### Dependency injection (Awilix)
+
+- The container is composed in one place, `packages/app/src/di/container.ts` (the composition root). Packages export registration functions or classes; only `app` builds the container.
+- Injection mode is `PROXY` with `strict: true`. Constructors take one destructured dependencies object (`constructor({ healthRepository }: { healthRepository: HealthRepository })`). `CLASSIC` mode is not allowed, because it relies on parameter names that minification breaks.
+- Use constructor injection. Don't call `container.resolve` inside services (no service locator). Only the request edge (route handler, server action, job) reads from `scope.cradle`.
+- Lifetimes:
+  - **singleton:** `MikroORM` instance, config, stateless utilities.
+  - **scoped:** forked `EntityManager`, repositories, services, current user/request context.
+- Each request, server action or job calls `createRequestScope()` (it forks the `EntityManager` into the scope) and disposes the scope in a `finally` block. Never resolve scoped services from the root container.
+- Type the cradle: keep a `Cradle` interface next to the container, and update it with every registration.
+
+### `packages/ui` (Tailwind + shadcn/ui)
+
+- shadcn/ui (style `base-nova`, built on Base UI) primitives live in `packages/ui/src/components/`. Add them by running `npx shadcn@latest add <component>` **from `packages/app`**. The CLI routes the files into `packages/ui` using both `components.json` files. Don't run `shadcn init` (it can't detect a framework in `packages/ui`), and don't hand-copy components. They are the building blocks for **backend** pages.
+- Frontend (public) components are custom Tailwind components in `packages/ui/src/frontend/`. Don't use shadcn primitives on frontend pages unless a spec says so.
+- Components are presentational: data comes in through props, with no data fetching or DI. Use `cn()` from `@devmentor/ui/lib/utils` (shadcn's official `cn` package) for class merging.
+- To style a link as a button, use `<Link className={cn(buttonVariants(...))}>`. Always wrap `buttonVariants` in `cn()`, because `cva` doesn't resolve conflicting classes. Don't use `<Button render={<Link/>}>`: Base UI gives it `role="button"`.
+- Tailwind is configured CSS-first. The theme lives in `packages/ui/src/styles/globals.css`, which also declares `@source` for the package. The app's `globals.css` imports it (`@import "@devmentor/ui/globals.css"`).
+
+### Commands
+
+Run from the repo root (npm workspaces):
+
+- `docker compose up -d`: local PostgreSQL (matches `.env.example`).
+- `npm run dev` / `npm run build` / `npm run start`: the Next.js app.
+- `npm run lint` / `npm run typecheck`: every package.
+- `npm run db:migration:create` / `db:migrate` / `db:migration:list` / `db:migration:down`: MikroORM migrations (`@devmentor/db`). Commit `src/migrations/*` and `.snapshot-*.json`.
+- `npm run <script> -w @devmentor/<pkg>`: a single package.
+- Secrets go in the root `.env.local` (never committed). Every required variable must be listed in the committed root `.env.example`.
 
 ## The `.ai/` folder (mandatory)
 

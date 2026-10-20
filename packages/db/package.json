@@ -1,0 +1,31 @@
+{
+  "name": "@devmentor/db",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "db:migration:create": "mikro-orm migration:create",
+    "db:migrate": "mikro-orm migration:up",
+    "db:migration:list": "mikro-orm migration:list",
+    "db:migration:down": "mikro-orm migration:down"
+  },
+  "mikro-orm": {
+    "tsLoader": "tsx"
+  },
+  "dependencies": {
+    "@devmentor/core": "*",
+    "@mikro-orm/core": "^7.2.5",
+    "@mikro-orm/migrations": "^7.2.5",
+    "@mikro-orm/postgresql": "^7.2.5",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@mikro-orm/cli": "^7.2.5",
+    "tsx": "^4.23.15"
+  }
+}
