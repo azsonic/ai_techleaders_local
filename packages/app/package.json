@@ -22,8 +22,10 @@
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
+    "@testcontainers/postgresql": "^12.2.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "agent-browser": "^0.39.1",
     "tailwindcss": "^4"
   }
 }

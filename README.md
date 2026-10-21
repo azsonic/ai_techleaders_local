@@ -83,12 +83,16 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) for the public site and [http://localhost:3000/admin](http://localhost:3000/admin) for the admin area.
 
+Every pull request is checked on GitHub: lint, type check, build, unit tests, and an integration test. The integration test starts a throwaway PostgreSQL, boots the app against it, and opens the home page and the admin health check in a browser.
+
 | Command | Description |
 |---|---|
 | `npm run dev` | Start the development server |
 | `npm run build` / `npm run start` | Production build / serve it |
 | `npm run lint` | Lint all packages |
 | `npm run typecheck` | Type-check all packages |
+| `npm run test` | Unit tests. Application code must stay at 100% coverage |
+| `npm run test:integration` | Temporary Postgres, the built app, and a browser check of the home and admin pages |
 | `npm run db:migration:create` | Generate a migration from entity changes |
 | `npm run db:migrate` | Apply pending migrations |
 | `npm run db:migration:list` | List applied migrations |

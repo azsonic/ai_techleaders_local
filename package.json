@@ -15,15 +15,21 @@
     "start": "npm run start -w @devmentor/app",
     "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "vitest run --coverage",
+    "test:integration": "npm run build && npx agent-browser install && vitest run --config vitest.integration.config.ts",
     "db:migration:create": "npm run db:migration:create -w @devmentor/db",
     "db:migrate": "npm run db:migrate -w @devmentor/db",
     "db:migration:list": "npm run db:migration:list -w @devmentor/db",
     "db:migration:down": "npm run db:migration:down -w @devmentor/db"
   },
   "devDependencies": {
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^22",
+    "@vitest/coverage-v8": "^5.0.5",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
-    "typescript": "^5"
+    "jsdom": "^30.1.3",
+    "typescript": "^5",
+    "vitest": "^5.0.5"
   }
 }

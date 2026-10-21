@@ -120,6 +120,15 @@ File names are kebab-case (`api-call.ts`, `mentor-card.tsx`); components are Pas
 - To style a link as a button, use `<Link className={cn(buttonVariants(...))}>`. Always wrap `buttonVariants` in `cn()`, because `cva` doesn't resolve conflicting classes. Don't use `<Button render={<Link/>}>`: Base UI gives it `role="button"`.
 - Tailwind is configured CSS-first. The theme lives in `packages/ui/src/styles/globals.css`, which also declares `@source` for the package. The app's `globals.css` imports it (`@import "@devmentor/ui/globals.css"`).
 
+### Tests
+
+Unit tests use [Vitest](https://vitest.dev). Colocate them with the source as `*.test.ts` or `*.test.tsx`.
+
+- **Every new feature is 100% covered by unit tests.** That means statements, branches, functions, and lines. `npm run test` enforces the threshold on `packages/*/src/**/*.{ts,tsx}` and `packages/app/next.config.ts`, and it fails if coverage drops below 100%. A feature is not done while that command fails. Don't lower the threshold, and don't exclude a file to get a change through — test the behavior.
+- Integration tests live in `packages/app/test/integration/`. They start PostgreSQL 17 with [Testcontainers](https://node.testcontainers.org), apply migrations, boot the production app (`next start`) against that database, and drive the pages with [`agent-browser`](https://agent-browser.dev). Run them with `npm run test:integration`. When a change has a user-visible flow, add a scenario there.
+- Helpers for new scenarios: `startEphemeralApp()` in `ephemeral-app.ts` and `browser()` in `browser.ts`.
+- Vitest aliases `server-only` to an empty module (`vitest/server-only.ts`) so server modules can be imported. Don't import the real `server-only` package from a unit test.
+
 ### Commands
 
 Run from the repo root (npm workspaces):
@@ -127,6 +136,8 @@ Run from the repo root (npm workspaces):
 - `docker compose up -d`: local PostgreSQL (matches `.env.example`).
 - `npm run dev` / `npm run build` / `npm run start`: the Next.js app.
 - `npm run lint` / `npm run typecheck`: every package.
+- `npm run test`: unit tests. Coverage of application code must stay at 100%.
+- `npm run test:integration`: build the app, install the agent-browser Chrome, and run the Testcontainers + agent-browser suite.
 - `npm run db:migration:create` / `db:migrate` / `db:migration:list` / `db:migration:down`: MikroORM migrations (`@devmentor/db`). Commit `src/migrations/*` and `.snapshot-*.json`.
 - `npm run <script> -w @devmentor/<pkg>`: a single package.
 - Secrets go in the root `.env.local` (never committed). Every required variable must be listed in the committed root `.env.example`.
@@ -272,7 +283,7 @@ Index entry format:
 
 A task is only finished when:
 
-1. `npm run lint` and `npm run build` pass, and the change has been verified to work as described in §5 (or failures are documented in the run log).
+1. `npm run lint`, `npm run typecheck`, `npm run test`, and `npm run build` pass, and the change has been verified to work as described in §5 (or failures are documented in the run log). User-visible changes also pass `npm run test:integration`. Unit coverage of application code stays at 100%.
 2. The related spec's acceptance criteria are checked off, and it has the correct `status` and folder.
 3. The run log exists in `.ai/runs/` (for autonomous runs).
 4. Any lesson learned or correction received is recorded in `.ai/lessons.md`.

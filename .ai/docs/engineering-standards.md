@@ -290,8 +290,11 @@ explicit**, not the one that looks more "enterprise."
   hand-rolled `try/catch`; new forms use `CrudForm`; new lists use `DataTable` — a
   bespoke implementation of any of these needs a stated reason in the PR description.
   If the shared piece doesn't exist yet, the first PR that needs it builds it.
-- `npm run lint`, `npm run typecheck`, and relevant tests pass before requesting
-  review.
+- `npm run lint`, `npm run typecheck`, `npm run test`, and `npm run build` pass
+  before requesting review. `npm run test` requires 100% statement, branch,
+  function, and line coverage of application code (`packages/*/src` and
+  `packages/app/next.config.ts`). Don't lower that threshold or exclude a file
+  to land a change. User-visible flows also pass `npm run test:integration`.
 
 **Security fundamentals** (adapted from Open Mercato's shared review checklist —
 kept to what actually applies to a project with no RBAC/multi-tenancy):
@@ -321,6 +324,12 @@ kept to what actually applies to a project with no RBAC/multi-tenancy):
 
 #### Correctness & tests
 
+- New and changed behavior is covered by unit tests. The pull request keeps
+  `npm run test` at 100% statement, branch, function, and line coverage. A new
+  feature is not done below that bar.
+- A user-visible flow has an `agent-browser` scenario in
+  `packages/app/test/integration/`, run against the Testcontainers Postgres and
+  the ephemeral app.
 - Race-condition-sensitive flows (booking, reschedule) are covered by an integration
   test that simulates the concurrent case, not just the happy path.
 - Server-side revalidation exists for anything client-supplied that affects money or
