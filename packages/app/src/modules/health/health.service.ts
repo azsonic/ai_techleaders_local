@@ -1,8 +1,10 @@
+import { ServiceUnavailableError } from "@devmentor/core";
 import type { HealthRepository } from "@devmentor/db";
 
-export type HealthStatus =
-  | { status: "ok"; db: "ok" }
-  | { status: "error"; db: "unavailable" };
+export interface HealthStatus {
+  status: "ok";
+  db: "ok";
+}
 
 export class HealthService {
   readonly #healthRepository: HealthRepository;
@@ -14,10 +16,9 @@ export class HealthService {
   async check(): Promise<HealthStatus> {
     try {
       await this.#healthRepository.ping();
-      return { status: "ok", db: "ok" };
     } catch (error) {
-      console.error("Health check: database ping failed", error);
-      return { status: "error", db: "unavailable" };
+      throw new ServiceUnavailableError("database_unavailable", "Database is unavailable", { cause: error });
     }
+    return { status: "ok", db: "ok" };
   }
 }

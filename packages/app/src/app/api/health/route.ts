@@ -1,23 +1,9 @@
 import { connection } from "next/server";
 
-import { createRequestScope } from "@/di/container";
-import type { HealthStatus } from "@/modules/health/health.service";
+import { withRequestScope } from "@/di/container";
+import { apiHandler } from "@/http/api-handler";
 
-export async function GET() {
+export const GET = apiHandler(async () => {
   await connection();
-
-  let result: HealthStatus;
-  try {
-    const scope = await createRequestScope();
-    try {
-      result = await scope.cradle.healthService.check();
-    } finally {
-      await scope.dispose();
-    }
-  } catch (error) {
-    console.error("Health check: failed to initialise the database connection", error);
-    result = { status: "error", db: "unavailable" };
-  }
-
-  return Response.json(result, { status: result.status === "ok" ? 200 : 503 });
-}
+  return withRequestScope(({ healthService }) => healthService.check());
+});

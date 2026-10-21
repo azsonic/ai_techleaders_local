@@ -7,6 +7,8 @@
     "./globals.css": "./src/styles/globals.css",
     "./components/*": "./src/components/*.tsx",
     "./frontend/*": "./src/frontend/*.tsx",
+    "./backend/api/*": "./src/backend/api/*.ts",
+    "./backend/feedback/*": "./src/backend/feedback/*.tsx",
     "./lib/*": "./src/lib/*.ts",
     "./hooks/*": "./src/hooks/*.ts"
   },
@@ -24,6 +26,7 @@
     "tailwindcss": "^4"
   },
   "dependencies": {
+    "@devmentor/core": "*",
     "@base-ui/react": "^1.9.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.0",

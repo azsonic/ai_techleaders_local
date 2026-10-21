@@ -40,14 +40,18 @@ graph TD
 - **core** has no dependencies on other packages and no framework code.
 - **db** and **ui** may use **core** only.
 - **app** puts everything together and is the only package that knows about all the others.
+- `npm run lint` enforces these rules (root `eslint.boundaries.mjs`).
+
+Domain code is organised by concept (`bookings`, `mentors`, ...), using the same folder name in each layer that needs it. The full naming, placement, security and review rules are in [`.ai/docs/engineering-standards.md`](.ai/docs/engineering-standards.md).
 
 ### Application (`packages/app`)
 
 - Uses the Next.js App Router, split into two route groups:
   - `(frontend)`: public pages, styled with Tailwind.
   - `(backend)/admin`: admin pages, built with shadcn/ui.
-- Business logic lives in feature modules (`src/modules/<feature>`). Pages, route handlers and server actions stay thin and delegate to services.
-- `GET /api/health` reports whether the app can reach the database (`200` when healthy, `503` when not).
+- Business logic lives in feature modules (`src/modules/<concept>`). Pages, route handlers and server actions stay thin and delegate to services.
+- Every API route is wrapped in `apiHandler`. Services throw typed errors from `@devmentor/core` (`NotFoundError`, `ValidationError`, ...), and responses share one envelope: `{ ok: true, data }` or `{ ok: false, error: { code, message } }`. In the browser, `/api/*` is called only through `apiCall` from `@devmentor/ui`.
+- `GET /api/health` reports whether the app can reach the database: `200 {"ok":true,"data":{"status":"ok","db":"ok"}}` when healthy, and `503` with error code `database_unavailable` when not.
 
 ### Dependency injection
 
@@ -62,7 +66,7 @@ graph TD
 
 ### UI
 
-- `packages/ui` contains the shadcn/ui primitives used by admin pages, plus the custom Tailwind components used by public pages.
+- `packages/ui` contains the shadcn/ui primitives used by admin pages (`src/components/ui`), shared admin building blocks such as `apiCall` and the loading/error/empty states (`src/backend`), and the custom Tailwind components used by public pages (`src/frontend`).
 - Components are presentational: they receive data through props and never fetch it themselves.
 
 ## Getting started

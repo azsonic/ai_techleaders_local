@@ -2,6 +2,7 @@ import "server-only";
 
 import { asClass, asValue, createContainer, InjectionMode, type AwilixContainer } from "awilix";
 
+import { ServiceUnavailableError } from "@devmentor/core";
 import { getOrm, HealthRepository, type EntityManager, type MikroORM } from "@devmentor/db";
 
 import { HealthService } from "@/modules/health/health.service";
@@ -35,7 +36,7 @@ async function buildRootContainer(): Promise<AwilixContainer<Cradle>> {
 function getRootContainer(): Promise<AwilixContainer<Cradle>> {
   rootContainer ??= buildRootContainer().catch((error: unknown) => {
     rootContainer = undefined;
-    throw error;
+    throw new ServiceUnavailableError("database_unavailable", "Database is unavailable", { cause: error });
   });
   return rootContainer;
 }
@@ -48,4 +49,16 @@ export async function createRequestScope(): Promise<AwilixContainer<Cradle>> {
   const scope = container.createScope();
   scope.register({ em: asValue(container.cradle.orm.em.fork()) });
   return scope;
+}
+
+/**
+ * Runs `fn` inside a fresh request scope and always disposes the scope afterwards.
+ */
+export async function withRequestScope<T>(fn: (cradle: Cradle) => Promise<T>): Promise<T> {
+  const scope = await createRequestScope();
+  try {
+    return await fn(scope.cradle);
+  } finally {
+    await scope.dispose();
+  }
 }

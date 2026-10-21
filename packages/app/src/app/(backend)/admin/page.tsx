@@ -1,8 +1,10 @@
 import Link from "next/link";
 
-import { buttonVariants } from "@devmentor/ui/components/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@devmentor/ui/components/card";
+import { buttonVariants } from "@devmentor/ui/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@devmentor/ui/components/ui/card";
 import { cn } from "@devmentor/ui/lib/utils";
+
+import { HealthStatusPanel } from "./health-status-panel";
 
 export default function AdminDashboard() {
   return (
@@ -11,16 +13,16 @@ export default function AdminDashboard() {
         <CardTitle>Dashboard</CardTitle>
         <CardDescription>The DevMentor back office is ready for its first feature.</CardDescription>
       </CardHeader>
-      <CardContent className="text-sm text-muted-foreground">
-        Backend pages are built from shadcn/ui components in <code>@devmentor/ui</code>.
+      <CardContent className="flex flex-col gap-3 text-sm text-muted-foreground">
+        <p>
+          Backend pages are built from shadcn/ui components in <code>@devmentor/ui</code>.
+        </p>
+        <HealthStatusPanel />
       </CardContent>
       <CardFooter className="gap-2">
         <Link href="/" className={cn(buttonVariants())}>
           View site
         </Link>
-        <a href="/api/health" className={cn(buttonVariants({ variant: "outline" }))}>
-          Health check
-        </a>
       </CardFooter>
     </Card>
   );

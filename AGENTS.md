@@ -39,15 +39,52 @@ packages/
 - Import other packages only through their public entry (`@devmentor/<pkg>` or the subpaths declared in its `package.json` `exports`). Never use deep relative paths across packages (`../../db/src/...`).
 - Put code in the lowest package that fits. If two features need it and it is framework-agnostic, it belongs in `core`. If it renders UI and has no app-specific logic, it belongs in `ui`.
 - Install dependencies in the package that uses them (`npm install <dep> -w @devmentor/<pkg>`), not at the root. Root holds only shared dev tooling.
+- These rules are enforced by ESLint (`no-restricted-imports` via the root `eslint.boundaries.mjs`). Don't loosen a boundary to make an import work; move the code to the right package instead.
+
+### Engineering standards
+
+`.ai/docs/engineering-standards.md` is binding for naming, placement, security minimums, code quality and the code review checklist. Read it before adding a domain concept, a route or a form. If it ever contradicts this file, this file wins and the standards doc gets fixed.
+
+### Domain concept convention
+
+Each domain concept (`auth`, `mentors`, `availability`, `bookings`, `payments`, `messages`, `favorites`, `reviews`, ...) is a same-named, plural sub-folder repeated across the layers that need it:
+
+- `packages/db/src/entities/<concept>/<name>.entity.ts` and `packages/db/src/repositories/<concept>/<name>.repository.ts`
+- `packages/app/src/modules/<concept>/<name>.service.ts` (business rules; registered in `container.ts`)
+- `packages/core/src/validators/<concept>/<name>-<action>.schema.ts` (shared Zod schemas, when needed)
+- `packages/app/src/app/api/<concept>/route.ts` and pages under `(frontend)/` or `(backend)/admin/`
+- `packages/ui/src/components/<concept>/` for components tied to the concept's data shape
+
+Create a concept folder only when its first file is added — never scaffold empty ones. This is a directory convention, not a module runtime: no per-concept setup, ACL or auto-discovery. Domain events (when the first one is needed) are named `concept.entity.action` (e.g. `bookings.booking.created`) and go through an in-process typed emitter in `packages/core/src/events`, registered as a singleton. There is no queue or worker.
+
+### Reusable API & UI layer
+
+Routes and pages reuse shared layers instead of re-implementing fetch, error handling and status mapping per feature:
+
+- **Errors and envelope (`@devmentor/core`, `src/http/`).** Services throw the typed `AppError` subclasses (`ValidationError`, `UnauthorizedError`, `ForbiddenError`, `NotFoundError`, `ConflictError`, `ServiceUnavailableError`), never build responses. Every API response is the `ApiResult<T>` envelope: `{ ok: true, data }` or `{ ok: false, error: { code, message, fieldErrors? } }`. Server and client share this one type.
+- **Route handlers.** Wrap every handler in `apiHandler` from `@/http/api-handler`. It maps `AppError`s to status codes, logs unexpected errors and returns a generic 500. It also re-throws Next's control-flow errors (`notFound()`, `redirect()`). Run DB work through `withRequestScope` from `@/di/container`. No `try/catch` or hand-built `Response.json` in routes. `/api/health` is the reference example.
+- **Client calls (`@devmentor/ui/backend/api/api-call`).** `apiCall` / `apiCallOrThrow` are the only way to call `/api/*` from the browser. They set the CSRF header and parse the envelope defensively. ESLint rejects `fetch("/api…")` anywhere else.
+- **Feedback (`@devmentor/ui/backend/feedback/*`).** Use `LoadingMessage`, `ErrorMessage` and `EmptyState` instead of bespoke spinners or error text.
+- **Deferred until their first consumer:** `makeCrudRoute`, `CrudForm`, `DataTable`, auth helpers (`requireSession`, ownership assertions), events, payment ports. Build each one in the layer above when the first concept needs it, then reuse it.
+
+Where a new reusable component goes:
+
+1. shadcn primitive → `ui/src/components/ui/`, via `npx shadcn@latest add` (never hand-written).
+2. Generic, concept-agnostic admin pattern (form field, table cell, feedback state) → `ui/src/backend/<category>/`.
+3. Component tied to one concept's data shape → `ui/src/components/<concept>/`.
+4. Used by exactly one page → colocate it next to that `page.tsx` until a second page needs it.
+
+File names are kebab-case (`api-call.ts`, `mentor-card.tsx`); components are PascalCase, functions camelCase.
 
 ### `packages/app` (Next.js)
 
 - App Router lives in `packages/app/src/app/`. Use route groups to separate the two UI worlds:
   - `src/app/(frontend)/` — public pages, styled with Tailwind and `@devmentor/ui` frontend components.
   - `src/app/(backend)/admin/` — admin/back-office pages, built from shadcn/ui components.
-- Business logic lives in feature modules: `src/modules/<feature>/` (services, validation, DI registrations). Pages, route handlers and server actions stay thin: they resolve a service and call it.
+  - Persona groups (e.g. `(student)`, `(mentor)`, `(auth)`) nest inside these two when their first page lands.
+- Business logic lives in feature modules: `src/modules/<concept>/` (services and port adapters). Pages, route handlers and server actions stay thin: they resolve a service and call it.
 - Database and DI code is server-only. Never import `@devmentor/db` or the container into a Client Component. Mark server-only modules with `import 'server-only'`.
-- `cacheComponents` is enabled. Route handlers and pages that must run per request (DB reads, health checks) call `await connection()` from `next/server` before doing I/O.
+- `cacheComponents` is enabled. Route handlers and pages that must run per request (DB reads, health checks) call `await connection()` from `next/server` before doing I/O. Don't use `export const dynamic = "force-dynamic"`: Next 16 removes that segment config when `cacheComponents` is on.
 - Workspace packages are transpiled automatically by Next.js. Don't add them to `transpilePackages`. MikroORM currently bundles fine. Add packages to `serverExternalPackages` only if bundling fails.
 - Env vars come from the root `.env.local`, loaded in `next.config.ts` with `process.loadEnvFile`. Don't use `@next/env`'s `loadEnvConfig` there: it caches Next's earlier call and silently does nothing.
 
@@ -72,12 +109,12 @@ packages/
 - Lifetimes:
   - **singleton:** `MikroORM` instance, config, stateless utilities.
   - **scoped:** forked `EntityManager`, repositories, services, current user/request context.
-- Each request, server action or job calls `createRequestScope()` (it forks the `EntityManager` into the scope) and disposes the scope in a `finally` block. Never resolve scoped services from the root container.
+- Each request, server action or job runs inside `withRequestScope(fn)`. It calls `createRequestScope()` (which forks the `EntityManager` into the scope) and disposes the scope in `finally`. If the database can't initialise, it throws `ServiceUnavailableError` (503). Use `createRequestScope()` directly only when the scope must outlive one function. Never resolve scoped services from the root container.
 - Type the cradle: keep a `Cradle` interface next to the container, and update it with every registration.
 
 ### `packages/ui` (Tailwind + shadcn/ui)
 
-- shadcn/ui (style `base-nova`, built on Base UI) primitives live in `packages/ui/src/components/`. Add them by running `npx shadcn@latest add <component>` **from `packages/app`**. The CLI routes the files into `packages/ui` using both `components.json` files. Don't run `shadcn init` (it can't detect a framework in `packages/ui`), and don't hand-copy components. They are the building blocks for **backend** pages.
+- shadcn/ui (style `base-nova`, built on Base UI) primitives live in `packages/ui/src/components/ui/` (import as `@devmentor/ui/components/ui/<name>`). Add them by running `npx shadcn@latest add <component>` **from `packages/app`**. The CLI routes the files into `packages/ui` using both `components.json` files. Don't run `shadcn init` (it can't detect a framework in `packages/ui`), and don't hand-copy components. They are the building blocks for **backend** pages.
 - Frontend (public) components are custom Tailwind components in `packages/ui/src/frontend/`. Don't use shadcn primitives on frontend pages unless a spec says so.
 - Components are presentational: data comes in through props, with no data fetching or DI. Use `cn()` from `@devmentor/ui/lib/utils` (shadcn's official `cn` package) for class merging.
 - To style a link as a button, use `<Link className={cn(buttonVariants(...))}>`. Always wrap `buttonVariants` in `cn()`, because `cva` doesn't resolve conflicting classes. Don't use `<Button render={<Link/>}>`: Base UI gives it `role="button"`.
@@ -100,6 +137,7 @@ All AI working metadata lives in `.ai/`. Using it is **not optional**: specs dri
 
 ```
 .ai/
+├── docs/                       # Standing reference docs (e.g. engineering-standards.md); not dated, edited in place
 ├── lessons.md                  # Index of lessons learned (long-term memory) — read first
 ├── lessons/                    # Detailed lesson write-ups: YYYY-MM-DD-slug.md
 ├── runs/                       # Logs of AI autonomous runs: YYYY-MM-DD-slug.md
