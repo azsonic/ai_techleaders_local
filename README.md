@@ -83,7 +83,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) for the public site and [http://localhost:3000/admin](http://localhost:3000/admin) for the admin area.
 
-Every pull request is checked on GitHub: lint, type check, build, unit tests, and an integration test. The integration test starts a throwaway PostgreSQL, boots the app against it, and opens the home page and the admin health check in a browser.
+Every pull request is checked on GitHub: lint, type check, build, unit tests, and an integration test. Open the PR Checks tab (or the repo Actions tab) to watch them run. The integration test starts a throwaway PostgreSQL, boots the app against it, and opens the home page and the admin health check in a browser.
 
 | Command | Description |
 |---|---|
