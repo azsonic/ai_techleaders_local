@@ -122,9 +122,9 @@ File names are kebab-case (`api-call.ts`, `mentor-card.tsx`); components are Pas
 
 ### Tests
 
-Unit tests use [Vitest](https://vitest.dev). Colocate them with the source as `*.test.ts` or `*.test.tsx`.
+Unit tests use [Vitest](https://vitest.dev). Colocate them with the source as `*.test.ts` or `*.test.tsx` (`*.test.mjs` for root `scripts/`, which start with `// @vitest-environment node`).
 
-- **Every new feature is 100% covered by unit tests.** That means statements, branches, functions, and lines. `npm run test` enforces the threshold on `packages/*/src/**/*.{ts,tsx}` and `packages/app/next.config.ts`, and it fails if coverage drops below 100%. A feature is not done while that command fails. Don't lower the threshold, and don't exclude a file to get a change through — test the behavior.
+- **Every new feature is 100% covered by unit tests.** That means statements, branches, functions, and lines. `npm run test` enforces the threshold on `packages/*/src/**/*.{ts,tsx}`, `packages/app/next.config.ts` and `scripts/**/*.mjs`, and it fails if coverage drops below 100%. A feature is not done while that command fails. Don't lower the threshold, and don't exclude a file to get a change through — test the behavior.
 - Integration tests live in `packages/app/test/integration/`. They start PostgreSQL 17 with [Testcontainers](https://node.testcontainers.org), apply migrations, boot the production app (`next start`) against that database, and drive the pages with [`agent-browser`](https://agent-browser.dev). Run them with `npm run test:integration`. When a change has a user-visible flow, add a scenario there.
 - Helpers for new scenarios: `startEphemeralApp()` in `ephemeral-app.ts` and `browser()` in `browser.ts`.
 - Vitest aliases `server-only` to an empty module (`vitest/server-only.ts`) so server modules can be imported. Don't import the real `server-only` package from a unit test.
@@ -133,6 +133,7 @@ Unit tests use [Vitest](https://vitest.dev). Colocate them with the source as `*
 
 Run from the repo root (npm workspaces):
 
+- `npm run setup`: first-time setup in one idempotent command (install, `.env.local`, PostgreSQL via Docker, migrations). Plain `.mjs` under `scripts/`, tested with Vitest like the rest.
 - `docker compose up -d`: local PostgreSQL (matches `.env.example`).
 - `npm run dev` / `npm run build` / `npm run start`: the Next.js app.
 - `npm run lint` / `npm run typecheck`: every package.

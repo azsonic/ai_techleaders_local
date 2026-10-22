@@ -14,7 +14,7 @@ export default defineConfig({
   },
   test: {
     environment: "jsdom",
-    include: ["packages/**/*.test.ts", "packages/**/*.test.tsx"],
+    include: ["packages/**/*.test.ts", "packages/**/*.test.tsx", "scripts/**/*.test.mjs"],
     exclude: ["packages/app/test/**", "node_modules/**"],
     setupFiles: ["./vitest.setup.ts"],
     restoreMocks: true,
@@ -28,8 +28,9 @@ export default defineConfig({
         "packages/db/src/**/*.{ts,tsx}",
         "packages/ui/src/**/*.{ts,tsx}",
         "packages/app/next.config.ts",
+        "scripts/**/*.mjs",
       ],
-      exclude: ["**/*.test.ts", "**/*.test.tsx"],
+      exclude: ["**/*.test.ts", "**/*.test.tsx", "**/*.test.mjs"],
       thresholds: {
         lines: 100,
         branches: 100,

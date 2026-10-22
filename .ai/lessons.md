@@ -14,6 +14,8 @@ Format:
 
 ## Lessons
 
+- **2026-10-22 — Root scripts need their own place in the test gate** `#test #tooling` — `vitest.config.ts` only measured `packages/*/src`. Code under root `scripts/` is covered because its `include`/`coverage.include` list `scripts/**`. Vitest 5 has no per-glob environment, so each `scripts/**` test starts with `// @vitest-environment node`. Keep logic behind injected adapters (`scripts/setup/system.mjs` is the only impure file).
+- **2026-10-22 — `db:migration:list` shows executed migrations, not pending ones** `#mikro-orm` — To decide "is anything pending" you would need `migration:pending`, which has no script. `migration:up` is already idempotent, so run it instead of trying to skip it.
 - **2026-10-21 — jsdom's URL resolves file paths against the page** `#test` — In Vitest's jsdom environment, `new URL(relative, import.meta.url)` turns a `file://` base into `http://localhost:3000/...`. Unit-test modules that resolve paths from `import.meta.url` with `// @vitest-environment node`.
 - **2026-10-21 — `agent-browser` engines field is for a source build** `#test` — `agent-browser@0.39` declares `node >= 24`. That applies to compiling the native CLI. The published binary runs on this repo's Node 22. Don't bump the runtime to silence the warning.
 - **2026-10-21 — Don't re-ask a request that already states the outcome** `#process` — When the user names the checks, the coverage rule, and the tools, decide the technical defaults and implement. Don't turn that into a questionnaire. They are not a programmer; explain the result in plain language.

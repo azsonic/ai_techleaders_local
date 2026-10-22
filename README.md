@@ -74,6 +74,29 @@ Domain code is organised by concept (`bookings`, `mentors`, ...), using the same
 Requires Node.js 22.17 or newer, and Docker (or any PostgreSQL instance).
 
 ```bash
+npm run setup   # run it at the repo root
+npm run dev
+```
+
+`npm run setup` does the manual steps below for you, in order, and prints one line per step:
+
+1. Checks the Node.js version.
+2. Installs dependencies (`npm install`).
+3. Creates `.env.local` from `.env.example`. An existing `.env.local` is never overwritten.
+4. Makes sure PostgreSQL is running: if something already answers at the host and port in `DATABASE_URL`, Docker is left alone, otherwise it runs `docker compose up -d` and waits until the database is healthy.
+5. Applies database migrations (`npm run db:migrate`).
+
+It is safe to run again at any time: steps that are already done are skipped, and it stops with a clear message at the first problem. It does not start the dev server. Run `npm run dev` afterwards.
+
+If another PostgreSQL already uses port 5432 with different credentials, the migration step fails with an authentication error. Stop that database, or change the port in both `docker-compose.yml` and `.env.local`.
+
+Open [http://localhost:3000](http://localhost:3000) for the public site and [http://localhost:3000/admin](http://localhost:3000/admin) for the admin area.
+
+### Manual setup (alternative)
+
+The same steps by hand:
+
+```bash
 npm install
 cp .env.example .env.local   # at the repo root; points DATABASE_URL at the Docker database
 docker compose up -d         # start PostgreSQL
@@ -81,12 +104,11 @@ npm run db:migrate           # apply database migrations
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) for the public site and [http://localhost:3000/admin](http://localhost:3000/admin) for the admin area.
-
 Every pull request is checked on GitHub: lint, type check, build, unit tests, and an integration test. Open the PR Checks tab (or the repo Actions tab) to watch them run. The integration test starts a throwaway PostgreSQL, boots the app against it, and opens the home page and the admin health check in a browser.
 
 | Command | Description |
 |---|---|
+| `npm run setup` | One-command setup: dependencies, `.env.local`, PostgreSQL, migrations. Safe to re-run |
 | `npm run dev` | Start the development server |
 | `npm run build` / `npm run start` | Production build / serve it |
 | `npm run lint` | Lint all packages |
