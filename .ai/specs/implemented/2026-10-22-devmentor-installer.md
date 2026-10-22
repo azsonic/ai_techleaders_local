@@ -1,6 +1,6 @@
 ---
 title: One-command DevMentor installer (npm run setup)
-status: draft
+status: implemented
 created: 2026-10-22
 updated: 2026-10-22
 owner: Arunas
@@ -179,15 +179,15 @@ No `product-brief.md` exists. The only documents bounding this spec are `BACKWAR
 
 ## Acceptance criteria
 
-- [ ] `npm run setup` on a fresh clone installs dependencies, creates `.env.local`, makes PostgreSQL reachable, runs migrations and prints the next step.
-- [ ] A second run skips the completed steps, changes no file and exits 0.
-- [ ] An existing `.env.local` is never overwritten.
-- [ ] A reachable PostgreSQL at `DATABASE_URL` means Docker is not touched.
-- [ ] Old Node, missing Docker with no reachable database, or an unhealthy container stops the run with a clear message and exit code 1.
-- [ ] The password in `DATABASE_URL` is never printed.
-- [ ] README leads with `npm run setup` and keeps the manual steps; `AGENTS.md` lists the command.
-- [ ] `vitest.config.ts` measures the installer at 100% (statements, branches, functions, lines) without lowering thresholds or excluding files.
-- [ ] `npm run lint`, `typecheck`, `test`, `build` pass.
+- [x] `npm run setup` on a fresh clone installs dependencies, creates `.env.local`, makes PostgreSQL reachable, runs migrations and prints the next step.
+- [x] A second run skips the completed steps, changes no file and exits 0.
+- [x] An existing `.env.local` is never overwritten.
+- [x] A reachable PostgreSQL at `DATABASE_URL` means Docker is not touched.
+- [x] Old Node, missing Docker with no reachable database, or an unhealthy container stops the run with a clear message and exit code 1.
+- [x] The password in `DATABASE_URL` is never printed.
+- [x] README leads with `npm run setup` and keeps the manual steps; `AGENTS.md` lists the command.
+- [x] `vitest.config.ts` measures the installer at 100% (statements, branches, functions, lines) without lowering thresholds or excluding files.
+- [x] `npm run lint`, `typecheck`, `test`, `build` pass.
 
 ## Open questions
 
@@ -197,3 +197,5 @@ None remaining; all were resolved as autonomous defaults above.
 
 - Corrects the tracking issue on one point: step 5 does not use `db:migration:list` (see A4).
 - Pickup: `om-auto-implement-spec .ai/specs/2026-10-22-devmentor-installer.md`.
+- Implemented in PR #5 (spec PR #4). Deviations from the plan: none in behavior. Step 1 used the allowed fallback of `// @vitest-environment node` in each `scripts/**` test file, because Vitest 5 has no per-glob environment setting. A prerelease Node version string is compared by its release number (found in review).
+- Verification evidence: lint, typecheck, build and integration tests pass; unit tests pass at 100% coverage (110 tests); two live `npm run setup` runs against a running local PostgreSQL both exited 0 and the second skipped install, `.env.local` and Docker. The Docker start path and the missing-Docker and old-Node failures are covered by unit tests with fake adapters, not run live.
