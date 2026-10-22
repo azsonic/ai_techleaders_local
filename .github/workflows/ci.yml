@@ -2,6 +2,12 @@ name: CI
 
 on:
   pull_request:
+    # Documentation-only PRs skip the checks. A PR that also touches any other file still runs them.
+    paths-ignore:
+      - "**/*.md"
+      - ".ai/specs/**"
+      - ".ai/runs/**"
+      - ".ai/lessons/**"
 
 permissions:
   contents: read
