@@ -27,7 +27,7 @@ Phase 1 — Installer (spec steps 1–9). Phase 2 — Documentation (spec steps 
 ## Risks
 
 - Coverage gate must stay at 100% with the widened `include`; no thresholds lowered, no files excluded.
-- Vitest 5 per-glob environment setting is unverified; fall back to `// @vitest-environment node` per test file.
+- Vitest 5 has no per-glob environment setting (`environmentMatchGlobs` was removed), so every installer test file starts with `// @vitest-environment node`.
 - `.env.example` is not readable in this environment (permission settings); the installer only copies it.
 - Real `docker compose` / `npm install` runs are verified manually only where safe; unit tests use fakes.
 
@@ -37,15 +37,15 @@ Phase 1 — Installer (spec steps 1–9). Phase 2 — Documentation (spec steps 
 
 ### Phase 1: Installer
 
-- [ ] 1.1 Widen the vitest gate (include, coverage include, node environment for scripts)
-- [ ] 1.2 run-steps runner with tests
-- [ ] 1.3 preflight step with tests
-- [ ] 1.4 install-dependencies step with tests
-- [ ] 1.5 create-env-file step with tests
-- [ ] 1.6 ensure-database step with tests
-- [ ] 1.7 migrate-database step with tests
-- [ ] 1.8 system adapters with tests
-- [ ] 1.9 main, entry file and root setup script with tests
+- [x] 1.1 Widen the vitest gate (include, coverage include, node environment for scripts) — ac01d9c
+- [x] 1.2 run-steps runner with tests — 4bae42a
+- [x] 1.3 preflight step with tests — 4bae42a
+- [x] 1.4 install-dependencies step with tests — 4bae42a
+- [x] 1.5 create-env-file step with tests — 4bae42a
+- [x] 1.6 ensure-database step with tests — 4bae42a
+- [x] 1.7 migrate-database step with tests — 4bae42a
+- [x] 1.8 system adapters with tests — f9da245
+- [x] 1.9 main, entry file and root setup script with tests — f9da245
 
 ### Phase 2: Documentation
 
