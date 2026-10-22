@@ -33,6 +33,12 @@ describe("preflightStep", () => {
     expect(await preflightStep.run(withEngines(">=22.17", "24.0.0"))).toBe("Node.js 24.0.0");
   });
 
+  it("treats a prerelease build as its release version", async () => {
+    expect(await preflightStep.run(withEngines(">=22.17", "22.17.0-nightly20260101"))).toBe(
+      "Node.js 22.17.0-nightly20260101",
+    );
+  });
+
   it("rejects older patch, minor and major versions", async () => {
     await expect(preflightStep.run(withEngines(">=22.17.2", "22.17.1"))).rejects.toThrow(/found 22.17.1/);
     await expect(preflightStep.run(withEngines(">=22.17", "22.16.9"))).rejects.toThrow(

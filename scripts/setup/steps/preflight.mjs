@@ -12,7 +12,8 @@ export function parseNodeFloor(range) {
 }
 
 function isAtLeast(version, floor) {
-  const parts = version.split(".").map(Number);
+  // parseInt keeps prerelease builds such as "22.17.0-nightly2025" comparable.
+  const parts = version.split(".").map((part) => Number.parseInt(part, 10));
   for (let i = 0; i < 3; i += 1) {
     if (parts[i] !== floor[i]) {
       return parts[i] > floor[i];
