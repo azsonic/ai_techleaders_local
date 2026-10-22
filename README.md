@@ -104,7 +104,7 @@ npm run db:migrate           # apply database migrations
 npm run dev
 ```
 
-Every pull request is checked on GitHub: lint, type check, build, unit tests, and an integration test. Open the PR Checks tab (or the repo Actions tab) to watch them run. The integration test starts a throwaway PostgreSQL, boots the app against it, and opens the home page and the admin health check in a browser.
+Every pull request that changes more than documentation is checked on GitHub: lint, type check, build, unit tests, and an integration test. A PR that only changes Markdown files or `.ai/specs`, `.ai/runs` and `.ai/lessons` skips them (see `paths-ignore` in `.github/workflows/ci.yml`). Open the PR Checks tab (or the repo Actions tab) to watch them run. The integration test starts a throwaway PostgreSQL, boots the app against it, and opens the home page and the admin health check in a browser.
 
 | Command | Description |
 |---|---|
