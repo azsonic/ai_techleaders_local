@@ -33,6 +33,8 @@ Phase 1 — Installer (spec steps 1–9). Phase 2 — Documentation (spec steps 
 
 ## Progress
 
+PR: #5
+
 > Convention: `- [ ]` pending, `- [x]` done. Append ` — <commit sha>` when a step lands. Do not rename step titles.
 
 ### Phase 1: Installer
