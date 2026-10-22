@@ -3,7 +3,7 @@ title: Implement the one-command DevMentor installer (npm run setup)
 date: 2026-10-22
 agent: Claude Code (Sonnet 5.5), om-auto-create-pr
 spec: .ai/specs/2026-10-22-devmentor-installer.md
-status: partial
+status: success
 ---
 
 # Implement the one-command DevMentor installer (`npm run setup`)
@@ -49,17 +49,30 @@ Phase 1 — Installer (spec steps 1–9). Phase 2 — Documentation (spec steps 
 
 ### Phase 2: Documentation
 
-- [ ] 2.1 README: setup first, manual steps kept as alternative
-- [ ] 2.2 AGENTS.md Commands list and lesson check
+- [x] 2.1 README: setup first, manual steps kept as alternative — 8694f86
+- [x] 2.2 AGENTS.md Commands list and lesson check — 8694f86
+
+## Summary of changes
+
+- `scripts/setup.mjs`, `scripts/setup/**` — the installer: step runner, five steps (Node check, install, `.env.local`, database, migrations), real adapters in `system.mjs`, unit tests beside each file.
+- `package.json` — `setup` script.
+- `vitest.config.ts` — run and measure `scripts/**/*.mjs` in the 100% gate.
+- `README.md`, `AGENTS.md` — `npm run setup` documented; manual steps kept as the alternative.
+- `.ai/lessons.md` — two lessons (root scripts in the test gate; `db:migration:list` shows executed migrations).
 
 ## Verification
 
-_Filled in at completion._
+- `npm run lint`, `npm run typecheck`, `npm run build`: pass.
+- `npm run test`: 37 files, 109 tests; coverage 100% statements, branches, functions, lines (267/267, 116/116, 96/96, 255/255).
+- `npm run test:integration`: 1 file, 1 test passed.
+- Live `npm run setup` twice in the worktree against the already-running local PostgreSQL: run 1 copied `.env.local` and skipped Docker; run 2 skipped install, `.env.local` and Docker; both exited 0 and ended with the next-step hint.
+- Not run live: the Docker start path, a missing-Docker failure and an old-Node failure (they would change or stop the developer's running database); each is covered by unit tests with fake adapters.
 
 ## Issues / follow-ups
 
-_Filled in at completion._
+- Root `scripts/` is still not linted or type-checked (spec assumption A5).
+- After spec PR #4 merges, set the spec's status to `implemented` and move it to `.ai/specs/implemented/` (it is not on `main` yet, so this PR cannot do it).
 
 ## Lessons recorded
 
-_Filled in at completion._
+- `.ai/lessons.md`: "Root scripts need their own place in the test gate" and "`db:migration:list` shows executed migrations, not pending ones".
