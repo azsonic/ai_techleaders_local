@@ -14,6 +14,7 @@ Format:
 
 ## Lessons
 
+- **2026-10-22 — Count discovery markers as whole lines** `#process #tooling` — When validating discovery sections in `SDLC.md`, anchor marker checks to entire lines. The Amending section also quotes marker strings in inline code, so counting every occurrence overcounts the actual section boundaries.
 - **2026-10-22 — Root scripts need their own place in the test gate** `#test #tooling` — `vitest.config.ts` only measured `packages/*/src`. Code under root `scripts/` is covered because its `include`/`coverage.include` list `scripts/**`. Vitest 5 has no per-glob environment, so each `scripts/**` test starts with `// @vitest-environment node`. Keep logic behind injected adapters (`scripts/setup/system.mjs` is the only impure file).
 - **2026-10-22 — `db:migration:list` shows executed migrations, not pending ones** `#mikro-orm` — To decide "is anything pending" you would need `migration:pending`, which has no script. `migration:up` is already idempotent, so run it instead of trying to skip it.
 - **2026-10-21 — jsdom's URL resolves file paths against the page** `#test` — In Vitest's jsdom environment, `new URL(relative, import.meta.url)` turns a `file://` base into `http://localhost:3000/...`. Unit-test modules that resolve paths from `import.meta.url` with `// @vitest-environment node`.
