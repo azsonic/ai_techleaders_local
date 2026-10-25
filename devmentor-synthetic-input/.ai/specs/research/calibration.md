@@ -1,0 +1,7 @@
+# Calibration — DevMentor
+
+| Date | Run | Panel | Held-out notes | Overlap | Real-only themes | Panel-only themes |
+|---|---|---|---|---|---|---|
+| 2026-10-24 (`walkthroughs/2026-10-24-future-state-booking-and-session-1-0-decided-steps-session-001/report.md`) | 1 of 1 | 2 (P01 urgent, P02 indifferent) | 1 note: `holdout/2026-09-01-interview-backend-dev-fintech.md` (opened only after the interviews and walks were written) | 10 of 14 (9 of 14 if the one theme whose threshold the interviewer supplied is excluded) | ratings are worthless ("every profile has five stars"); a past paid-help attempt that was slow to find and failed on a technical detail; the cost of the miss (release slipped, lead unhappy); help needed outside office hours (Friday evening, weekend) | login wall (threshold supplied by the interviewer); two-hour floor against a "within the hour" need; nearest slot unknown; price shown only after picking a length; list ordered by availability gives no quality signal; "people ask me" / internal channel makes outside help unnecessary; once-only company-paid task as the only buying condition; unsure whether code can be pasted into the session; wanting something kept afterwards |
+
+Notes: one run, a panel of two, one held-out note: the number is a first trend point, not a score. The panel and the held-out note come from the same founder-run material, so both inherit the same interviewing habits.
