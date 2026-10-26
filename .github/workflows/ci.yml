@@ -79,3 +79,34 @@ jobs:
       - name: Install Chrome for agent-browser
         run: npx agent-browser install --with-deps
       - run: npm run test:integration
+  
+  tokens:
+    name: Tokens outside of tokens
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - name: Search for tokens outside of tokens
+        run: |
+          status=0
+          grep -rnE '#[0-9a-fA-F]{3,8}\b|(rgba?|hsla?|oklch)\(|-\[[0-9.]+(px|rem)\]|(^|[^-[:alnum:]_])(bg|text|border|ring|fill|stroke|from|via|to)-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-[0-9]{2,3}\b|(^|[^-[:alnum:]_])(bg|text|border)-(white|black)\b' packages/app/src packages/ui/src/components --include='*.tsx' --include='*.css' || status=$?
+          if [ "$status" -eq 0 ]; then echo "Znaleziono wartości spoza tokenów"; exit 1; fi
+          if [ "$status" -ne 1 ]; then echo "grep nie zadziałał, sprawdź ścieżki"; exit 1; fi
+
+  stories:
+    name: Storybook tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install Chromium for Storybook tests
+        run: npx playwright install --with-deps chromium
+      - name: Storybook tests (light theme)
+        run: npm run test:stories -w @devmentor/ui
+      - name: Storybook tests (dark theme)
+        run: npm run test:stories:dark -w @devmentor/ui
