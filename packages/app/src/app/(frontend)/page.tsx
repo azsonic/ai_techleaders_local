@@ -1,10 +1,12 @@
 import Link from "next/link";
 
+import { buttonVariants } from "@devmentor/ui/components/ui/button";
 import { Hero } from "@devmentor/ui/frontend/hero";
+import { cn } from "@devmentor/ui/lib/utils";
 
 export default function Home() {
   return (
-    <main className="flex flex-1 items-center justify-center bg-gradient-to-b from-white to-indigo-50">
+    <main className="flex flex-1 items-center justify-center bg-background">
       <Hero
         eyebrow="DevMentor"
         title="Grow as a developer, one session at a time."
@@ -12,7 +14,7 @@ export default function Home() {
       >
         <Link
           href="/admin"
-          className="rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-500"
+          className={cn(buttonVariants())}
         >
           Go to admin
         </Link>
