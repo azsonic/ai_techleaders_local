@@ -17,4 +17,11 @@ describe("LoadingMessage", () => {
     expect(status.textContent).toContain("Checking the database");
     expect(status.className).toContain("extra");
   });
+
+  it("has no animation", () => {
+    const { container } = render(<LoadingMessage />);
+
+    expect(container.innerHTML).not.toContain("animate");
+    expect(container.querySelector("svg")).toBeNull();
+  });
 });

@@ -1,0 +1,114 @@
+import { Meta, Canvas, Unstyled } from "@storybook/addon-docs/blocks";
+import * as Dialog from "../product/e05/operator-action-dialog.stories";
+
+<Meta title="Patterns/Operator action" />
+
+# Operator action
+
+How an operator changes someone else's data: suspend a mentor, revoke an invitation (E05-S03, E01-S01). This is a proposal pattern: no E05 specification exists yet, so every rule cites the brief, the references or the form and deletion patterns.
+
+## Purpose
+
+An operator can act on a person or an invitation only after seeing what will happen, and every action leaves a record with who, when and why.
+
+## When to use
+
+- Suspend a mentor: the profile is hidden and future bookings are cancelled with full refunds (D29, R13).
+- Revoke an invitation: the link stops working, the row stays and is still counted by the gate (D23, D24).
+
+## When not to use
+
+| Situation                         | Use instead                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------------------- |
+| A person deleting their own thing | The [deletion confirmation](?path=/docs/patterns-deletion-confirmation--docs) pattern |
+| A mentor cancelling a booking     | `CancelDialog` for a mentor (a reason that the mentee sees, D34)                      |
+| Editing a profile or a message    | Not possible. The operator edits neither (D29).                                       |
+| A refund outside R04              | Not in the product. It is made by hand in the Stripe dashboard (D29).                 |
+
+## Rules
+
+| #   | Rule                                                                                                          | How it is built                                                                             | Source                       |
+| --- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------- |
+| 1   | The question names the object: "Suspend Anna Kowalska?", never "Are you sure?".                               | `title` of `OperatorActionDialog`.                                                          | Deletion confirmation, P10.1 |
+| 2   | The consequence is written before the action: what is hidden, cancelled or refunded.                          | `consequence`, shown as the dialog description.                                             | D29, R13, P10.1              |
+| 3   | A reason is required. An empty one is refused with a message and the field takes focus.                       | Required `Reason` field; "Write a reason. It is logged with the action."                    | R13, Form pattern            |
+| 4   | The reason is logged with the operator's e-mail and the time, and the dialog says so.                         | Hint under the label: "Logged with your e-mail and the time."                               | R13                          |
+| 5   | Cancel comes first and is worded as the safe result. The action is a verb and its object, not "OK".           | "Keep as it is" first in the DOM; "Suspend mentor" as the destructive button.               | Deletion confirmation        |
+| 6   | The dialog stays open until the server answers. The button is busy, a second submit is ignored, text is kept. | `useForm` pending state; a failure is written in the dialog with the entered reason intact. | Form pattern, P12.1, P12.2   |
+| 7   | The page shows the result only after the server confirmed, and the action appears in the audit log.           | The page sets "Suspended" and an alert after `onConfirm` resolved; `AuditRow` lists it.     | P12.1, R13                   |
+| 8   | The operator pages are read only except for these actions. Gate and measures have no edit controls.           | `GateStatus` and `MetricRow` are display components.                                        | D29, E05-S01, E05-S02        |
+| 9   | An error that needs action is never a toast.                                                                  | Failure is an alert inside the dialog.                                                      | Stage 2 toast rule           |
+| 10  | A reason has at most 1000 characters, with a visible count.                                                   | `REASON_MAX`: "Up to 1000 characters. 0 used."; a longer reason is refused with a message.  | Proposal (D32 uses 1000)     |
+
+## States, each as a story
+
+| State                                  | Story                                                                                                                                                                                                                                                                                     |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Suspend a mentor                       | [Suspend](?path=/story/product-e05-supply-gate-and-pilot-operator-action-dialog--suspend)                                                                                                                                                                                                 |
+| Revoke an invitation                   | [Revoke](?path=/story/product-e05-supply-gate-and-pilot-operator-action-dialog--revoke-invitation)                                                                                                                                                                                        |
+| No reason                              | [Reason required](?path=/story/product-e05-supply-gate-and-pilot-operator-action-dialog--reason-required)                                                                                                                                                                                 |
+| Pending, server error, offline         | [Pending](?path=/story/product-e05-supply-gate-and-pilot-operator-action-dialog--pending), [server error](?path=/story/product-e05-supply-gate-and-pilot-operator-action-dialog--server-error), [offline](?path=/story/product-e05-supply-gate-and-pilot-operator-action-dialog--offline) |
+| Closes after the server answered       | [Confirm closes](?path=/story/product-e05-supply-gate-and-pilot-operator-action-dialog--confirm-closes)                                                                                                                                                                                   |
+| Result on the page, after confirmation | [Suspended](?path=/story/product-e05-supply-gate-and-pilot-screens-suspend-a-mentor--suspended)                                                                                                                                                                                           |
+| Long name                              | [Long name](?path=/story/product-e05-supply-gate-and-pilot-operator-action-dialog--long-name-narrow)                                                                                                                                                                                      |
+
+### Suspend a mentor
+
+<Canvas of={Dialog.Suspend} story={{ inline: false, height: "560px" }} />
+
+### Revoke an invitation
+
+<Canvas
+  of={Dialog.RevokeInvitation}
+  story={{ inline: false, height: "560px" }}
+/>
+
+## Code
+
+```tsx
+<OperatorActionDialog
+  open={open}
+  onOpenChange={setOpen}
+  title={`Suspend ${mentor.name}?`}
+  consequence="The profile is hidden and 2 future bookings are cancelled with full refunds."
+  confirmLabel="Suspend mentor"
+  loadingLabel="Suspending…"
+  onConfirm={(input) =>
+    apiCall(`/api/mentors/${id}/suspend`, {
+      method: "POST",
+      body: JSON.stringify(input),
+    })
+  }
+/>
+```
+
+## Good and bad
+
+<Unstyled>
+  <div className="grid gap-between-groups sm:grid-cols-2 text-interface">
+    <div className="border border-border bg-card p-panel">
+      <p className="font-emphasis">Do</p>
+      <p>
+        "Suspend Anna Kowalska?", the two cancelled bookings in the text, a
+        reason field and the buttons "Keep as it is" and "Suspend mentor".
+      </p>
+    </div>
+    <div className="border border-border bg-card p-panel">
+      <p className="font-emphasis">Don’t</p>
+      <p>
+        "Are you sure?" with OK and Cancel, no reason, and a toast that says
+        "Done" before the server answered.
+      </p>
+    </div>
+  </div>
+</Unstyled>
+
+## Known limits
+
+- The revoke button in the E01 invitations screen opens this dialog (stories: [Revoke: reason required](?path=/story/product-e01-mentor-supply-screens-admin-invitations--revoke-open), [Revoked](?path=/story/product-e01-mentor-supply-screens-admin-invitations--revoked)). The page marks the row revoked only after the server confirmed.
+- Viewing a session in dispute and recording its outcome with a reason (R16) are not designed.
+- No audit log filter or paging.
+
+## Related
+
+[Deletion confirmation](?path=/docs/patterns-deletion-confirmation--docs), [Form](?path=/docs/patterns-form--docs), [Dialog](?path=/docs/primitives-dialog--docs).

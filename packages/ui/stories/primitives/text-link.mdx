@@ -1,0 +1,147 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import { TextLink } from "@devmentor/ui/frontend/text-link";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./text-link.stories";
+
+<Meta of={Stories} />
+
+# Text link
+
+## 1. Purpose
+
+Takes a person to another page or resource, in a sentence or on its own line.
+
+## 2. When to use
+
+- Move to a mentor's page, My bookings or the privacy notice.
+- Open a mentor's public work (repository, article). Use `external`.
+- Refer to a rule inside a sentence: "Read the cancellation rule".
+
+## 3. When not to use
+
+| Situation                                      | Use instead                                       |
+| ---------------------------------------------- | ------------------------------------------------- |
+| An action that changes data ("Cancel booking") | [Button](?path=/docs/primitives-button--docs)     |
+| Showing or hiding content on the same page     | Button, `ghost` or `link` variant                 |
+| A link with no visible words                   | Add text. Icon-only links need an accessible name |
+
+Sources: WAI-ARIA Authoring Practices (link vs button).
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>Link text (required). Describes the destination, not "click here".</li>
+    <li>Underline (always on). The only cue that does not depend on color.</li>
+    <li>Screen-reader suffix "(opens in a new tab)" (only with `external`).</li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+<Canvas of={Stories.Variants} />
+
+| Variant    | Choose it when                                                                                             | Source                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Internal   | The destination is inside DevMentor. Opens in the same tab.                                                | tokens.md (underlined links)              |
+| `external` | The destination is outside, such as a mentor's repository. New tab, `noopener noreferrer`, spoken warning. | WCAG 3.2.5, brief N02 (public-work links) |
+
+In a framework route, reuse the class: `<Link href="/mentors" className={textLinkClassName}>`.
+
+<Canvas of={Stories.InSentence} />
+
+## 6. States
+
+<Canvas of={Stories.StateMatrixStory} />
+
+| State                    | Behavior                                                                                           | Source                |
+| ------------------------ | -------------------------------------------------------------------------------------------------- | --------------------- |
+| Default                  | Primary color, underlined.                                                                         | tokens.md             |
+| Hover                    | Text darkens to `--primary-hover`. The underline stays.                                            | R01.5, P11.1          |
+| Focus                    | 2px ring in `--ring`, offset 2px.                                                                  | tokens.md, WCAG 2.4.7 |
+| Pressed                  | Same as hover.                                                                                     | P11.1                 |
+| Disabled                 | Not applicable: a link that cannot be followed is plain text. Explain why in the sentence instead. | n/a                   |
+| Loading, selected, error | Not applicable.                                                                                    | n/a                   |
+
+## 7. Behavior and accessibility
+
+- Keyboard: Tab to focus, Enter follows the link.
+- Role: native `a` with `href`. A link without `href` is not focusable.
+- An external link announces "(opens in a new tab)" to screen readers (WCAG 3.2.5).
+- Link text makes sense out of context (WCAG 2.4.4).
+- Click target: standalone links need at least 24 × 24px (WCAG 2.5.8). Links inside a sentence are exempt.
+
+## 8. Content
+
+- Name the destination: "Anna Kowalska's profile", not "here".
+- Keep it short (2 to 6 words). A long URL as link text wraps with `break-words`.
+- Do not end with an arrow or an emoji (R02.5).
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: long link text wraps. Keep the underline continuous.
+- 768px and 1440px: no change. Line length in text stays about 65 characters (`max-w-prose`).
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} include={["href", "external"]} />
+
+All native anchor props are accepted.
+
+## 11. Code
+
+```tsx
+import { TextLink } from "@devmentor/ui/frontend/text-link";
+
+<TextLink href="/cancellation">Read the cancellation rule</TextLink>;
+```
+
+Mentor's public work:
+
+```tsx
+<TextLink href={work.url} external>
+  {work.title}
+</TextLink>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <div className="flex flex-col gap-between-groups">
+    <GoodBad
+      good={
+        <TextLink href="/mentors/anna-kowalska">
+          Anna Kowalska&apos;s profile
+        </TextLink>
+      }
+      goodWhy="The text names the destination."
+      bad={<TextLink href="/mentors/anna-kowalska">Click here</TextLink>}
+      badWhy="“Click here” means nothing out of context."
+    />
+    <GoodBad
+      good={
+        <TextLink href="https://github.com/example/demo" external>
+          Public work
+        </TextLink>
+      }
+      goodWhy="A new tab is announced to screen readers."
+      bad={
+        <a
+          href="https://github.com/example/demo"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Public work
+        </a>
+      }
+      badWhy="A hand-written anchor has no underline and no spoken warning."
+    />
+  </div>
+</Unstyled>
+
+## 13. Related
+
+- [Button](?path=/docs/primitives-button--docs): actions that change data.
+- Patterns: detail view (mentor profile), notification list.

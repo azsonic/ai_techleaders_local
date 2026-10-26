@@ -1,0 +1,92 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Design system/How to choose" />
+
+# How to choose a component
+
+Each table answers one question: "if this is the situation, use this". The rows use DevMentor's own examples. A row's source is the rule that decides it; the component's documentation page has the whole reasoning. Nothing here is a taste choice: where the system has no component for a case, the row says so and points to [What is missing](?path=/docs/design-system-what-is-missing--docs).
+
+## Button, link, icon button and action menu
+
+| If                                                                        | Then use                                                                                                                         | Example                                             | Source                  |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ----------------------- |
+| The person starts an action that changes data                             | [Button](?path=/docs/primitives-button--docs) with a verb and an object                                                          | "Book 25 minutes", "Send message", "Suspend mentor" | P10.1                   |
+| The person goes to another page or resource                               | [Text link](?path=/docs/primitives-text-link--docs). A button never navigates.                                                   | "Open booking", a mentor's public work              | Button page, WCAG 4.1.2 |
+| A low-priority action sits inside a sentence or a table cell              | Button `variant="link"`                                                                                                          | A small "Try again" inside a message                | R01.5                   |
+| The control is an icon with no text                                       | Button `size="icon"` (or `icon-dense`, `icon-xs`) with an accessible name, and a [Tooltip](?path=/docs/primitives-tooltip--docs) | "Copy booking link"                                 | WCAG 4.1.2, 2.5.8       |
+| One object has three or more commands and one of them is not the main one | [Menu](?path=/docs/primitives-menu--docs)                                                                                        | A booking row with open, copy link, cancel          | R01.1, R01.5            |
+| One or two commands                                                       | Visible buttons or links, not a menu                                                                                             | "Cancel booking" next to the row                    | R01.5                   |
+| The main action of the screen                                             | A visible Button, never inside a menu                                                                                            | "Book 25 minutes"                                   | R01.5                   |
+
+## Radio, select and search field
+
+| If                                                            | Then use                                                                                                                        | Example                                          | Source                                                             |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------------ |
+| Exactly one of two to four options, and all should be visible | [Radio group](?path=/docs/primitives-radio-group--docs)                                                                         | Session length 25 or 50 minutes with both prices | R05, Radio page                                                    |
+| Exactly one of five or more options                           | [Select](?path=/docs/primitives-select--docs)                                                                                   | Start time of an availability window             | Select page                                                        |
+| A fixed list of reasons                                       | Radio group                                                                                                                     | A mentor's cancellation reason                   | D34                                                                |
+| Filtering a list by a few values                              | Visible filters that are easy to remove ([Filtered list](?path=/docs/patterns-filtered-list--docs))                             | Mentor directory by stack                        | Filtered list pattern                                              |
+| The person types to find something and sees results           | Not in the system. Use a labelled [Text input](?path=/docs/primitives-text-input--docs) (`density="dense"`) and record the gap. | A search field in the directory                  | [What is missing](?path=/docs/design-system-what-is-missing--docs) |
+
+## Switch and checkbox
+
+| If                                                  | Then use                                                | Example                                         | Source        |
+| --------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------- | ------------- |
+| A setting that is on or off and saves with the form | [Switch](?path=/docs/primitives-switch--docs)           | Listed in the directory or link only            | D06, E01 spec |
+| Several independent options, any number may apply   | [Checkbox](?path=/docs/primitives-checkbox--docs)       | Stacks on a profile; the directory stack filter | D07           |
+| A confirmation the person must make                 | Checkbox                                                | Accepting a rule before booking                 | Checkbox page |
+| Exactly one of several                              | [Radio group](?path=/docs/primitives-radio-group--docs) | 25 or 50 minutes                                | Switch page   |
+
+## Dialog, confirmation dialog, side panel, separate page, popover and tooltip
+
+| If                                                                 | Then use                                                                                                | Example                                              | Source                                                             |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------ |
+| A yes or no question about something that cannot be undone         | [Confirmation dialog](?path=/docs/primitives-confirmation-dialog--docs) with the object in the question | "Cancel Fri 13 Nov, 10:00 with Anna Kowalska?"       | Deletion confirmation pattern                                      |
+| A short task with one or two fields                                | [Dialog](?path=/docs/primitives-dialog--docs)                                                           | A mentor's cancellation reason; an operator's reason | Dialog page                                                        |
+| An operator action on someone else's data                          | [Operator action dialog](?path=/docs/patterns-operator-action--docs)                                    | Suspend a mentor                                     | D29, R13                                                           |
+| A larger task, or a task with more than a few fields               | A separate page                                                                                         | The booking page                                     | Dialog page: one dialog width                                      |
+| Content shown next to a page while the page stays in use           | Not in the system (no side panel). Use a dialog for a short task, otherwise a separate page.            |                                                      | [What is missing](?path=/docs/design-system-what-is-missing--docs) |
+| A short explanation next to the thing that opened it               | [Popover](?path=/docs/primitives-popover--docs)                                                         | Why a time is shown in the person's zone             | E02 spec                                                           |
+| The name of an icon button                                         | [Tooltip](?path=/docs/primitives-tooltip--docs)                                                         | "Copy booking link"                                  | WCAG 4.1.2                                                         |
+| Information needed to take an action, or why a control is disabled | Text on the page, never a tooltip. Touch users never see a tooltip.                                     | "Choose a length and a start time to continue."      | WCAG 3.3.2, stage 2 decision                                       |
+
+## Field error, alert and toast
+
+An error that needs an action is never a toast (a toast disappears; WCAG 2.2.1).
+
+| If                                                                                | Then use                                                                                           | Example                                                                                 | Source                   |
+| --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------ |
+| One value is wrong                                                                | The error in the [Form field](?path=/docs/primitives-form-field--docs), in text, next to the field | "Write your question so the mentor can prepare."                                        | WCAG 3.3.1, Form pattern |
+| Something about the page or the whole form needs the person's attention or action | [Alert](?path=/docs/primitives-alert--docs) next to the content it concerns                        | "This slot was taken a moment ago. Nothing was charged."                                | P12.2, P10.1             |
+| Content could not load, or does not exist                                         | [Error state](?path=/docs/primitives-error-state--docs) with a next step                           | "The session did not load" with Try again                                               | P12.2                    |
+| The server accepted something small and nothing else needs doing                  | [Toast](?path=/docs/primitives-toast--docs), after the server confirmed                            | "Profile saved"                                                                         | P12.1                    |
+| A booking was confirmed or cancelled                                              | A notice next to the booking, plus e-mail                                                          | [Notification row](?path=/story/product-e02-find-and-book-notification-row--playground) | R10, P04, D21            |
+| A failed message                                                                  | The message's own state and a retry, never a toast                                                 | "Message wasn't sent." with Try again                                                   | P12.2                    |
+
+## Skeleton and loading indicator
+
+| If                                          | Then use                                                                            | Example                | Source      |
+| ------------------------------------------- | ----------------------------------------------------------------------------------- | ---------------------- | ----------- |
+| A list, table or card loads from the server | [Loading skeleton](?path=/docs/primitives-loading-skeleton--docs) with a text label | My bookings            | P11.1       |
+| A short or unknown wait                     | `LoadingMessage`: text, no spinner                                                  | "Loading the session…" | P11.1       |
+| A button waits for the server               | Button `loading` with a `loadingLabel`                                              | "Booking…"             | P12.1       |
+| A progress bar of anything                  | Do not. A bar reads as course progress.                                             |                        | N01.1, NR03 |
+
+## Table, list and cards
+
+| If                                                   | Then use                                                       | Example                          | Source       |
+| ---------------------------------------------------- | -------------------------------------------------------------- | -------------------------------- | ------------ |
+| People compare the same facts across many objects    | [Table](?path=/docs/primitives-table--docs)                    | Invitations, earnings, audit log | R01.1, R01.3 |
+| A dense list the person scans and acts on row by row | Rows separated by a thin line (`Separator` or a bottom border) | Bookings, notifications          | R01.3        |
+| One main object read on its own                      | [Card](?path=/docs/primitives-card--docs)                      | A mentor in the directory        | R01.1        |
+| Every row of a long list                             | Not a card for each row                                        |                                  | Card page    |
+| A card inside a card                                 | Do not. One panel; split with a heading or a line.             |                                  | Card page    |
+
+## Tabs and separate pages
+
+| If                                           | Then use                                                       | Example                                      | Source    |
+| -------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------- | --------- |
+| Two to five views of one list, one at a time | [Tabs](?path=/docs/primitives-tabs--docs)                      | Upcoming, Past, Cancelled bookings           | E02-S04   |
+| Moving to another section of the product     | Links in a navigation, so the URL and the browser history work | My bookings, Notifications                   | Tabs page |
+| Steps of a process                           | One page per step with numbered steps                          | Payment is the last step of the booking page | Tabs page |
+| A view that should be bookmarkable or shared | A separate page                                                | A mentor's page                              | Tabs page |

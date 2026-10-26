@@ -1,0 +1,136 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import { Checkbox } from "@devmentor/ui/components/ui/checkbox";
+import { Field, FieldLabel } from "@devmentor/ui/components/ui/field";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./checkbox.stories";
+
+<Meta of={Stories} />
+
+# Checkbox
+
+## 1. Purpose
+
+Lets a person turn each of several independent options on or off.
+
+## 2. When to use
+
+- Stacks on a mentor profile: TypeScript, React, Python, AI agents (brief D07), any number can apply.
+- A confirmation the person must make themselves, such as accepting a rule before booking.
+- A parent option that shows a mixed state when only some children are chosen.
+
+## 3. When not to use
+
+| Situation                                       | Use instead                                             |
+| ----------------------------------------------- | ------------------------------------------------------- |
+| Exactly one of a few options (25 or 50 minutes) | [Radio group](?path=/docs/primitives-radio-group--docs) |
+| A setting that is on or off and takes effect    | [Switch](?path=/docs/primitives-switch--docs)           |
+| Choosing an action                              | A button                                                |
+
+Sources: WAI-ARIA Authoring Practices (checkbox vs radio vs switch).
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>Box, 20px, with a 1px border in `--input` (required).</li>
+    <li>
+      Check mark when chosen, dash when mixed (required for those states).
+    </li>
+    <li>
+      Label, to the right of the box (required). The whole row is the click
+      target.
+    </li>
+    <li>Hint and error (optional), from the Form field.</li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+One variant. Use it alone or as a list inside a `FieldSet` with a `FieldLegend`.
+
+<Canvas of={Stories.StacksGroup} />
+
+## 6. States
+
+<Canvas of={Stories.StateMatrixStory} />
+
+| State            | Behavior                                                                                     | Source                                          |
+| ---------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| Unchecked        | Empty box with a border.                                                                     | WCAG 1.4.11                                     |
+| Checked          | Filled box **and** a check mark.                                                             | tokens.md (state is not fill alone), WCAG 1.4.1 |
+| Indeterminate    | Filled box and a dash. Announced as mixed.                                                   | WAI-ARIA                                        |
+| Hover            | Border darkens to `--foreground`.                                                            | R01.5                                           |
+| Focus            | 2px ring in `--ring`, offset 2px.                                                            | tokens.md, WCAG 2.4.7                           |
+| Disabled         | `--muted` fill, muted text. **Say why in the hint**, for example "Not covered in the pilot." | WCAG 3.3.2                                      |
+| Error            | Border in `--destructive` and a message in the Form field.                                   | WCAG 1.4.1, 3.3.1                               |
+| Pressed, loading | Not applicable.                                                                              | n/a                                             |
+
+## 7. Behavior and accessibility
+
+- Keyboard: Tab focuses, Space toggles. Arrow keys do not move between checkboxes (each is a tab stop).
+- Role `checkbox`, `aria-checked` true, false or mixed. The label names it.
+- Click target: the box has a 28px hit area and the label makes the whole row clickable, well above 24 × 24px (WCAG 2.5.8).
+- Group related boxes in a `FieldSet` with a legend so screen readers announce the group.
+
+<Canvas of={Stories.ToggleWithClickAndSpace} />
+
+## 8. Content
+
+- Label: a short noun or a full sentence that makes sense when checked ("React", "I understand a mentor can cancel").
+- Write it positively. Avoid "Don't…" labels.
+- Long labels wrap beside the box and keep the box top-aligned.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: one column, label wraps. 768px and 1440px: lists stay one column; do not spread checkboxes across a row.
+
+## 10. API
+
+<ArgTypes
+  of={Stories.Playground}
+  include={["checked", "defaultChecked", "indeterminate", "disabled"]}
+/>
+
+Also `onCheckedChange`, `name`, `value`, `required`. Inside a Form field the id, hint and error are connected automatically.
+
+## 11. Code
+
+```tsx
+<FieldSet>
+  <FieldLegend>Stacks you can help with</FieldLegend>
+  <Field orientation="horizontal">
+    <Checkbox name="stacks" value="react" />
+    <FieldLabel>React</FieldLabel>
+  </Field>
+</FieldSet>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <div className="flex flex-col gap-between-groups">
+    <GoodBad
+      good={
+        <Field orientation="horizontal">
+          <Checkbox />
+          <FieldLabel>React</FieldLabel>
+        </Field>
+      }
+      goodWhy="The label is attached, so the whole row is clickable."
+      bad={
+        <div className="flex items-center gap-within-group">
+          <Checkbox aria-label="React" />
+          <span className="text-interface">React</span>
+        </div>
+      }
+      badWhy="Plain text beside the box is not a label: clicking it does nothing."
+    />
+  </div>
+</Unstyled>
+
+## 13. Related
+
+- [Radio group](?path=/docs/primitives-radio-group--docs): one of several. [Switch](?path=/docs/primitives-switch--docs): an on or off setting.
+- Patterns: form, filtered list.

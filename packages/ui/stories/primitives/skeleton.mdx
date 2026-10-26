@@ -1,0 +1,132 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import { Skeleton } from "@devmentor/ui/components/ui/skeleton";
+import { LoadingMessage } from "@devmentor/ui/backend/feedback/loading-message";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./skeleton.stories";
+
+<Meta of={Stories} />
+
+# Loading skeleton
+
+## 1. Purpose
+
+Shows the shape of content that is on its way, so the page does not jump when it arrives.
+
+## 2. When to use
+
+- A list or table whose rows load after the page (My bookings, the directory, the operator's lists).
+- A card or panel whose data comes from the server.
+- Together with a status text that says what is loading.
+
+## 3. When not to use
+
+| Situation                       | Use instead                                                              |
+| ------------------------------- | ------------------------------------------------------------------------ |
+| A button waiting for the server | The `loading` state of the [Button](?path=/docs/primitives-button--docs) |
+| An unknown or very short wait   | [LoadingMessage](#loading-message), text only                            |
+| Content that failed             | [Error state](?path=/docs/primitives-error-state--docs)                  |
+| Content that is truly empty     | [Empty state](?path=/docs/primitives-empty-state--docs)                  |
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>
+      Placeholder blocks in `--muted`, sized like the real content (required).
+    </li>
+    <li>
+      A status line with a text such as "Loading your bookings…" (required).
+    </li>
+    <li>A container that announces `aria-busy` (required).</li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+One block, sized with classes. Typical shapes:
+
+<Canvas of={Stories.ListRows} />
+
+<Canvas of={Stories.CardPlaceholder} />
+
+Static, never animated: no pulse, no shimmer (P11.1).
+
+## 6. States
+
+A skeleton is a loading state. It has no hover, focus, pressed, disabled, selected or error state. It is replaced by content, an [Empty state](?path=/docs/primitives-empty-state--docs) or an [Error state](?path=/docs/primitives-error-state--docs).
+
+| State   | Behavior                                                                                                    | Source          |
+| ------- | ----------------------------------------------------------------------------------------------------------- | --------------- |
+| Loading | Muted blocks, hidden from assistive technology, plus a status text and `aria-busy="true"` on the container. | P11.1, WAI-ARIA |
+| Loaded  | The container reports `aria-busy="false"` and the blocks are gone.                                          | WAI-ARIA        |
+
+## 7. Behavior and accessibility
+
+- Blocks are `aria-hidden`. The text and `aria-busy` carry the meaning. A skeleton with no text is silent for screen reader users.
+- Not focusable, no motion, so `prefers-reduced-motion` needs nothing extra.
+- Do not leave a skeleton on screen forever: after a failure show an error state.
+
+<Canvas of={Stories.BusyThenLoaded} />
+
+## 8. Content
+
+- Match the real layout: the same number of lines, rows and widths vary slightly so it does not read as a table of one value.
+- Status text names the thing: "Loading your bookings…". Default "Loading…".
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- Blocks use proportional widths (`w-1/2`) so they fit at 320px. Row count does not change with width.
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} include={["className"]} />
+
+### Loading message
+
+<Unstyled>
+  <div id="loading-message" className="max-w-prose">
+    <LoadingMessage label="Loading your bookings…" />
+  </div>
+</Unstyled>
+
+`LoadingMessage` takes `label` (default "Loading…") and `className`. It is plain text with `role="status"`: no spinner, no motion.
+
+## 11. Code
+
+```tsx
+<section aria-busy={loading} aria-label="My bookings">
+  {loading ? (
+    <>
+      <LoadingMessage label="Loading your bookings…" />
+      <RowSkeleton />
+      <RowSkeleton />
+    </>
+  ) : (
+    <BookingList bookings={bookings} />
+  )}
+</section>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <div className="flex flex-col">
+        <LoadingMessage label="Loading your bookings…" />
+        <Skeleton className="mt-within-group h-4 w-2/3" />
+      </div>
+    }
+    goodWhy="The placeholder comes with a text that is announced."
+    bad={<Skeleton className="h-4 w-2/3" />}
+    badWhy="A silent placeholder: screen reader users hear nothing."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Empty state](?path=/docs/primitives-empty-state--docs), [Error state](?path=/docs/primitives-error-state--docs): what replaces the skeleton.
+- [Button](?path=/docs/primitives-button--docs) `loading`: waiting after an action.
+- Patterns: filtered list, detail view.

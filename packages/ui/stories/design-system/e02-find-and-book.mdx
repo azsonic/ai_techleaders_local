@@ -1,0 +1,126 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Design system/E02 Find and book" />
+
+# E02 Find and book
+
+A mentee finds a mentor by link or from the directory, sees both prices and the nearest slot, picks a length and a slot, signs in, asks a question and books. Both people are notified, and each sees their bookings and can cancel. Source: `.ai/specs/2026-10-24-find-and-book.md`, decisions D05, D06, D08, D09, D10, D17, D20, D21, D22, D28, D31, D33, D34, rules R04, R05, R08, R09, R10, R12, R15, R17.
+
+## Flow
+
+1. The mentee opens the directory or a mentor's link (**Directory**, **Mentor page**). While paid booking is closed, prices stay visible and a fixed sentence replaces the slot picker.
+2. The mentee sees both prices, chooses a length and a slot (**Mentor page**).
+3. The mentee signs in if needed and returns to the same selection, then writes a question and books (**Booking page**).
+4. Both sides get a notice in the product and by e-mail (**Notifications**).
+5. The mentee sees and cancels bookings (**My bookings**); the mentor sees booked sessions and cancels with a reason (**Mentor bookings**).
+
+## Product components
+
+| Component             | Purpose                                                           | Data states covered                                                        | Stories                                                                               |
+| --------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Local time            | A moment in the viewer's zone with the zone written               | Two zones, a day change                                                    | [Local time](?path=/story/product-e02-find-and-book-local-time--playground)           |
+| Booking status        | The state of a booking as words                                   | Every status, both viewers                                                 | [Booking status](?path=/story/product-e02-find-and-book-booking-status--every-status) |
+| Booking closed notice | The fixed "Booking opens soon"                                    | One                                                                        | [Notice](?path=/story/product-e02-find-and-book-booking-closed-notice--playground)    |
+| Length choice         | Both prices side by side, choose 25 or 50                         | Highest prices, narrow                                                     | [Length choice](?path=/story/product-e02-find-and-book-length-choice--playground)     |
+| Slot picker           | Slots grouped by day for the chosen length                        | Loading, empty, error, partial, 14 days, 50 minutes, other zone, narrow    | [Slot picker](?path=/story/product-e02-find-and-book-slot-picker--playground)         |
+| Booking summary       | What is being booked, both zones, price, cancellation rule        | 50 minutes, long name, narrow                                              | [Summary](?path=/story/product-e02-find-and-book-booking-summary--playground)         |
+| Booking card          | One booking row with cancel                                       | Every status, free cancellation, mentor view, long text                    | [Card](?path=/story/product-e02-find-and-book-booking-card--every-status)             |
+| Cancel dialog         | Mentee: question with the refund outcome. Mentor: required reason | Three outcomes, reason required, pending, server error, offline, long name | [Dialog](?path=/story/product-e02-find-and-book-cancel-dialog--playground)            |
+| Notification row      | A notice for a confirmed or cancelled booking                     | Unread, with reason, long text                                             | [Row](?path=/story/product-e02-find-and-book-notification-row--unread)                |
+| Mentor directory      | Filters, count, cards and their states (the filtered list)        | Loading, empty (two kinds), error, partial, 30 mentors, closed, narrow     | [Directory](?path=/story/product-e02-find-and-book-mentor-directory--playground)      |
+
+Patterns used: [Filtered list](?path=/docs/patterns-filtered-list--docs), [Detail view](?path=/docs/patterns-detail-view--docs), [Form](?path=/docs/patterns-form--docs).
+
+## Screens and state map
+
+### Directory (`/mentors`)
+
+| State                       | Story                                                                                | Source                      |
+| --------------------------- | ------------------------------------------------------------------------------------ | --------------------------- |
+| Mentors with a stack filter | [List](?path=/story/product-e02-find-and-book-screens-directory--list)               | E02 spec, UI/UX "Directory" |
+| Loading                     | [Loading](?path=/story/product-e02-find-and-book-screens-directory--loading)         | P11.1                       |
+| No mentor listed yet        | [Nothing yet](?path=/story/product-e02-find-and-book-screens-directory--nothing-yet) | E02 spec                    |
+| No results for the filters  | [No results](?path=/story/product-e02-find-and-book-screens-directory--no-results)   | Filtered list pattern       |
+| Error                       | [Error](?path=/story/product-e02-find-and-book-screens-directory--load-error)        | P12.2                       |
+| Lots of data                | [30 mentors](?path=/story/product-e02-find-and-book-screens-directory--many)         | R01.1                       |
+| Booking closed              | [Closed](?path=/story/product-e02-find-and-book-screens-directory--booking-closed)   | D31                         |
+
+### Mentor page (`/mentors/[slug]`)
+
+| State                                  | Story                                                                              | Source              |
+| -------------------------------------- | ---------------------------------------------------------------------------------- | ------------------- |
+| Open: length, then slot, then continue | [Open](?path=/story/product-e02-find-and-book-screens-mentor-page--open)           | R05, E02 spec       |
+| Booking closed                         | [Closed](?path=/story/product-e02-find-and-book-screens-mentor-page--closed)       | D31                 |
+| No bookable slots                      | [No slots](?path=/story/product-e02-find-and-book-screens-mentor-page--no-slots)   | R08                 |
+| Loading                                | [Loading](?path=/story/product-e02-find-and-book-screens-mentor-page--loading)     | P11.1               |
+| Error                                  | [Error](?path=/story/product-e02-find-and-book-screens-mentor-page--load-error)    | P12.2               |
+| Does not exist or no access            | [Not found](?path=/story/product-e02-find-and-book-screens-mentor-page--not-found) | Detail view pattern |
+| Long name and text                     | [Long text](?path=/story/product-e02-find-and-book-screens-mentor-page--long-text) | R01.1               |
+
+### Booking page (`/book/[slug]`)
+
+| State                                 | Story                                                                                         | Source                         |
+| ------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------ |
+| Signed in: summary and question       | [Ready](?path=/story/product-e02-find-and-book-screens-booking-page--ready)                   | E02 spec, UI/UX "Booking page" |
+| Signed out                            | [Signed out](?path=/story/product-e02-find-and-book-screens-booking-page--signed-out)         | D10                            |
+| Empty question refused                | [Empty question](?path=/story/product-e02-find-and-book-screens-booking-page--empty-question) | Form pattern                   |
+| Booking (pending)                     | [Pending](?path=/story/product-e02-find-and-book-screens-booking-page--pending)               | P12.1                          |
+| Slot taken                            | [Slot taken](?path=/story/product-e02-find-and-book-screens-booking-page--slot-taken)         | E02 spec, edge cases           |
+| Price changed                         | [Price changed](?path=/story/product-e02-find-and-book-screens-booking-page--price-changed)   | E02 spec, edge cases           |
+| Booking closed                        | [Closed](?path=/story/product-e02-find-and-book-screens-booking-page--closed)                 | D31                            |
+| Server error                          | [Server error](?path=/story/product-e02-find-and-book-screens-booking-page--server-error)     | P12.2                          |
+| Offline                               | [Offline](?path=/story/product-e02-find-and-book-screens-booking-page--offline)               | P12.2                          |
+| Confirmed (after the server answered) | [Confirmed](?path=/story/product-e02-find-and-book-screens-booking-page--confirmed)           | P12.1                          |
+| Long name and question                | [Long text](?path=/story/product-e02-find-and-book-screens-booking-page--long-text)           | R01.1                          |
+
+### My bookings (`/bookings`)
+
+| State                                          | Story                                                                                                                                                                                                                                                           | Source       |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| Upcoming, past and cancelled                   | [List](?path=/story/product-e02-find-and-book-screens-my-bookings--list)                                                                                                                                                                                        | D28, R12     |
+| Booked a moment ago                            | [Just booked](?path=/story/product-e02-find-and-book-screens-my-bookings--just-booked)                                                                                                                                                                          | R15, D33     |
+| No bookings yet                                | [Empty](?path=/story/product-e02-find-and-book-screens-my-bookings--empty)                                                                                                                                                                                      | P10.1        |
+| Loading                                        | [Loading](?path=/story/product-e02-find-and-book-screens-my-bookings--loading)                                                                                                                                                                                  | P11.1        |
+| Error                                          | [Error](?path=/story/product-e02-find-and-book-screens-my-bookings--load-error)                                                                                                                                                                                 | P12.2        |
+| Lots of data                                   | [25 bookings](?path=/story/product-e02-find-and-book-screens-my-bookings--many)                                                                                                                                                                                 | R01.1        |
+| Cancel: full refund / within grace / no refund | [Full](?path=/story/product-e02-find-and-book-screens-my-bookings--cancel-full-refund), [grace](?path=/story/product-e02-find-and-book-screens-my-bookings--cancel-grace), [none](?path=/story/product-e02-find-and-book-screens-my-bookings--cancel-no-refund) | R09, R15     |
+| Cancel: server error                           | [Server error](?path=/story/product-e02-find-and-book-screens-my-bookings--cancel-server-error)                                                                                                                                                                 | P12.2        |
+| Cancel: pending, offline                       | [Pending](?path=/story/product-e02-find-and-book-cancel-dialog--mentee-pending), [offline](?path=/story/product-e02-find-and-book-cancel-dialog--mentee-offline)                                                                                                | P12.1, P12.2 |
+
+### Mentor bookings (`/mentor/bookings`)
+
+| State                        | Story                                                                                                                                                                                   | Source   |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| Upcoming, past and cancelled | [List](?path=/story/product-e02-find-and-book-screens-mentor-bookings--list)                                                                                                            | R12      |
+| No booked sessions yet       | [Empty](?path=/story/product-e02-find-and-book-screens-mentor-bookings--empty)                                                                                                          | P10.1    |
+| Loading                      | [Loading](?path=/story/product-e02-find-and-book-screens-mentor-bookings--loading)                                                                                                      | P11.1    |
+| Error                        | [Error](?path=/story/product-e02-find-and-book-screens-mentor-bookings--load-error)                                                                                                     | P12.2    |
+| Lots of data                 | [25 bookings](?path=/story/product-e02-find-and-book-screens-mentor-bookings--many)                                                                                                     | R01.1    |
+| Cancel: reason required      | [Reason](?path=/story/product-e02-find-and-book-screens-mentor-bookings--cancel-reason), [must choose](?path=/story/product-e02-find-and-book-cancel-dialog--mentor-must-choose-reason) | R17, D34 |
+| Cancel: server error         | [Server error](?path=/story/product-e02-find-and-book-screens-mentor-bookings--cancel-server-error)                                                                                     | P12.2    |
+
+### Notifications (`/notifications`)
+
+| State                   | Story                                                                             | Source        |
+| ----------------------- | --------------------------------------------------------------------------------- | ------------- |
+| Unread and read notices | [List](?path=/story/product-e02-find-and-book-screens-notifications--list)        | R10, D21, P04 |
+| No notifications        | [Empty](?path=/story/product-e02-find-and-book-screens-notifications--empty)      | P10.1         |
+| Loading                 | [Loading](?path=/story/product-e02-find-and-book-screens-notifications--loading)  | P11.1         |
+| Error                   | [Error](?path=/story/product-e02-find-and-book-screens-notifications--load-error) | P12.2         |
+| Lots of data            | [30 notices](?path=/story/product-e02-find-and-book-screens-notifications--many)  | R01.1         |
+
+## Source files
+
+| Part                                 | Path                                                                                              |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| Components                           | `packages/ui/src/components/bookings/`, `packages/ui/src/components/mentors/mentor-directory.tsx` |
+| Hooks                                | `packages/ui/src/hooks/use-viewer-zone.ts` (with `use-form.ts` from E01)                          |
+| Stories                              | `packages/ui/stories/product/e02/`                                                                |
+| Documentation helpers (not exported) | `packages/ui/.storybook/docs/{e02-data,bookings-screen}`                                          |
+
+## Product work that remains
+
+- The pages are not built in the application; these stories are their compositions.
+- **Not designed yet, and recorded for "What is missing":** a booking's own page `/bookings/[id]` (session link once E04 lands); the unread count in the header (the application shell is not in the plan); a search field with results; paging for a long directory; the sign-in page.
+- The cancellation outcome (`full-grace`, `full`, `none`) is computed by the booking policy in `core`; the dialog only words it. The words say "due when payments process" until E03-S02.
+- Notification e-mails use Europe/Warsaw with the zone label; they are not part of this system.

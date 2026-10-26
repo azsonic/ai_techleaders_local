@@ -1,0 +1,128 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import {
+  Field,
+  FieldLabel,
+  FieldDescription,
+} from "@devmentor/ui/components/ui/field";
+import { Input } from "@devmentor/ui/components/ui/input";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./input.stories";
+
+<Meta of={Stories} />
+
+# Text input
+
+## 1. Purpose
+
+Lets a person type one short line, such as a name, a price or a link.
+
+## 2. When to use
+
+- Display name, price for 25 or 50 minutes, link to public work, e-mail on sign-in.
+- Search and filter fields in a list (use `density="dense"`).
+
+## 3. When not to use
+
+| Situation                                     | Use instead                                                              |
+| --------------------------------------------- | ------------------------------------------------------------------------ |
+| Several lines (the question to the mentor)    | [Textarea](?path=/docs/primitives-textarea--docs)                        |
+| Choose one of a few known values (start time) | [Select](?path=/docs/primitives-select--docs) or a radio group (batch 2) |
+| A yes or no choice                            | Checkbox or switch (batch 2)                                             |
+
+Sources: brief E02 spec (question up to 2,000 characters is multiline), WAI-ARIA Authoring Practices.
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>
+      Label (required), always visible, above the field. Inside a [Form
+      field](?path=/docs/primitives-form-field--docs).
+    </li>
+    <li>Field with a 1px border in `--border` (required).</li>
+    <li>Value or placeholder. A placeholder is an example, not a name.</li>
+    <li>Hint and error (optional), supplied by the Form field.</li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+<Canvas of={Stories.Densities} />
+
+| Variant                             | Choose it when                                          | Source     |
+| ----------------------------------- | ------------------------------------------------------- | ---------- |
+| `default` (40px, conversation text) | Forms, booking, sign-in. The person writes the content. | R02.1      |
+| `dense` (32px, interface text)      | Filters and tables where space is tight.                | R01.1, P03 |
+
+## 6. States
+
+<Canvas of={Stories.StateMatrixStory} />
+
+| State                      | Behavior                                                                             | Source                |
+| -------------------------- | ------------------------------------------------------------------------------------ | --------------------- |
+| Hover                      | Border darkens to `--foreground`.                                                    | R01.5                 |
+| Focus                      | 2px ring in `--ring`, offset 2px.                                                    | tokens.md, WCAG 2.4.7 |
+| Disabled                   | `--muted` fill, muted text. Say why in the hint.                                     | WCAG 3.3.2            |
+| Error                      | Border in `--destructive`, an error message below (not color alone), `aria-invalid`. | WCAG 1.4.1, 3.3.1     |
+| Pressed, loading, selected | Not applicable to a text field.                                                      | —                     |
+
+## 7. Behavior and accessibility
+
+- Keyboard: Tab focuses, typing edits. Native `input` role (`textbox`, `searchbox`, `spinbutton` by `type`).
+- Inside a Form field the label, hint and error are connected automatically (`aria-describedby`, `aria-invalid`).
+- Validate when the person leaves the field and on submit, not on every key (pattern: form, stage 3).
+- Border contrast at least 3:1 (WCAG 1.4.11): measured 4.41:1 light and 7.63:1 dark.
+- Height at least 24px (WCAG 2.5.8).
+
+## 8. Content
+
+- Label: a noun, 1 to 4 words ("Display name"). Placeholder: a realistic example ("Anna Kowalska").
+- Numbers: write the unit in the label ("Price for 25 minutes (PLN)").
+- Long values scroll inside the field; do not shrink the text.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: full width. 768px and 1440px: forms use `max-w-prose` or a fixed column; fields never stretch across the whole page.
+- Text stays 16px at default density, so mobile browsers do not zoom on focus.
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} include={["density", "disabled", "type"]} />
+
+All native input props are accepted except `size`.
+
+## 11. Code
+
+```tsx
+<Field>
+  <FieldLabel>Display name</FieldLabel>
+  <Input />
+  <FieldDescription>Shown on your public profile.</FieldDescription>
+</Field>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <div className="flex flex-col gap-between-groups">
+    <GoodBad
+      good={
+        <Field>
+          <FieldLabel>Display name</FieldLabel>
+          <Input placeholder="Anna Kowalska" />
+        </Field>
+      }
+      goodWhy="The label stays visible; the placeholder is an example."
+      bad={<Input aria-label="Display name" placeholder="Display name" />}
+      badWhy="The label disappears when the person types."
+    />
+  </div>
+</Unstyled>
+
+## 13. Related
+
+- [Form field](?path=/docs/primitives-form-field--docs): wraps the input with label, hint and error.
+- [Textarea](?path=/docs/primitives-textarea--docs), [Select](?path=/docs/primitives-select--docs).
+- Patterns: form, filtered list.

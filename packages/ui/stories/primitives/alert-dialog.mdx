@@ -1,0 +1,179 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import { Button } from "@devmentor/ui/components/ui/button";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./alert-dialog.stories";
+
+<Meta of={Stories} />
+
+# Confirmation dialog
+
+## 1. Purpose
+
+Makes a person answer one question, with its outcome stated, before something that cannot be undone happens.
+
+## 2. When to use
+
+- A mentee or a mentor cancels a booked session: the dialog states the refund outcome (R04, R09, E02-S04, E02-S05).
+- A mentor deletes an availability window.
+- Removing anything that is not restored by pressing back.
+
+## 3. When not to use
+
+| Situation                                 | Use instead                                                                  |
+| ----------------------------------------- | ---------------------------------------------------------------------------- |
+| A task that needs input, such as a reason | [Dialog](?path=/docs/primitives-dialog--docs) with fields                    |
+| An action that can be undone or repeated  | Do it at once and confirm with a [toast](?path=/docs/primitives-toast--docs) |
+| Every ordinary save                       | Nothing. Confirmation fatigue hides the questions that matter.               |
+| Telling the person something              | An [alert](?path=/docs/primitives-alert--docs)                               |
+
+Sources: WAI-ARIA Authoring Practices (alertdialog), WCAG 3.3.4 (error prevention), brief R04 and R09.
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>Scrim and panel: the same as Dialog. Opaque, bordered, no shadow.</li>
+    <li>
+      Title (required): the question, with the object's name ("Cancel Friday
+      14:00 with Jan Kowalski?").
+    </li>
+    <li>Description (required): the outcome in one or two sentences.</li>
+    <li>
+      Cancel (required): first in the DOM, `secondary`, labelled with what it
+      keeps ("Keep session").
+    </li>
+    <li>
+      Action (required): a verb and an object, `destructive` when it removes
+      something.
+    </li>
+  </ol>
+</Unstyled>
+
+There is no close button. Escape and Cancel both answer "no".
+
+## 5. Variants
+
+There is one structure. The only choice is the action button's variant.
+
+| Variant              | Choose it when                               | Source       |
+| -------------------- | -------------------------------------------- | ------------ |
+| Action `destructive` | The action removes or cancels something.     | P12.1, P12.2 |
+| Action `default`     | The question is serious but not destructive. | R01.5        |
+
+<Canvas of={Stories.DeleteWindow} />
+
+## 6. States
+
+<Canvas of={Stories.Open} />
+
+| State              | Behavior                                                                                                                           | Source                |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| Closed             | Only the trigger is shown.                                                                                                         | n/a                   |
+| Open               | Cancel has focus. A click on the scrim does not close it. No animation.                                                            | P11.1, WAI-ARIA       |
+| Focus              | The shared 2px ring on the focused button.                                                                                         | tokens.md, WCAG 2.4.7 |
+| Hover, pressed     | Belong to the buttons. See [Button](?path=/docs/primitives-button--docs).                                                          | R01.5                 |
+| Loading            | The action uses `loading` with a label such as "Cancelling…". The dialog stays open until the server answers. Cancel stays active. | P12.1, P12.2          |
+| Error              | A server error appears as an Alert in the description area; the dialog stays open and the action can be retried.                   | WCAG 3.3.1            |
+| Disabled, selected | Not applicable. The action is never disabled; if it cannot happen, do not offer it.                                                | n/a                   |
+
+`AlertDialogAction` is a plain button and does not close the dialog. Control `open` and close it after the server confirms.
+
+## 7. Behavior and accessibility
+
+- Role: `alertdialog`, named by the title and described by the description (WAI-ARIA alertdialog).
+- Keyboard: Tab stays inside. Escape closes and focus returns to the trigger. Enter on the focused Cancel cancels, so a stray Enter never confirms (WCAG 3.3.4).
+- The page behind is inert. A click outside does not dismiss it, because the question needs an answer.
+- Click targets are 40px buttons (WCAG 2.5.8).
+
+<Canvas of={Stories.ConfirmAndCancel} />
+
+## 8. Content
+
+- Question: verb, object and name ("Cancel Friday 14:00 with Jan Kowalski?").
+- Outcome: say whether money moves, in the soft wording until payments are live: "full refund due when payments process" or "no refund, the mentor is paid when payments process" (E02 spec). Never "already refunded".
+- Buttons: "Keep session" and "Cancel session", "Delete window". Never "OK", "Yes" or "No".
+- Long names wrap in the title. At 320px the footer stacks with the action on top.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: full width minus 16px each side, footer stacked, action on top and Cancel below it. The viewport scrolls if the screen is short.
+- 768px and 1440px: 28rem wide, one footer row with the action on the right.
+
+## 10. API
+
+<ArgTypes
+  of={Stories.Playground}
+  include={["title", "description", "actionLabel"]}
+/>
+
+Parts: `AlertDialog` (`open`, `defaultOpen`, `onOpenChange`), `AlertDialogTrigger`, `AlertDialogContent`, `AlertDialogHeader`, `AlertDialogTitle`, `AlertDialogDescription`, `AlertDialogFooter`, `AlertDialogCancel`, `AlertDialogAction` (a `Button`, takes `variant`, `loading`). The controls above belong to the story wrapper.
+
+## 11. Code
+
+```tsx
+<AlertDialog>
+  <AlertDialogTrigger render={<Button variant="secondary" size="dense" />}>
+    Cancel session
+  </AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>
+        Cancel Friday 14:00 with Jan Kowalski?
+      </AlertDialogTitle>
+      <AlertDialogDescription>
+        Full refund due when payments process.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Keep session</AlertDialogCancel>
+      <AlertDialogAction variant="destructive" onClick={cancelBooking}>
+        Cancel session
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+Typical: deleting an availability window.
+
+<Canvas of={Stories.DeleteWindow} />
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <div className="flex flex-col gap-within-group text-interface">
+        <p className="font-emphasis">Delete Tuesday 18:00 to 20:00?</p>
+        <div className="flex gap-within-group">
+          <Button variant="secondary" size="dense">
+            Keep window
+          </Button>
+          <Button variant="destructive" size="dense">
+            Delete window
+          </Button>
+        </div>
+      </div>
+    }
+    goodWhy="The object is named, Cancel is easy to find and the delete button says Delete."
+    bad={
+      <div className="flex flex-col gap-within-group text-interface">
+        <p className="font-emphasis">Confirm</p>
+        <div className="flex gap-within-group">
+          <Button size="dense">OK</Button>
+          <Button variant="secondary" size="dense">
+            Cancel
+          </Button>
+        </div>
+      </div>
+    }
+    badWhy="Nothing says what will happen, “OK” is the first and strongest button, and “Cancel” is ambiguous when the subject is a cancellation."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Dialog](?path=/docs/primitives-dialog--docs): a task with input. [Alert](?path=/docs/primitives-alert--docs): information, not a decision. [Toast](?path=/docs/primitives-toast--docs): confirmation after the server accepted.
+- Pattern: deletion confirmation.

@@ -1,0 +1,151 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@devmentor/ui/components/ui/card";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./card.stories";
+
+<Meta of={Stories} />
+
+# Card and panel
+
+## 1. Purpose
+
+Groups the information about one object, such as a booking or a mentor, so it can be read and acted on as a unit.
+
+## 2. When to use
+
+- A mentor in the directory (name, stacks, price range, nearest slot).
+- A booking on My bookings, and the booking summary before payment.
+- The profile, availability or invitation form as a panel.
+
+## 3. When not to use
+
+| Situation                     | Use instead                                                                                                                                  |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Every row of a long list      | Rows separated by a thin line ([Separator](?path=/docs/primitives-separator--docs)) or a [Table](?path=/docs/primitives-table--docs) (R01.3) |
+| A card inside a card          | One panel. Split content with a heading or a line                                                                                            |
+| A message about something     | [Alert](?path=/docs/primitives-alert--docs)                                                                                                  |
+| Separating sections of a page | Spacing (`--space-section`)                                                                                                                  |
+
+Sources: R01.1, R01.3, brief (dense browsing), A01 (three identical cards, a card inside a card).
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>
+      Container: opaque `--card` fill with a 1px `--border` and a panel radius
+      (required). No shadow, no blur (A01.2).
+    </li>
+    <li>
+      Header with title (required), description and one action or badge
+      (optional).
+    </li>
+    <li>Content (optional).</li>
+    <li>
+      Footer on a muted band, for the price and the main action (optional).
+    </li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+<Canvas of={Stories.Sizes} />
+
+| Variant                                      | Choose it when                                           | Source     |
+| -------------------------------------------- | -------------------------------------------------------- | ---------- |
+| `default` (16px padding)                     | A single object on its own: booking summary, form panel. | R01.1      |
+| `sm` (12px padding, conversation-size title) | Compact browsing panels such as mentor cards in a list.  | R01.1, P03 |
+
+<Canvas of={Stories.WithoutFooter} />
+
+## 6. States
+
+A card is a static container. It has no hover, focus, pressed, disabled or loading state of its own; controls inside it have their own. Data states (loading, empty, error, partial, lots of data, long text) are built in the product components of stage 3 from [Loading skeleton](?path=/docs/primitives-loading-skeleton--docs), [Empty state](?path=/docs/primitives-empty-state--docs) and [Error state](?path=/docs/primitives-error-state--docs).
+
+| State          | Behavior                                                                       | Source                       |
+| -------------- | ------------------------------------------------------------------------------ | ---------------------------- |
+| Selected       | Not built in. Use an explicit indicator (border, text), never fill alone.      | tokens.md                    |
+| Clickable card | Not provided. Put a link in the title instead of making the whole card a link. | WAI-ARIA Authoring Practices |
+
+## 7. Behavior and accessibility
+
+- A card is not focusable. Its buttons and links are, in reading order.
+- The title is a `div` by default. When the card heads a section of the page, put a heading inside it, `<CardTitle><h2>…</h2></CardTitle>`, so the page outline stays correct (WCAG 1.3.1). The heading takes the title's styles.
+- Card on page contrast is about 1.04:1: the 1px border carries the shape (4.41:1, WCAG 1.4.11).
+
+<Canvas of={Stories.ReachActionByKeyboard} />
+
+## 8. Content
+
+- Title: the object, "Tuesday, 14:00 · 25 minutes". Description: who or what, one line. Badge: the status.
+- Long titles wrap; long unbroken text (URLs) needs `break-words`.
+- Numbers: price with the currency, "90 PLN".
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: full width, the action moves under the title only if the header has to wrap. 768px and 1440px: lists of cards stay one column up to `max-w-content` and are not turned into a grid of identical tiles.
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} include={["size"]} />
+
+Parts: `CardHeader`, `CardTitle`, `CardDescription`, `CardAction`, `CardContent`, `CardFooter`. Spacing comes from the component token `--card-spacing` (`--space-panel` or `--space-panel-compact`).
+
+## 11. Code
+
+```tsx
+<Card size="sm">
+  <CardHeader>
+    <CardTitle>Tuesday, 14:00 · 25 minutes</CardTitle>
+    <CardDescription>with Anna Kowalska</CardDescription>
+    <CardAction>
+      <Badge>Confirmed</Badge>
+    </CardAction>
+  </CardHeader>
+  <CardFooter>...</CardFooter>
+</Card>
+```
+
+<Canvas of={Stories.Playground} />
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <Card size="sm" className="w-full">
+        <CardHeader>
+          <CardTitle>Anna Kowalska</CardTitle>
+          <CardDescription>TypeScript, React · from 90 PLN</CardDescription>
+        </CardHeader>
+      </Card>
+    }
+    goodWhy="One panel with a border; content is grouped by heading."
+    bad={
+      <Card size="sm" className="w-full">
+        <CardContent>
+          <Card size="sm">
+            <CardHeader>
+              <CardTitle>Anna Kowalska</CardTitle>
+              <CardDescription>TypeScript, React · from 90 PLN</CardDescription>
+            </CardHeader>
+          </Card>
+        </CardContent>
+      </Card>
+    }
+    badWhy="A card inside a card adds borders and padding for no gain."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Table](?path=/docs/primitives-table--docs) and [Separator](?path=/docs/primitives-separator--docs): dense rows. [Alert](?path=/docs/primitives-alert--docs): messages.
+- Patterns: detail view, filtered list.

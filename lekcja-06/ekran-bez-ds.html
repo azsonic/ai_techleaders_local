@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7fc">
+  <title>Find a mentor · DevMentor</title>
+  <style>
+    :root { color-scheme: light; --ink:#242136; --muted:#716e80; --purple:#7151d8; --line:#e9e6ef; --paper:#f8f7fc; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+    button,input { font:inherit; }
+    button,a,input { -webkit-tap-highlight-color:transparent; }
+    button { cursor:pointer; }
+    button { color:inherit; }
+    a { color:inherit; text-decoration:none; }
+    button:focus-visible,a:focus-visible,input:focus-visible { outline:3px solid #9a7df1; outline-offset:4px; }
+    svg { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+    .icons { position:absolute; width:0; height:0; overflow:hidden; }
+    .wrap { width:min(1180px,calc(100% - 80px)); margin:auto; }
+    .skip { position:fixed; left:20px; top:-80px; padding:12px 20px; background:white; z-index:10; }
+    .skip:focus { top:12px; }
+    header { background:#fff; border-bottom:1px solid var(--line); }
+    .header-inner { height:86px; display:flex; align-items:center; gap:58px; }
+    .brand { display:flex; align-items:center; gap:10px; font-size:22px; font-weight:750; letter-spacing:-.9px; }
+    .brand-mark { display:grid; place-items:center; width:35px; height:35px; border-radius:11px; background:var(--purple); color:#fff; }
+    .brand-mark svg { width:24px; height:24px; stroke-width:2; }
+    .brand span:last-child { color:var(--purple); margin-left:-10px; }
+    nav { align-self:stretch; display:flex; align-items:stretch; gap:30px; }
+    nav a,nav button { position:relative; display:flex; align-items:center; border:0; background:none; padding:0; font-size:14px; color:var(--muted); font-weight:550; }
+    nav .active { color:var(--purple); }
+    nav .active:after { content:""; position:absolute; bottom:0; height:3px; background:var(--purple); left:0; right:0; border-radius:3px 3px 0 0; }
+    .signin { margin-left:auto; display:flex; align-items:center; gap:9px; border:1px solid var(--line); border-radius:9px; background:#fff; padding:10px 16px; font-size:13px; font-weight:600; transition:background .15s; }
+    .signin:hover { background:#f5f2fc; }
+    .hero { padding:57px 0 43px; display:grid; grid-template-columns:1.35fr 1fr; gap:72px; align-items:center; }
+    .eyebrow { display:flex; gap:8px; align-items:center; color:var(--purple); font-size:11px; font-weight:750; letter-spacing:1.8px; text-transform:uppercase; margin:0 0 15px; }
+    .eyebrow .dot { width:6px; height:6px; border-radius:50%; background:var(--purple); }
+    h1 { font-size:clamp(38px,4.3vw,57px); line-height:1.13; letter-spacing:-2.6px; margin:0 0 20px; font-weight:750; }
+    h1 span { color:var(--purple); }
+    .intro { color:var(--muted); font-size:15px; max-width:470px; line-height:1.8; margin:0; }
+    .session-note { margin-top:21px; display:flex; align-items:center; gap:8px; font-size:12px; font-weight:550; color:#6e6782; }
+    .session-note svg { width:16px; height:16px; color:var(--purple); }
+    .how-card { background:#eee9fb; border:1px solid #e5ddf7; padding:26px 29px; border-radius:17px; position:relative; overflow:hidden; }
+    .how-card:after { content:""; width:160px; height:160px; border:1px solid #dcd1f6; border-radius:50%; position:absolute; top:-84px; right:-56px; box-shadow:0 0 0 20px #e8e0f8,0 0 0 21px #dcd1f6; pointer-events:none; }
+    .how-heading { margin:0 0 20px; font-size:15px; font-weight:650; position:relative; z-index:1; }
+    .step { display:flex; align-items:flex-start; gap:12px; margin-top:16px; position:relative; z-index:1; }
+    .step-icon { display:grid; place-items:center; border-radius:9px; background:#fff9; width:34px; height:34px; color:var(--purple); flex-shrink:0; }
+    .step-icon svg { width:17px; height:17px; }
+    .step strong { display:block; font-size:12px; line-height:1.5; font-weight:650; }
+    .step p { color:#827491; font-size:11px; margin:2px 0 0; }
+    .directory { padding-bottom:40px; }
+    .directory-heading { display:flex; align-items:center; justify-content:space-between; margin:0 0 17px; }
+    h2 { margin:0; font-size:21px; letter-spacing:-.6px; font-weight:700; }
+    .preview-label { font-size:11px; color:#827491; background:#eeeaf5; padding:4px 10px; border-radius:20px; }
+    .filters { display:flex; align-items:center; gap:22px; padding:17px 19px; background:white; border:1px solid var(--line); border-radius:12px; }
+    .search { position:relative; flex:1; min-width:180px; }
+    .search svg { position:absolute; left:0; top:11px; color:#9a95a8; width:18px; height:18px; }
+    .search input { width:100%; border:0; background:none; border-radius:4px; color:var(--ink); padding:9px 8px 9px 28px; font-size:13px; }
+    .search input::placeholder { color:#9a95a8; }
+    .filter-divider { width:1px; height:27px; background:var(--line); }
+    .chips { display:flex; gap:5px; flex-wrap:wrap; }
+    .chip { border:1px solid transparent; background:transparent; border-radius:7px; padding:7px 12px; color:var(--muted); font-size:12px; white-space:nowrap; transition:background .15s; }
+    .chip:hover { background:#f6f3fc; }
+    .chip[aria-pressed="true"] { color:var(--purple); background:#eee8fc; font-weight:650; }
+    .results-line { display:flex; justify-content:space-between; align-items:center; padding:19px 1px 15px; font-size:11px; color:#8c8799; gap:14px; }
+    .results-line strong { font-weight:600; color:#6c657c; }
+    .results-line .text-label { display:flex; align-items:center; gap:6px; }
+    .text-label svg { width:14px; height:14px; }
+    .mentor-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+    .mentor { display:flex; flex-direction:column; padding:25px 26px 0; background:white; border:1px solid var(--line); border-radius:15px; transition:box-shadow .2s,border-color .2s; overflow:hidden; }
+    .mentor:hover { border-color:#d6cbea; box-shadow:0 7px 25px #32235807; }
+    .mentor-top { display:flex; align-items:center; gap:13px; }
+    .avatar { width:49px; height:49px; border-radius:14px; display:grid; place-items:center; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:16px; font-weight:600; letter-spacing:-1px; flex-shrink:0; }
+    .avatar-ts { background:#e8eefc; color:#4773c7; }
+    .avatar-react { background:#e2f3f4; color:#398d98; }
+    .avatar-python { background:#fbf0dd; color:#ad8134; }
+    .avatar-ai { background:#efe7fb; color:#9062bc; }
+    .mentor h3 { margin:0; font-size:16px; font-weight:650; letter-spacing:-.3px; }
+    .specialty { margin:2px 0 0; color:#8b8596; font-size:11px; }
+    .profile-arrow { margin-left:auto; color:#aaa2b7; border:0; background:none; width:32px; height:32px; display:grid; place-items:center; border-radius:7px; }
+    .profile-arrow:hover { color:var(--purple); background:#f6f1fe; }
+    .mentor-description { font-size:12px; line-height:1.9; color:var(--muted); margin:18px 0 14px; min-height:46px; }
+    .tags { display:flex; gap:6px; flex-wrap:wrap; margin:0 0 19px; }
+    .tag { border-radius:5px; padding:3px 8px; background:#f5f4f8; color:#81788d; font-size:10px; }
+    .work { border:0; background:none; padding:0; align-self:flex-start; display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:550; color:#6d6283; margin-bottom:20px; }
+    .work:hover { color:var(--purple); }
+    .work svg { width:14px; height:14px; }
+    .pricing { display:grid; grid-template-columns:1fr 1fr; gap:14px; border-top:1px solid #f0edf5; padding:16px 0 18px; margin-top:auto; }
+    .price { display:flex; flex-direction:column; gap:2px; }
+    .price + .price { border-left:1px solid #f0edf5; padding-left:23px; }
+    .duration { font-size:10px; color:#9790a3; }
+    .amount { font-size:19px; letter-spacing:-.6px; line-height:1.5; font-weight:650; }
+    .amount small { font-size:10px; color:#81798d; letter-spacing:0; font-weight:450; }
+    .card-bottom { display:flex; align-items:center; justify-content:space-between; gap:12px; background:#fcfbfe; border-top:1px solid #f0edf5; margin:0 -26px; padding:13px 26px; }
+    .coming { display:flex; align-items:center; gap:6px; font-size:10px; color:#8d849b; }
+    .coming svg { width:12px; height:12px; }
+    .view { display:flex; align-items:center; gap:7px; border:0; background:none; padding:3px 0; color:var(--purple); font-size:11px; font-weight:650; }
+    .view:hover { text-decoration:underline; }
+    .view svg { width:14px; height:14px; }
+    .empty { padding:55px 20px; text-align:center; border:1px dashed #dcd5e9; border-radius:13px; color:var(--muted); }
+    .empty h3 { color:var(--ink); margin:0 0 7px; font-size:18px; }
+    .empty p { font-size:13px; margin:0 0 15px; }
+    .reset { border:1px solid #ddd3f1; border-radius:7px; padding:8px 14px; background:white; color:var(--purple); font-size:12px; }
+    .bottom-note { display:flex; align-items:center; justify-content:center; gap:8px; text-align:center; padding:24px 0 0; font-size:11px; color:#8d8599; }
+    .bottom-note svg { width:14px; height:14px; color:#9787ad; }
+    footer { border-top:1px solid var(--line); padding:22px 0; color:#9b94a5; font-size:10px; }
+    footer .wrap { display:flex; align-items:center; justify-content:space-between; gap:25px; }
+    footer strong { font-weight:600; color:#787082; }
+    dialog { border:1px solid var(--line); border-radius:18px; width:min(520px,calc(100% - 32px)); max-height:85vh; padding:33px; color:var(--ink); background:white; box-shadow:0 30px 100px #22153333; }
+    dialog::backdrop { background:#20153366; backdrop-filter:blur(4px); }
+    .close { float:right; background:#f4f1f9; border:0; width:30px; height:30px; border-radius:50%; display:grid; place-items:center; margin:-12px -12px 0 10px; }
+    .close svg { width:16px; height:16px; }
+    dialog h2 { margin:14px 0; }
+    dialog p { font-size:13px; color:var(--muted); }
+    dialog .dialog-notice { background:#f3eefc; color:var(--purple); padding:12px 15px; border-radius:9px; font-weight:600; }
+    dialog .pricing { margin-top:22px; }
+    dialog h3 { font-size:13px; margin:19px 0 6px; }
+    [hidden] { display:none !important; }
+    @media(min-width:1500px) { .hero { padding-top:69px; padding-bottom:53px; } }
+    @media(max-width:1000px) { .wrap { width:calc(100% - 48px); } .header-inner { gap:36px; } .hero { gap:34px; } .how-card { padding:22px; } .filters { flex-wrap:wrap; gap:10px; } .search { flex-basis:100%; border-bottom:1px solid var(--line); padding-bottom:8px; } .filter-divider { display:none; } }
+    @media(max-width:650px) {
+      .wrap { width:calc(100% - 36px); } .header-inner { height:72px; gap:15px; } .brand { font-size:20px; } .brand-mark { width:31px; height:31px; border-radius:9px; }
+      nav { display:none; } .signin { font-size:11px; padding:9px 10px; gap:6px; } .signin svg { width:16px; height:16px; }
+      .hero { display:block; padding:36px 0 31px; } h1 { font-size:43px; letter-spacing:-1.9px; } .intro { font-size:14px; } .how-card { margin-top:27px; padding:20px; } .how-heading { margin-bottom:12px; } .step { margin-top:12px; } .session-note { margin-top:17px; }
+      h2 { font-size:19px; } .preview-label { font-size:10px; } .filters { padding:11px; } .chips { gap:2px; } .chip { padding:7px 9px; font-size:11px; } .mentor-grid { grid-template-columns:1fr; gap:17px; } .mentor { padding-top:22px; } .results-line { font-size:10px; } .bottom-note { align-items:flex-start; padding-top:22px; } .bottom-note svg { margin-top:2px; } footer .wrap { flex-direction:column; align-items:flex-start; gap:6px; } dialog { padding:25px; }
+    }
+    @media(prefers-reduced-motion:reduce) { * { transition:none !important; } }
+  </style>
+</head>
+<body>
+  <svg class="icons" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-12-2 14"/></symbol>
+    <symbol id="search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></symbol>
+    <symbol id="chat" viewBox="0 0 24 24"><path d="M20 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L2 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/><path d="M8 11h8m-8 4h5"/></symbol>
+    <symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    <symbol id="external" viewBox="0 0 24 24"><path d="M8 5h11v11M5 19 19 5"/></symbol>
+    <symbol id="github" viewBox="0 0 24 24"><path d="M9 19c-4.3 1.3-4.3-2.1-6-2.6m12 5v-3.5a3 3 0 0 0-.8-2.3c2.7-.3 5.5-1.3 5.5-6A4.7 4.7 0 0 0 18.4 6a4.4 4.4 0 0 0-.1-3.5S17.2 2.2 14.7 4a12.2 12.2 0 0 0-6.4 0C5.8 2.2 4.7 2.5 4.7 2.5A4.4 4.4 0 0 0 4.6 6a4.7 4.7 0 0 0-1.3 3.6c0 4.7 2.8 5.7 5.5 6a3 3 0 0 0-.8 2.3v3.5"/></symbol>
+    <symbol id="shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  </svg>
+  <a class="skip" href="#mentors">Skip to mentors</a>
+  <header>
+    <div class="wrap header-inner">
+      <a class="brand" href="#" aria-label="DevMentor home"><span class="brand-mark"><svg aria-hidden="true"><use href="#code"/></svg></span>Dev<span>Mentor</span></a>
+      <nav aria-label="Main navigation">
+        <a class="active" href="#mentors" aria-current="page">Find a mentor</a>
+        <button type="button" id="how-button">How it works</button>
+      </nav>
+      <button class="signin" type="button" id="signin-button"><svg aria-hidden="true"><use href="#github"/></svg>Sign in with GitHub</button>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="hero" aria-labelledby="hero-title">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Expert help for developers</p>
+        <h1 id="hero-title">Get unstuck.<br><span>Keep building.</span></h1>
+        <p class="intro">A concrete problem. A focused conversation. Find a mentor for the technical blocker standing between you and your next step.</p>
+        <div class="session-note"><svg aria-hidden="true"><use href="#chat"/></svg>1:1 text sessions · 25 or 50 minutes</div>
+      </div>
+      <aside class="how-card" aria-label="How DevMentor works">
+        <p class="how-heading">A fresh perspective, a clearer path.</p>
+        <div class="step"><span class="step-icon"><svg aria-hidden="true"><use href="#search"/></svg></span><div><strong>Find your kind of expertise</strong><p>Explore stacks, experience and public work.</p></div></div>
+        <div class="step"><span class="step-icon"><svg aria-hidden="true"><use href="#clock"/></svg></span><div><strong>Choose a session that fits</strong><p>See both prices before choosing a length.</p></div></div>
+        <div class="step"><span class="step-icon"><svg aria-hidden="true"><use href="#chat"/></svg></span><div><strong>Bring your question. Work through it.</strong><p>Talk it through in a private, in-product text session.</p></div></div>
+      </aside>
+    </section>
+    <section class="directory" id="mentors" aria-labelledby="directory-title">
+      <div class="directory-heading"><h2 id="directory-title">Find your mentor</h2><span class="preview-label">Directory preview</span></div>
+      <div class="filters">
+        <label class="search"><svg aria-hidden="true"><use href="#search"/></svg><input id="search-input" type="search" aria-label="Search mentors by technology or topic" placeholder="Search by technology or topic…" autocomplete="off"></label>
+        <span class="filter-divider" aria-hidden="true"></span>
+        <div class="chips" role="group" aria-label="Filter by stack">
+          <button class="chip" type="button" data-stack="all" aria-pressed="true">All stacks</button>
+          <button class="chip" type="button" data-stack="TypeScript" aria-pressed="false">TypeScript</button>
+          <button class="chip" type="button" data-stack="React" aria-pressed="false">React</button>
+          <button class="chip" type="button" data-stack="Python" aria-pressed="false">Python</button>
+          <button class="chip" type="button" data-stack="AI agents" aria-pressed="false">AI agents</button>
+        </div>
+      </div>
+      <div class="results-line"><span id="result-count" role="status" aria-live="polite"><strong>4</strong> example profiles</span><span class="text-label"><svg aria-hidden="true"><use href="#chat"/></svg>Text sessions only</span></div>
+      <!-- Illustrative profiles: the brief does not contain confirmed mentor supply. -->
+      <div class="mentor-grid" id="mentor-grid">
+        <article class="mentor" data-id="typescript" data-stacks="TypeScript" data-keywords="types debugging backend architecture">
+          <div class="mentor-top"><div class="avatar avatar-ts" aria-hidden="true">TS</div><div><h3>TypeScript mentor</h3><p class="specialty">Make complex code easier to reason about</p></div><button class="profile-arrow" type="button" data-profile="typescript" aria-label="View TypeScript mentor profile"><svg aria-hidden="true"><use href="#external"/></svg></button></div>
+          <p class="mentor-description">Work through a stubborn type error, untangle a backend problem, or get another perspective on your architecture.</p>
+          <div class="tags"><span class="tag">TypeScript</span><span class="tag">Debugging</span><span class="tag">Architecture</span></div>
+          <button class="work" type="button" data-profile="typescript"><svg aria-hidden="true"><use href="#code"/></svg>Explore experience & public work<svg aria-hidden="true"><use href="#external"/></svg></button>
+          <div class="pricing"><div class="price"><span class="duration">25-minute text session</span><span class="amount">150 <small>PLN</small></span></div><div class="price"><span class="duration">50-minute text session</span><span class="amount">300 <small>PLN</small></span></div></div>
+          <div class="card-bottom"><span class="coming"><svg aria-hidden="true"><use href="#clock"/></svg>Booking opens soon</span><button class="view" type="button" data-profile="typescript">View profile<svg aria-hidden="true"><use href="#arrow"/></svg></button></div>
+        </article>
+        <article class="mentor" data-id="react" data-stacks="React TypeScript" data-keywords="frontend components state rendering debugging">
+          <div class="mentor-top"><div class="avatar avatar-react" aria-hidden="true">Re</div><div><h3>React mentor</h3><p class="specialty">Find a way through frontend complexity</p></div><button class="profile-arrow" type="button" data-profile="react" aria-label="View React mentor profile"><svg aria-hidden="true"><use href="#external"/></svg></button></div>
+          <p class="mentor-description">Unpick a rendering issue, talk through state management, or make a clearer plan for your next component.</p>
+          <div class="tags"><span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">Frontend</span></div>
+          <button class="work" type="button" data-profile="react"><svg aria-hidden="true"><use href="#code"/></svg>Explore experience & public work<svg aria-hidden="true"><use href="#external"/></svg></button>
+          <div class="pricing"><div class="price"><span class="duration">25-minute text session</span><span class="amount">120 <small>PLN</small></span></div><div class="price"><span class="duration">50-minute text session</span><span class="amount">240 <small>PLN</small></span></div></div>
+          <div class="card-bottom"><span class="coming"><svg aria-hidden="true"><use href="#clock"/></svg>Booking opens soon</span><button class="view" type="button" data-profile="react">View profile<svg aria-hidden="true"><use href="#arrow"/></svg></button></div>
+        </article>
+        <article class="mentor" data-id="python" data-stacks="Python" data-keywords="backend debugging data code">
+          <div class="mentor-top"><div class="avatar avatar-python" aria-hidden="true">Py</div><div><h3>Python mentor</h3><p class="specialty">A second pair of eyes on your problem</p></div><button class="profile-arrow" type="button" data-profile="python" aria-label="View Python mentor profile"><svg aria-hidden="true"><use href="#external"/></svg></button></div>
+          <p class="mentor-description">Trace an unexpected bug, review a tricky piece of backend code, or discuss the trade-offs in your approach.</p>
+          <div class="tags"><span class="tag">Python</span><span class="tag">Backend</span><span class="tag">Debugging</span></div>
+          <button class="work" type="button" data-profile="python"><svg aria-hidden="true"><use href="#code"/></svg>Explore experience & public work<svg aria-hidden="true"><use href="#external"/></svg></button>
+          <div class="pricing"><div class="price"><span class="duration">25-minute text session</span><span class="amount">150 <small>PLN</small></span></div><div class="price"><span class="duration">50-minute text session</span><span class="amount">300 <small>PLN</small></span></div></div>
+          <div class="card-bottom"><span class="coming"><svg aria-hidden="true"><use href="#clock"/></svg>Booking opens soon</span><button class="view" type="button" data-profile="python">View profile<svg aria-hidden="true"><use href="#arrow"/></svg></button></div>
+        </article>
+        <article class="mentor" data-id="agents" data-stacks="AI agents Python" data-keywords="llm tools workflows debugging artificial intelligence">
+          <div class="mentor-top"><div class="avatar avatar-ai" aria-hidden="true">AI</div><div><h3>AI agents mentor</h3><p class="specialty">Work through your agent's next challenge</p></div><button class="profile-arrow" type="button" data-profile="agents" aria-label="View AI agents mentor profile"><svg aria-hidden="true"><use href="#external"/></svg></button></div>
+          <p class="mentor-description">Reason through agent workflows, debug a tool integration, or discuss how to approach your next AI feature.</p>
+          <div class="tags"><span class="tag">AI agents</span><span class="tag">Python</span><span class="tag">LLM workflows</span></div>
+          <button class="work" type="button" data-profile="agents"><svg aria-hidden="true"><use href="#code"/></svg>Explore experience & public work<svg aria-hidden="true"><use href="#external"/></svg></button>
+          <div class="pricing"><div class="price"><span class="duration">25-minute text session</span><span class="amount">200 <small>PLN</small></span></div><div class="price"><span class="duration">50-minute text session</span><span class="amount">400 <small>PLN</small></span></div></div>
+          <div class="card-bottom"><span class="coming"><svg aria-hidden="true"><use href="#clock"/></svg>Booking opens soon</span><button class="view" type="button" data-profile="agents">View profile<svg aria-hidden="true"><use href="#arrow"/></svg></button></div>
+        </article>
+      </div>
+      <div class="empty" id="empty-state" hidden><h3>No matching profiles</h3><p>Try another topic or explore all four stacks.</p><button class="reset" id="reset-button" type="button">Clear filters</button></div>
+      <p class="bottom-note"><svg aria-hidden="true"><use href="#shield"/></svg>Your session stays private. Nothing is published without your approval.</p>
+    </section>
+  </main>
+  <footer><div class="wrap"><span><strong>DevMentor</strong> · Focused help. One conversation at a time.</span><span>Screen prototype · Illustrative profiles, topics and prices. No confirmed mentor availability.</span></div></footer>
+  <dialog id="detail-dialog" aria-labelledby="dialog-title"><button class="close" type="button" aria-label="Close dialog"><svg aria-hidden="true"><use href="#close"/></svg></button><div id="dialog-content"></div></dialog>
+  <script>
+    (() => {
+      const search = document.querySelector('#search-input');
+      const chips = [...document.querySelectorAll('[data-stack]')];
+      const cards = [...document.querySelectorAll('.mentor')];
+      const dialog = document.querySelector('#detail-dialog');
+      const content = document.querySelector('#dialog-content');
+      let stack = 'all';
+
+      function filter() {
+        const query = search.value.trim().toLocaleLowerCase();
+        let count = 0;
+        cards.forEach(card => {
+          const matchesStack = stack === 'all' || card.dataset.stacks.includes(stack);
+          const text = [card.querySelector('h3').textContent, card.querySelector('.mentor-description').textContent, card.dataset.stacks, card.dataset.keywords].join(' ').toLocaleLowerCase();
+          card.hidden = !(matchesStack && text.includes(query));
+          if (!card.hidden) count++;
+        });
+        document.querySelector('#result-count').textContent = count + ' example profile' + (count === 1 ? '' : 's');
+        document.querySelector('#empty-state').hidden = count !== 0;
+        document.querySelector('#mentor-grid').hidden = count === 0;
+      }
+
+      chips.forEach(chip => chip.addEventListener('click', () => {
+        stack = chip.dataset.stack;
+        chips.forEach(button => button.setAttribute('aria-pressed', String(button === chip)));
+        filter();
+      }));
+      search.addEventListener('input', filter);
+      document.querySelector('#reset-button').addEventListener('click', () => {
+        search.value = '';
+        chips[0].click();
+        search.focus();
+      });
+
+      function openDialog(title, body) {
+        content.replaceChildren();
+        const heading = document.createElement('h2');
+        heading.id = 'dialog-title';
+        heading.textContent = title;
+        content.append(heading, ...body);
+        dialog.showModal();
+      }
+      function paragraph(text, className) {
+        const element = document.createElement('p');
+        element.textContent = text;
+        if (className) element.className = className;
+        return element;
+      }
+      document.querySelectorAll('[data-profile]').forEach(button => button.addEventListener('click', () => {
+        const card = cards.find(item => item.dataset.id === button.dataset.profile);
+        const workHeading = document.createElement('h3');
+        workHeading.textContent = 'Experience & public work';
+        openDialog(card.querySelector('h3').textContent, [
+          paragraph(card.querySelector('.mentor-description').textContent),
+          card.querySelector('.tags').cloneNode(true),
+          workHeading,
+          paragraph('This is an illustrative profile. A published mentor profile would include their experience and links to public work so you can assess the fit before booking.'),
+          card.querySelector('.pricing').cloneNode(true),
+          paragraph('Booking opens soon', 'dialog-notice'),
+          paragraph('Sessions are text-only and last 25 or 50 minutes. Once booking opens, choose a published slot at least two hours ahead, then send your question before confirming.')
+        ]);
+      }));
+      document.querySelector('#how-button').addEventListener('click', () => openDialog('A focused session, from start to finish', [
+        paragraph('Find a mentor by stack or shared link. Explore their experience, public work and both session prices.'),
+        paragraph('Once booking opens, choose 25 or 50 minutes and a published slot at least two hours ahead. Pilot sessions take place between 10:00 and 22:00 Europe/Warsaw. A start time within two hours is not promised.'),
+        paragraph('Sign in with GitHub, share your question, then book and pay. The booking is automatically confirmed. Meet in a private text session inside DevMentor.'),
+        paragraph('Booking opens soon', 'dialog-notice')
+      ]));
+      document.querySelector('#signin-button').addEventListener('click', () => openDialog('Sign in with GitHub', [
+        paragraph('DevMentor uses GitHub sign-in, with an e-mail magic link as a fallback. Sign-in is required before booking.'),
+        paragraph('This standalone screen is a prototype. Account sign-in is not connected here.')
+      ]));
+      document.querySelector('.close').addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', event => {
+        const bounds = dialog.getBoundingClientRect();
+        if (event.target === dialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) dialog.close();
+      });
+    })();
+  </script>
+</body>
+</html>

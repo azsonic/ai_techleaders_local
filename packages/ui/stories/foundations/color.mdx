@@ -1,0 +1,45 @@
+import { Meta, Unstyled } from "@storybook/addon-docs/blocks";
+import { ColorRoles, ContrastTable } from "../../.storybook/docs/helpers";
+
+<Meta title="Foundations/Color" />
+
+# Color
+
+Colors are named by purpose, never by hue. A component uses a semantic role such as `bg-card` or `text-muted-foreground`. Raw values (the warm `stone` scale and the two reds) exist only in `src/styles/tokens.css`.
+
+**Character behind the palette.** Warm gray surfaces (R01.4, P01), flat backgrounds (A01.1) and opaque panels (A01.2). The palette has no accent color: the main action is the darkest element on the page, and status is carried by weight and text (R01.5). This does not ban purple everywhere. It rejects the generic gradient, glass and sparkle look (A01).
+
+## Roles
+
+<Unstyled>
+  <ColorRoles />
+</Unstyled>
+
+## Rules
+
+| Rule                                                                                                                                                                              | Source                            |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| Use only semantic roles. Do not write hex, rgb, hsl or oklch values, or Tailwind palette classes (zinc, indigo, white, black and the rest). `npm run check:tokens` fails on them. | Rule 3 of the design system brief |
+| Surfaces are opaque. No translucent fills, no `backdrop-blur`.                                                                                                                    | A01.2                             |
+| Backgrounds are flat. No gradients in backgrounds, text or buttons.                                                                                                               | A01.1                             |
+| Color is never the only carrier of meaning. A status has a text label, an error has a message.                                                                                    | WCAG 1.4.1                        |
+| Card, canvas and muted fills differ by about 1.04 to 1.2:1. They cannot show a control boundary or a selected state alone. Add `--border` or another explicit indicator.          | WCAG 1.4.11, measured below       |
+| Hover and pressed fills are opaque (`--primary-hover`). No `bg-primary/80` style opacity.                                                                                         | P11.1, tokens approved 2026-10-25 |
+| Focus uses `--ring` at full opacity. No `ring-ring/50`.                                                                                                                           | WCAG 2.4.7, 1.4.11                |
+
+## Measured contrast
+
+Every supported pair, in both themes. Text needs 4.5:1 and interface elements 3:1 (WCAG 1.4.3, 1.4.11). A row that drops below its threshold shows **fail** in text, not only in color.
+
+<Unstyled>
+  <ContrastTable />
+</Unstyled>
+
+Pairs that cannot be used, with the approved fixes:
+
+- Light metadata on `--muted` was 4.34:1. `--muted-foreground` is now stone-600 (6.08:1).
+- Input borders against the page were 1.26:1 light and 1.47:1 dark. `--border` and `--input` are now opaque stone-500 and stone-400 (4.41:1 and 7.63:1).
+- The focus ring at 50% opacity was 1.54:1 light. It is now full opacity (7.01:1).
+- The tinted destructive button reached 3.55:1 light over a muted surface. It is now an opaque `--destructive` fill with `--destructive-foreground` (6.15:1).
+
+Opacity modifiers on tokens, such as `ring-foreground/10` on the current Card, are not covered by these measurements. Stage 2 adapts each component and recalculates.

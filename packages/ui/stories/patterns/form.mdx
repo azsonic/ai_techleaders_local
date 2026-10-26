@@ -1,0 +1,148 @@
+import { Meta, Canvas, Unstyled } from "@storybook/addon-docs/blocks";
+import * as WindowForm from "../product/e01/window-form.stories";
+import * as ProfileForm from "../product/e01/profile-form.stories";
+
+<Meta title="Patterns/Form" />
+
+# Form
+
+How every form in DevMentor asks, checks, sends and reports. It is built once in `useForm` (`@devmentor/ui/hooks/use-form`) and the `Field` parts, and used by the mentor profile and the availability window. A new form reuses both.
+
+## Purpose
+
+A person gives the product information it needs, and always knows what is wrong, what is kept and whether it was saved.
+
+## When to use
+
+- Any screen where a person types or chooses values and presses a button to save: the mentor profile (E01-S01), an availability window (E01-S02), and later the booking question (E02-S03).
+
+## When not to use
+
+| Situation                                 | Use instead                                                                   |
+| ----------------------------------------- | ----------------------------------------------------------------------------- |
+| Changing one setting that applies at once | A switch with its own confirmation, not a form                                |
+| Narrowing a list                          | The filtered list pattern: filters apply as they change, with no submit       |
+| Answering "are you sure?"                 | The [deletion confirmation](?path=/docs/patterns-deletion-confirmation--docs) |
+
+## Rules
+
+| #   | Rule                                                                                                          | How it is built                                                                                    | Source               |
+| --- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | -------------------- |
+| 1   | A visible label names every field. A placeholder is an example, never the name.                               | `FieldLabel` inside `Field`. Optional fields say "(optional)"; required is the default.            | WCAG 3.3.2, 1.3.1    |
+| 2   | Limits are written where the person types: bounds, zone, character count.                                     | `FieldDescription` ("90 to 600 PLN, whole zloty", "Times are in Europe/Warsaw").                   | R05, R08, D24, P10.1 |
+| 3   | A field is checked when the person leaves it, not while typing.                                               | `register` marks a field touched on blur; the error appears under it.                              | WCAG 3.3.1           |
+| 4   | A failed submit shows every error and moves focus to the first invalid field. Nothing is sent.                | `handleSubmit` validates, then focuses the first field with an error.                              | WCAG 3.3.1, 2.4.3    |
+| 5   | An error says what is wrong and how to fix it, in plain words.                                                | "Enter a price from 90 to 600 PLN." Never "Invalid".                                               | P10.1, WCAG 3.3.3    |
+| 6   | Entered data is kept after every failure.                                                                     | Values live in the hook; no failure path resets them.                                              | P12.2, WCAG 3.3.4    |
+| 7   | While a request is pending the button says what is happening and a second submit sends nothing.               | `Button loading`, `aria-busy`; `handleSubmit` returns early while pending (also for Enter).        | P12.1                |
+| 8   | Success is shown only after the server confirmed.                                                             | `status` becomes `success` after an `ok` response; the message is an `Alert` with `role="status"`. | P12.1, WCAG 4.1.3    |
+| 9   | A server error beside a field goes on that field and takes focus; any other failure appears above the button. | `FormFeedback` for form-level errors, `FieldError` for fields.                                     | P12.2, WCAG 3.3.1    |
+| 10  | A network failure has its own words and says the entries are kept.                                            | `network_error` code from `apiCall` → "The server did not answer … What you entered is kept."      | P12.2, P10.1         |
+
+## States, each as a story
+
+Every state of the availability window form is a story, with the API answered through the real `apiCall`.
+
+| State                               | Story                                                                                                        |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Pristine, labels and limits visible | [Window form: playground](?path=/story/product-e01-mentor-supply-window-form--playground)                    |
+| Error on blur and on submit, focus  | [Profile form: validates](?path=/story/product-e01-mentor-supply-profile-form--validates-on-blur-and-submit) |
+| Empty submit names every field      | [Window form: focuses first error](?path=/story/product-e01-mentor-supply-window-form--focuses-first-error)  |
+| Pending                             | [Window form: pending](?path=/story/product-e01-mentor-supply-window-form--state-pending)                    |
+| Success                             | [Window form: confirms and clears](?path=/story/product-e01-mentor-supply-window-form--confirms-and-clears)  |
+| Field error from the server         | [Window form: field error](?path=/story/product-e01-mentor-supply-window-form--state-field-error)            |
+| Server error                        | [Window form: server error](?path=/story/product-e01-mentor-supply-window-form--state-server-error)          |
+| Offline                             | [Window form: offline](?path=/story/product-e01-mentor-supply-window-form--state-offline)                    |
+| Double submit                       | [Window form: double submit](?path=/story/product-e01-mentor-supply-window-form--prevents-double-submit)     |
+
+### Pending
+
+<Canvas of={WindowForm.StatePending} />
+
+### Success (after the server answered)
+
+<Canvas of={WindowForm.ConfirmsAndClears} />
+
+### Field error from the server
+
+<Canvas of={WindowForm.StateFieldError} />
+
+### Server error
+
+<Canvas of={WindowForm.StateServerError} />
+
+### Offline
+
+<Canvas of={WindowForm.StateOffline} />
+
+### All responses side by side, on the mentor profile
+
+<Canvas of={ProfileForm.ApiResponses} />
+
+## Code
+
+```tsx
+const form = useForm<WindowValues>({
+  initialValues: { date: "", start: "", end: "" },
+  validate: (values) => validateWindow(values, new Date()),
+  submit: (values) =>
+    apiCall("/api/mentors/availability", {
+      method: "POST",
+      body: JSON.stringify(values),
+    }),
+  onSuccess: () => form.reset({ keepStatus: true }),
+});
+
+<form onSubmit={form.handleSubmit} noValidate>
+  <Field>
+    <FieldLabel>Date</FieldLabel>
+    <Input type="date" {...form.register("date")} />
+    <FieldError>{form.errors.date}</FieldError>
+  </Field>
+  <FormFeedback
+    status={form.status}
+    serverError={form.serverError}
+    successTitle="Window added"
+  />
+  <Button
+    type="submit"
+    loading={form.status === "pending"}
+    loadingLabel="Adding…"
+  >
+    Add window
+  </Button>
+</form>;
+```
+
+The component takes `onSubmit` as a prop; the page passes a function that calls `apiCall`. The design system never fetches by itself.
+
+## Good and bad
+
+<Unstyled>
+  <div className="grid gap-between-groups sm:grid-cols-2 text-interface">
+    <div className="border border-border bg-card p-panel">
+      <p className="font-emphasis">Do</p>
+      <p>
+        “Enter a price from 90 to 600 PLN.” under the field, with the bounds
+        already in its hint.
+      </p>
+    </div>
+    <div className="border border-border bg-card p-panel">
+      <p className="font-emphasis">Don’t</p>
+      <p>
+        A red “Invalid input” banner at the top, entries cleared, and a green
+        toast before the server answered.
+      </p>
+    </div>
+  </div>
+</Unstyled>
+
+## Known limits
+
+- Validation of a checkbox group or a select is written by hand in the form's own `validate`; `register` covers text fields only.
+- After a successful change that removes the focused control, the page decides where focus goes. The pattern does not.
+- The public work links of a mentor (up to five, https only) are in the E01 spec but not in the profile form yet. See [What is missing](?path=/docs/design-system-e01-mentor-supply--docs).
+
+## Related
+
+[Form field](?path=/docs/primitives-form-field--docs), [Button](?path=/docs/primitives-button--docs) (loading), [Alert](?path=/docs/primitives-alert--docs), [Toast](?path=/docs/primitives-toast--docs) (not used for form results).

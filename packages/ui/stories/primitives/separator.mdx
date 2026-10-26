@@ -1,0 +1,110 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import { Separator } from "@devmentor/ui/components/ui/separator";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./separator.stories";
+
+<Meta of={Stories} />
+
+# Separator
+
+## 1. Purpose
+
+Draws the thin line that separates adjacent rows or groups, so a dense list stays readable.
+
+## 2. When to use
+
+- Between booking rows, mentor rows and invitation rows (R01.3).
+- Between inline items such as page tabs, with the vertical orientation.
+
+## 3. When not to use
+
+| Situation                      | Use instead                                |
+| ------------------------------ | ------------------------------------------ |
+| Separating cards from the page | A 1px border on the card (shape and depth) |
+| More space between sections    | Spacing (`--space-section`), not a line    |
+| Hiding the lack of structure   | Group content with a heading               |
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>A single line: 1px (`--border-width-divider`) in `--border`.</li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+| Variant                | Choose it when          | Source |
+| ---------------------- | ----------------------- | ------ |
+| `horizontal` (default) | Between stacked rows.   | R01.3  |
+| `vertical`             | Between items in a row. | R01.3  |
+
+<Canvas of={Stories.BetweenRows} />
+
+<Canvas of={Stories.Vertical} />
+
+## 6. States
+
+Static component. It has no hover, focus, pressed, disabled, loading, selected or error state.
+
+## 7. Behavior and accessibility
+
+- Role `separator` with `aria-orientation`. Not focusable.
+- Use it only where the separation carries meaning. Purely visual lines on a list are exposed as extra stops for screen readers; keep them few.
+- The line is `--border`, 4.41:1 light and 7.63:1 dark against the page (WCAG 1.4.11).
+
+<Canvas of={Stories.ExposesItsOrientation} />
+
+## 8. Content
+
+Not applicable: the separator has no text.
+
+## 9. Responsiveness
+
+- A horizontal separator fills the width of its container at every width. A vertical one needs a container with a height.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} include={["orientation"]} />
+
+## 11. Code
+
+```tsx
+<ul>
+  {bookings.map((booking, index) => (
+    <li key={booking.id}>
+      {index > 0 && <Separator />}
+      <BookingRow booking={booking} />
+    </li>
+  ))}
+</ul>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <div className="text-interface">
+        <p className="py-within-group">Tue 14:00, 25 minutes</p>
+        <Separator />
+        <p className="py-within-group">Wed 11:15, 50 minutes</p>
+      </div>
+    }
+    goodWhy="A thin line between rows, no extra spacing tricks."
+    bad={
+      <div className="flex flex-col gap-section text-interface">
+        <p>Tue 14:00, 25 minutes</p>
+        <p>Wed 11:15, 50 minutes</p>
+      </div>
+    }
+    badWhy="Large gaps make a dense list long and the rows hard to compare."
+  />
+</Unstyled>
+
+## 13. Related
+
+- Card (batch 3): the panel that uses a border instead.
+- Patterns: filtered list.

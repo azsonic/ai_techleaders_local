@@ -1,0 +1,142 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import {
+  Field,
+  FieldLabel,
+  FieldContent,
+  FieldDescription,
+} from "@devmentor/ui/components/ui/field";
+import { Switch } from "@devmentor/ui/components/ui/switch";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./switch.stories";
+
+<Meta of={Stories} />
+
+# Switch
+
+## 1. Purpose
+
+Lets a person turn one setting on or off.
+
+## 2. When to use
+
+- A mentor chooses to be listed in the directory or reachable by link only (D06). The switch stays off and disabled until both prices and at least one stack are saved (E01 spec).
+- A single setting whose two states are both clear.
+
+## 3. When not to use
+
+| Situation                                    | Use instead                                             |
+| -------------------------------------------- | ------------------------------------------------------- |
+| Part of a list of choices, or a confirmation | [Checkbox](?path=/docs/primitives-checkbox--docs)       |
+| One of several states                        | [Radio group](?path=/docs/primitives-radio-group--docs) |
+| An action ("Cancel booking")                 | A button                                                |
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>Track, 24px high, with a 1px border (required).</li>
+    <li>Thumb: left when off, right when on (required).</li>
+    <li>Label that names the setting (required): "Listed in the directory".</li>
+    <li>
+      Hint that says what happens in each state or why it is disabled (optional,
+      recommended).
+    </li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+One variant.
+
+<Canvas of={Stories.ProfileVisibility} />
+
+## 6. States
+
+<Canvas of={Stories.StateMatrixStory} />
+
+| State            | Behavior                                                                           | Source                |
+| ---------------- | ---------------------------------------------------------------------------------- | --------------------- |
+| Off              | Muted track, thumb on the left.                                                    | WCAG 1.4.1            |
+| On               | Primary track, thumb on the right. The position is the signal, not only the color. | tokens.md, WCAG 1.4.1 |
+| Hover            | Border darkens (off) or the track darkens to `--primary-hover` (on).               | R01.5                 |
+| Focus            | 2px ring in `--ring`, offset 2px.                                                  | tokens.md, WCAG 2.4.7 |
+| Disabled         | Muted track. **The reason is written in the hint.**                                | WCAG 3.3.2            |
+| Error            | Border in `--destructive` and a message.                                           | WCAG 3.3.1            |
+| Pressed, loading | Not applicable. The thumb moves instantly, with no animation.                      | P11.1                 |
+
+## 7. Behavior and accessibility
+
+- Keyboard: Tab focuses, Space toggles.
+- Role `switch` with `aria-checked`. The label names it.
+- In a form (the profile), the switch saves with the form. Say so in the hint if it is not instant.
+- The track is 24px high with a 28px hit area; the label makes the row clickable (WCAG 2.5.8).
+
+<Canvas of={Stories.ToggleWithClickAndSpace} />
+
+## 8. Content
+
+- Label: the setting as a noun phrase, not a verb ("Listed in the directory", not "Turn on listing").
+- The hint says what each state means. Never rely on "On" and "Off" words alone.
+- Long labels wrap beside the track.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: label wraps, track stays on the first line. 768px and 1440px: unchanged.
+
+## 10. API
+
+<ArgTypes
+  of={Stories.Playground}
+  include={["checked", "defaultChecked", "disabled"]}
+/>
+
+Also `onCheckedChange`, `name`, `required`.
+
+## 11. Code
+
+```tsx
+<Field orientation="horizontal">
+  <Switch name="listed" disabled={!profileComplete} />
+  <FieldContent>
+    <FieldLabel>Listed in the directory</FieldLabel>
+    <FieldDescription>
+      {profileComplete
+        ? "Mentees can find you in the directory."
+        : "Save both prices and at least one stack first."}
+    </FieldDescription>
+  </FieldContent>
+</Field>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <Field orientation="horizontal">
+        <Switch disabled />
+        <FieldContent>
+          <FieldLabel>Listed in the directory</FieldLabel>
+          <FieldDescription>
+            Save both prices and at least one stack first.
+          </FieldDescription>
+        </FieldContent>
+      </Field>
+    }
+    goodWhy="The person learns what is missing."
+    bad={
+      <Field orientation="horizontal">
+        <Switch disabled />
+        <FieldLabel>Listed in the directory</FieldLabel>
+      </Field>
+    }
+    badWhy="A switch that will not move and does not say why."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Checkbox](?path=/docs/primitives-checkbox--docs), [Radio group](?path=/docs/primitives-radio-group--docs).
+- Patterns: form (mentor profile).

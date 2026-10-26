@@ -1,0 +1,144 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@devmentor/ui/components/ui/alert";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./toast.stories";
+
+<Meta of={Stories} />
+
+# Toast
+
+## 1. Purpose
+
+Confirms in a few words that the server accepted something the person just did, without taking over the page.
+
+## 2. When to use
+
+- "Availability saved" or "Profile saved" after the server confirms (E01, P12.1).
+- A confirmation for an action that stays on the same page and whose result is not otherwise visible.
+
+## 3. When not to use
+
+| Situation                                                  | Use instead                                                                         |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| An error, or anything the person must act on               | An [alert](?path=/docs/primitives-alert--docs) or a field error. **Never a toast.** |
+| A booking was confirmed or cancelled                       | A notice next to the booking, plus e-mail (P04, brief R10)                          |
+| The result is already visible, such as a new row in a list | Nothing                                                                             |
+| A choice that needs an answer                              | [Confirmation dialog](?path=/docs/primitives-confirmation-dialog--docs)             |
+| Before the server has answered                             | The button's `loading` state. Never show success first.                             |
+
+Sources: WCAG 4.1.3 (status messages), WCAG 2.2.1 (timing), P04, P12.1, P12.2, R02.4 (no notification clutter).
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>
+      Region (required): "Notifications", a polite live region, bottom of the
+      screen.
+    </li>
+    <li>
+      Toast (required): opaque `--card` fill, 1px border, 10px radius, no
+      shadow.
+    </li>
+    <li>
+      Icon (required): a check, `aria-hidden`, so meaning is not color alone.
+    </li>
+    <li>Title (required): what was saved.</li>
+    <li>Description (optional): one more line.</li>
+    <li>Close button (required): 24px icon button.</li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+There is one variant: a confirmation. There is no error, warning or colored toast, on purpose (rule: an error that needs action is never a toast).
+
+<Canvas of={Stories.TitleOnly} />
+
+## 6. States
+
+<Canvas of={Stories.ShownOpen} />
+
+| State                              | Behavior                                                                                                    | Source                |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------- | --------------------- |
+| Shown                              | Appears at the bottom without animation. At most three at a time; extra ones are hidden until room is free. | P11.1                 |
+| Timed out                          | Closes after 8 seconds. The delay is a proposal; `timeout={0}` keeps it until closed.                       | WCAG 2.2.1            |
+| Paused                             | The timer pauses while the pointer is over the toast or focus is inside it.                                 | WCAG 2.2.1            |
+| Focus                              | The close button uses the shared 2px ring.                                                                  | tokens.md, WCAG 2.4.7 |
+| Hover, pressed                     | Belong to the close button (accent fill, no movement).                                                      | R01.5, P11.1          |
+| Disabled, selected, loading, error | Not applicable.                                                                                             | n/a                   |
+
+## 7. Behavior and accessibility
+
+- The region has `aria-live="polite"` and the label "Notifications". A new toast is read out without moving focus (WCAG 4.1.3).
+- Each toast is a non-modal dialog named by its title. The close button becomes available to assistive technology when the toast is hovered or focused, as the library intends.
+- A toast closes with its close button or when its time runs out. It never traps or steals focus.
+- Close button: 24px (WCAG 2.5.8).
+- Never put the only copy of important information in a toast: it disappears.
+
+<Canvas of={Stories.ConfirmsAfterAction} />
+
+## 8. Content
+
+- Title: the object and the result ("Availability saved"). Past tense, no exclamation mark.
+- Description: only what changes for the person ("Mentees see the new windows now"). Omit it when the title is enough.
+- Maximum about 60 characters in the title and one sentence below.
+- Long text wraps. At 320px a toast is the full width minus 16px each side.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: full width minus 16px, at the bottom, above any browser bar.
+- 768px and 1440px: 20rem wide, bottom right.
+
+## 10. API
+
+<ArgTypes
+  of={Stories.Playground}
+  include={["title", "description", "timeout"]}
+/>
+
+Mount `ToastProvider` once near the root (`timeout`, `limit`). Call `useToast().add({ title, description, timeout })` from any child; `useToast().close(id)` closes one. The controls above belong to the story wrapper.
+
+## 11. Code
+
+```tsx
+// Once, in the page or layout:
+<ToastProvider>{children}</ToastProvider>;
+
+// After the server confirmed:
+const toast = useToast();
+toast.add({
+  title: "Availability saved",
+  description: "Mentees see the new windows now.",
+});
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <p className="text-interface">
+        Availability saved. Mentees see the new windows now.
+      </p>
+    }
+    goodWhy="Shown after the server confirmed, short, and the person loses nothing if it disappears."
+    bad={
+      <p className="text-interface">
+        “Payment failed. Try another card.” as a toast.
+      </p>
+    }
+    badWhy="An error that needs action vanishes after a few seconds. Use an alert next to the booking."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Alert](?path=/docs/primitives-alert--docs): stays on the page. [Form field](?path=/docs/primitives-form-field--docs): errors for one field. [Button](?path=/docs/primitives-button--docs): its `loading` state comes before the toast.
+- Patterns: form (success after server confirmation).

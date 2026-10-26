@@ -1,0 +1,90 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Design system/E05 Supply gate and pilot" />
+
+# E05 Supply gate and pilot measurement
+
+The operator sees whether enough mentors have published for paid booking to open, reads the pilot measures, and can suspend a mentor with every action logged. **No E05 specification exists yet.** The components and screens here are proposals drawn from the brief: decisions D11, D12, D16, D19, D20, D24, D25, D29 and rules R06, R13, R16. Backlog: E05-S01 (gate status), E05-S02 (timing, payments, refunds, booking source), E05-S03 (suspend a mentor, every action logged).
+
+## Flow
+
+1. The operator signs in with GitHub (session of at most 12 hours, D25) and opens the **Gate** page: invited, accepted and published counts and whether paid booking is open (D16).
+2. The **Metrics** page shows timing, payments, refunds, booking source and the usefulness outcome, each with how it is counted (D11, D19, D20).
+3. On a mentor's page the operator can **suspend** them. The dialog names the mentor, states the consequence and requires a reason (D29, R13).
+4. Every operator action appears in the **Audit log** with who, when, what and why.
+
+## Product components
+
+| Component              | Purpose                                                   | Data states covered                                              | Stories                                                                                  |
+| ---------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Gate status            | Invited, accepted and published counts and the gate state | Closed, one short, open, stopped, no invitations, narrow         | [Gate status](?path=/story/product-e05-supply-gate-and-pilot-gate-status--collecting)    |
+| Metric row             | One measure with how it is counted                        | Value, no data yet, several together, long text                  | [Metric row](?path=/story/product-e05-supply-gate-and-pilot-metric-row--several)         |
+| Operator action dialog | A change to someone else's data, with a required reason   | Suspend, revoke, no reason, pending, server error, offline, long | [Dialog](?path=/story/product-e05-supply-gate-and-pilot-operator-action-dialog--suspend) |
+| Audit row              | One logged action: when, who, what, why                   | Several, long reason, narrow                                     | [Audit row](?path=/story/product-e05-supply-gate-and-pilot-audit-row--several)           |
+
+Pattern used: [Operator action](?path=/docs/patterns-operator-action--docs). Also [Form](?path=/docs/patterns-form--docs) and [Deletion confirmation](?path=/docs/patterns-deletion-confirmation--docs).
+
+## Screens and state map
+
+### Gate (`/admin/gate`)
+
+| State                    | Story                                                                                   | Source   |
+| ------------------------ | --------------------------------------------------------------------------------------- | -------- |
+| Closed: 2 of 5 published | [Collecting](?path=/story/product-e05-supply-gate-and-pilot-screens-gate--collecting)   | D16, R06 |
+| Closed: one mentor short | [Almost](?path=/story/product-e05-supply-gate-and-pilot-screens-gate--almost)           | D16      |
+| Open                     | [Open](?path=/story/product-e05-supply-gate-and-pilot-screens-gate--open)               | D16, R06 |
+| Stopped                  | [Stopped](?path=/story/product-e05-supply-gate-and-pilot-screens-gate--stopped)         | D16      |
+| No invitations yet       | [Nothing yet](?path=/story/product-e05-supply-gate-and-pilot-screens-gate--nothing-yet) | P10.1    |
+| Loading                  | [Loading](?path=/story/product-e05-supply-gate-and-pilot-screens-gate--loading)         | P11.1    |
+| Error                    | [Error](?path=/story/product-e05-supply-gate-and-pilot-screens-gate--load-error)        | P12.2    |
+
+### Metrics (`/admin/metrics`)
+
+| State                             | Story                                                                               | Source        |
+| --------------------------------- | ----------------------------------------------------------------------------------- | ------------- |
+| Timing, payments, source, outcome | [List](?path=/story/product-e05-supply-gate-and-pilot-screens-metrics--list)        | D11, D19, D20 |
+| Some measures have no data        | [Partial](?path=/story/product-e05-supply-gate-and-pilot-screens-metrics--partial)  | P10.1         |
+| No bookings yet                   | [Empty](?path=/story/product-e05-supply-gate-and-pilot-screens-metrics--empty)      | P10.1         |
+| Loading                           | [Loading](?path=/story/product-e05-supply-gate-and-pilot-screens-metrics--loading)  | P11.1         |
+| Error                             | [Error](?path=/story/product-e05-supply-gate-and-pilot-screens-metrics--load-error) | P12.2         |
+
+### Mentor (`/admin/mentors/[id]`): suspend
+
+| State                                 | Story                                                                                                                                                                                              | Source       |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| Listed mentor with the action         | [Ready](?path=/story/product-e05-supply-gate-and-pilot-screens-suspend-a-mentor--ready)                                                                                                            | D29          |
+| Dialog open, reason required          | [Dialog open](?path=/story/product-e05-supply-gate-and-pilot-screens-suspend-a-mentor--dialog-open)                                                                                                | R13          |
+| Suspending (pending)                  | [Pending](?path=/story/product-e05-supply-gate-and-pilot-screens-suspend-a-mentor--pending)                                                                                                        | P12.1        |
+| Server error, offline                 | [Server error](?path=/story/product-e05-supply-gate-and-pilot-screens-suspend-a-mentor--server-error), [offline](?path=/story/product-e05-supply-gate-and-pilot-screens-suspend-a-mentor--offline) | P12.2        |
+| Suspended, after the server confirmed | [Suspended](?path=/story/product-e05-supply-gate-and-pilot-screens-suspend-a-mentor--suspended)                                                                                                    | P12.1, R13   |
+| Already suspended                     | [Already suspended](?path=/story/product-e05-supply-gate-and-pilot-screens-suspend-a-mentor--already-suspended)                                                                                    | D29          |
+| Loading, error                        | [Loading](?path=/story/product-e05-supply-gate-and-pilot-screens-suspend-a-mentor--loading), [error](?path=/story/product-e05-supply-gate-and-pilot-screens-suspend-a-mentor--load-error)          | P11.1, P12.2 |
+| Does not exist                        | [Not found](?path=/story/product-e05-supply-gate-and-pilot-screens-suspend-a-mentor--not-found)                                                                                                    | D30          |
+| Long name                             | [Long text](?path=/story/product-e05-supply-gate-and-pilot-screens-suspend-a-mentor--long-text)                                                                                                    | R01.1        |
+
+### Audit log (`/admin/audit`)
+
+| State                     | Story                                                                                    | Source |
+| ------------------------- | ---------------------------------------------------------------------------------------- | ------ |
+| Logged actions            | [List](?path=/story/product-e05-supply-gate-and-pilot-screens-audit-log--list)           | R13    |
+| No operator actions yet   | [Empty](?path=/story/product-e05-supply-gate-and-pilot-screens-audit-log--empty)         | P10.1  |
+| Loading                   | [Loading](?path=/story/product-e05-supply-gate-and-pilot-screens-audit-log--loading)     | P11.1  |
+| Error                     | [Error](?path=/story/product-e05-supply-gate-and-pilot-screens-audit-log--load-error)    | P12.2  |
+| Lots of data (30 actions) | [Many](?path=/story/product-e05-supply-gate-and-pilot-screens-audit-log--many)           | R01.1  |
+| Long reason               | [Long text](?path=/story/product-e05-supply-gate-and-pilot-screens-audit-log--long-text) | R01.1  |
+
+## Source files
+
+| Part                                 | Path                                   |
+| ------------------------------------ | -------------------------------------- |
+| Components                           | `packages/ui/src/components/operator/` |
+| Stories                              | `packages/ui/stories/product/e05/`     |
+| Documentation helpers (not exported) | `packages/ui/.storybook/docs/e05-data` |
+
+## Product work that remains
+
+- **Not designed, recorded for "What is missing":** viewing a session in dispute and recording its outcome with a reason (R16, D29); the operator sign-in page and the "session expired, sign in with GitHub again" state (D25); audit log filters and paging; a way to see a mentor's cancellation reasons and counts (D34); the mentor list page that leads to a mentor's page.
+- The gate state is decided on the server (D16). The component only shows it; the two-week clock per mentor is not drawn.
+- The measures are examples with made-up numbers. Their definitions (median, week boundaries) are not specified yet and are proposals.
+- The revoke button in the E01 invitations screen now opens `OperatorActionDialog`. A reason has at most 1000 characters (same limit as D32).
+- Operator pages use the same base components as the rest of the system, as the application will build them on shadcn (AGENTS.md).

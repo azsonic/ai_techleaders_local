@@ -14,20 +14,39 @@
   },
   "scripts": {
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "test:stories": "vitest run --config vitest.storybook.config.ts",
+    "test:stories:dark": "STORYBOOK_THEME=dark vitest run --config vitest.storybook.config.ts",
+    "check:contrast": "node scripts/contrast.mjs"
   },
   "peerDependencies": {
     "react": "^19",
     "react-dom": "^19"
   },
   "devDependencies": {
+    "@storybook/addon-a11y": "^10.6.3",
+    "@storybook/addon-docs": "^10.6.3",
+    "@storybook/addon-vitest": "^10.6.3",
+    "@storybook/nextjs-vite": "^10.6.3",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "tailwindcss": "^4"
+    "@vitest/browser-playwright": "^5.0.5",
+    "msw": "^3.0.3",
+    "msw-storybook-addon": "^3.0.3",
+    "playwright": "^1.64.1",
+    "remark-gfm": "^4.0.1",
+    "storybook": "^10.6.3",
+    "tailwindcss": "^4",
+    "vite": "^8.3.5"
   },
   "dependencies": {
-    "@devmentor/core": "*",
     "@base-ui/react": "^1.9.0",
+    "@devmentor/core": "*",
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.0",
     "lucide-react": "^1.60.0",

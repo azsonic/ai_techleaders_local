@@ -21,7 +21,10 @@
     "db:migrate": "npm run db:migrate -w @devmentor/db",
     "db:migration:list": "npm run db:migration:list -w @devmentor/db",
     "db:migration:down": "npm run db:migration:down -w @devmentor/db",
-    "setup": "node scripts/setup.mjs"
+    "setup": "node scripts/setup.mjs",
+    "check:tokens": "node scripts/check-tokens.mjs",
+    "storybook": "npm run storybook -w @devmentor/ui",
+    "build-storybook": "npm run build-storybook -w @devmentor/ui"
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.3",
