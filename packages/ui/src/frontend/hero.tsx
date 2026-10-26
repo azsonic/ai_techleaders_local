@@ -14,10 +14,10 @@ export function Hero({ eyebrow, title, description, children, className }: HeroP
   return (
     <section className={cn("mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-6 py-24 text-center", className)}>
       {eyebrow && (
-        <span className="rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700">{eyebrow}</span>
+        <span className="rounded-control bg-muted px-within-group py-inline text-interface font-emphasis text-muted-foreground">{eyebrow}</span>
       )}
-      <h1 className="text-4xl font-semibold tracking-tight text-zinc-900 sm:text-5xl">{title}</h1>
-      {description && <p className="max-w-xl text-lg leading-8 text-zinc-600">{description}</p>}
+      <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">{title}</h1>
+      {description && <p className="max-w-xl text-lg leading-8 text-muted-foreground">{description}</p>}
       {children && <div className="flex flex-wrap justify-center gap-3">{children}</div>}
     </section>
   );

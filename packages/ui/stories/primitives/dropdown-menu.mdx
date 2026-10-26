@@ -1,0 +1,159 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import { Button } from "@devmentor/ui/components/ui/button";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./dropdown-menu.stories";
+
+<Meta of={Stories} />
+
+# Menu
+
+## 1. Purpose
+
+Groups the secondary commands for one object behind a single button, so a dense row stays readable.
+
+## 2. When to use
+
+- A row in the bookings list with several actions: open, copy the session link, cancel (E02-S04, E02-S05).
+- Three or more commands for one object, where one of them is not the main one (R01.1, R01.5).
+- A view choice that applies at once, such as an order, using radio items.
+
+## 3. When not to use
+
+| Situation                         | Use instead                                                             |
+| --------------------------------- | ----------------------------------------------------------------------- |
+| The one main action of a screen   | A [button](?path=/docs/primitives-button--docs), always visible         |
+| One or two commands               | Visible buttons or [text links](?path=/docs/primitives-text-link--docs) |
+| Moving to another page            | A link in a navigation                                                  |
+| Choosing a value for a form field | [Select](?path=/docs/primitives-select--docs)                           |
+| Information, not commands         | [Popover](?path=/docs/primitives-popover--docs)                         |
+
+Sources: WAI-ARIA Authoring Practices (menu button), R01.1, R01.5.
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>
+      Trigger (required): a button. An icon-only trigger needs an `aria-label`
+      that names the object ("Actions for Friday 14:00").
+    </li>
+    <li>
+      Panel (required): opaque `--popover` fill, 1px border, 10px radius, no
+      shadow.
+    </li>
+    <li>Group label (optional): muted text naming the object or the group.</li>
+    <li>
+      Items (required): 32px high, text, optional icon. Checkbox and radio items
+      show a check.
+    </li>
+    <li>Separator (optional): 1px `--border`, before a destructive item.</li>
+  </ol>
+</Unstyled>
+
+There are no sub-menus: a menu with a second level should be a page or a dialog.
+
+## 5. Variants
+
+<Canvas of={Stories.ChoiceItems} />
+
+| Item          | Choose it when                                                             | Source       |
+| ------------- | -------------------------------------------------------------------------- | ------------ |
+| `default`     | An ordinary command.                                                       | R01.5        |
+| `destructive` | It removes or cancels something. Always followed by a confirmation dialog. | P12.1, P12.2 |
+| Checkbox item | A setting that is on or off and applies at once.                           | WAI-ARIA     |
+| Radio item    | One of a few views or orders. Selected shows a check and semibold text.    | tokens.md    |
+
+## 6. States
+
+<Canvas of={Stories.Open} />
+
+| State                         | Behavior                                                                                                   | Source                |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------- |
+| Closed                        | Only the trigger is shown.                                                                                 | n/a                   |
+| Open                          | Panel below the trigger, no animation.                                                                     | P11.1                 |
+| Highlighted (hover, keyboard) | `--accent` fill plus a 2px inset outline in `--ring`, so it is not fill alone.                             | R01.5, WCAG 1.4.11    |
+| Focus on the trigger          | 2px ring in `--ring`, offset 2px.                                                                          | tokens.md, WCAG 2.4.7 |
+| Selected (check, radio)       | Check mark at the right; radio items also semibold.                                                        | tokens.md             |
+| Disabled item                 | Muted text, not activatable. Say why in the surrounding page text if the person needs to know.             | WCAG 3.3.2            |
+| Destructive item              | Text in `--destructive`: 6.15:1 on card, 5.11:1 on the highlighted fill in light. Always readable as text. | P12.1, WCAG 1.4.3     |
+| Pressed, loading, error       | Not applicable. A command that takes time shows its progress where its result appears.                     | n/a                   |
+
+The state matrix of the items is the open menu above: default, highlighted by pointer or keyboard, disabled, destructive and checked items are all real parts.
+
+## 7. Behavior and accessibility
+
+- Role: `menu` with `menuitem`, `menuitemcheckbox` and `menuitemradio` (WAI-ARIA menu button).
+- Keyboard: Enter, Space or Arrow Down on the trigger opens it with the first item highlighted. Arrow Up and Down move, Home and End jump, Enter or Space chooses, Escape closes. Focus returns to the trigger after choosing or closing.
+- Typing the first letter of an item moves to it.
+- Items are 32px high (WCAG 2.5.8). The panel keeps the active theme because it renders on the document root.
+
+<Canvas of={Stories.ChooseWithKeyboard} />
+
+## 8. Content
+
+- Item labels: a verb and, when needed, the object ("Open booking", "Copy session link").
+- A label ending in "…" means a confirmation or a dialog follows ("Cancel session…").
+- Keep items to about 40 characters. Longer labels wrap onto a second line instead of being cut.
+- Order: common first, destructive last, after a separator.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: the panel is never wider than the available width and flips above the trigger if it has no room below.
+- 768px and 1440px: at least 12rem wide, aligned to the start of the trigger.
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} include={["label"]} />
+
+Parts: `DropdownMenu` (`open`, `defaultOpen`, `onOpenChange`), `DropdownMenuTrigger`, `DropdownMenuContent` (`side`, `align`), `DropdownMenuGroup`, `DropdownMenuLabel`, `DropdownMenuItem` (`variant`, `disabled`, `onClick`), `DropdownMenuCheckboxItem`, `DropdownMenuRadioGroup`, `DropdownMenuRadioItem`, `DropdownMenuSeparator`. The `label` control belongs to the story wrapper.
+
+## 11. Code
+
+```tsx
+<DropdownMenu>
+  <DropdownMenuTrigger
+    render={
+      <Button
+        variant="secondary"
+        size="icon-dense"
+        aria-label="Actions for Friday 14:00"
+      />
+    }
+  >
+    <EllipsisIcon aria-hidden />
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuItem>Open booking</DropdownMenuItem>
+    <DropdownMenuItem>Copy session link</DropdownMenuItem>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem variant="destructive">Cancel session…</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <p className="text-interface">
+        “Cancel session…” last, red text, after a separator, and it opens a
+        confirmation dialog.
+      </p>
+    }
+    goodWhy="The destructive item is set apart, readable as text and never acts immediately."
+    bad={
+      <p className="text-interface">
+        “Cancel session” in the middle of the list, acting on a single click.
+      </p>
+    }
+    badWhy="One mis-click cancels a booking and sends money outcomes to both people."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Button](?path=/docs/primitives-button--docs): the main action. [Select](?path=/docs/primitives-select--docs): a form value. [Confirmation dialog](?path=/docs/primitives-confirmation-dialog--docs): what a destructive item opens.
+- Patterns: filtered list, my bookings.

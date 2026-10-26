@@ -1,0 +1,143 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import {
+  Field,
+  FieldLabel,
+  FieldDescription,
+  FieldError,
+} from "@devmentor/ui/components/ui/field";
+import { Input } from "@devmentor/ui/components/ui/input";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./field.stories";
+
+<Meta of={Stories} />
+
+# Form field
+
+## 1. Purpose
+
+Joins a control to its label, hint and error so that everyone, including screen reader users, knows what to enter and what went wrong.
+
+## 2. When to use
+
+- Every control in a form: sign-in e-mail, profile fields, prices, the booking question, availability times.
+- Groups of related fields: wrap `Field`s in `FieldGroup`; wrap a radio or checkbox group in `FieldSet` with `FieldLegend`.
+
+## 3. When not to use
+
+| Situation                                           | Use instead                                                |
+| --------------------------------------------------- | ---------------------------------------------------------- |
+| A search box that has a visible button as its label | A labelled input with `aria-label`                         |
+| A message about the whole form or a server failure  | An alert (batch 3)                                         |
+| A confirmation after saving                         | A status message after the server confirms (pattern: form) |
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>
+      Label (required). Always visible, above the control. Says "(optional)" for
+      optional fields.
+    </li>
+    <li>Control: input, textarea or select (required).</li>
+    <li>Hint (optional): format, limit or reason, in muted text.</li>
+    <li>
+      Error (optional): what happened and what to do, in destructive text.
+      Announced when it appears.
+    </li>
+  </ol>
+</Unstyled>
+
+<Canvas of={Stories.Parts} />
+
+## 5. Variants
+
+| Variant              | Choose it when                                                                                                                                                                  | Source                                   |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `vertical` (default) | Text, number and select fields. The label is above.                                                                                                                             | R01.1                                    |
+| `horizontal`         | A checkbox, radio or switch with its label on the same row. With a hint, wrap label and hint in `FieldContent` so the hint sits under the label. The row is at least 28px high. | WAI-ARIA Authoring Practices, WCAG 2.5.8 |
+
+## 6. States
+
+| State                      | Behavior                                                                                                                          | Source                                   |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| Default                    | Label, control, optional hint.                                                                                                    | n/a                                      |
+| Hover and focus            | Belong to the control. See [Text input](?path=/docs/primitives-text-input--docs).                                                 | n/a                                      |
+| Error                      | The error message appears below the control, is announced (`role="alert"`) and marks the control `aria-invalid`. Not color alone. | WCAG 1.4.1, 3.3.1                        |
+| Disabled                   | Belongs to the control. State the reason in the hint.                                                                             | WCAG 3.3.2                               |
+| Required and optional      | Required is the default and needs no marker. Optional fields say "(optional)" in text.                                            | WCAG 3.3.2, proposal approved 2026-10-25 |
+| Pressed, loading, selected | Not applicable.                                                                                                                   | n/a                                      |
+
+The matrix of control states is on the control pages, because the field itself has no visual states.
+
+## 7. Behavior and accessibility
+
+- The label is connected to the control (`for` and `id`) automatically. A placeholder is an example, never the name.
+- Hint and error are connected with `aria-describedby`. They appear in the control's description only while they are on screen.
+- The error is announced when it appears (`role="alert"`). Show it after the person leaves the field and on submit.
+- After a failed submit, move focus to the first invalid field (pattern: form).
+- Error text contrast: `--destructive` on card 6.15:1 light, 9.11:1 dark.
+
+## 8. Content
+
+- Label: a noun, 1 to 4 words. Hint: one sentence with the rule ("Between 90 and 600 PLN").
+- Error: what happened and what to do ("Enter a price from 90 to 600 PLN."). Never "Invalid input".
+- Longer languages wrap in three places: label, hint and error. Do not truncate them.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: one column, full width. 768px and 1440px: a column no wider than `max-w-prose`.
+- Fields in a group are separated by `--space-between-groups` at every width.
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} />
+
+`FieldLabel` takes `optional`. `FieldError` takes children or `errors` (a list of `{ message }`, shown once each).
+
+## 11. Code
+
+```tsx
+<Field>
+  <FieldLabel>Price for 25 minutes (PLN)</FieldLabel>
+  <Input inputMode="numeric" value={value} onChange={...} onBlur={...} />
+  <FieldDescription>Between 90 and 600 PLN. DevMentor keeps 20%.</FieldDescription>
+  <FieldError>{error}</FieldError>
+</Field>
+```
+
+Typical example: validating when the person leaves the field.
+
+<Canvas of={Stories.ValidateOnBlur} />
+
+## 12. Good and bad
+
+<Unstyled>
+  <div className="flex flex-col gap-between-groups">
+    <GoodBad
+      good={
+        <Field>
+          <FieldLabel>Price for 25 minutes (PLN)</FieldLabel>
+          <Input defaultValue="50" aria-invalid />
+          <FieldError>Enter a price from 90 to 600 PLN.</FieldError>
+        </Field>
+      }
+      goodWhy="The message says what is wrong and what to do."
+      bad={
+        <Field>
+          <FieldLabel>Price for 25 minutes (PLN)</FieldLabel>
+          <Input defaultValue="50" aria-invalid />
+          <FieldError>Invalid input</FieldError>
+        </Field>
+      }
+      badWhy="The person cannot tell what to change."
+    />
+  </div>
+</Unstyled>
+
+## 13. Related
+
+- [Text input](?path=/docs/primitives-text-input--docs), [Textarea](?path=/docs/primitives-textarea--docs), [Select](?path=/docs/primitives-select--docs): the controls it wraps.
+- Alert (batch 3): form-level messages.
+- Patterns: form, booking.

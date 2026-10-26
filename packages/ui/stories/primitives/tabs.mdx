@@ -1,0 +1,145 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@devmentor/ui/components/ui/tabs";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./tabs.stories";
+
+<Meta of={Stories} />
+
+# Tabs
+
+## 1. Purpose
+
+Lets a person switch between a few views of the same thing on one page, such as upcoming and past bookings.
+
+## 2. When to use
+
+- "Upcoming", "Past" and "Cancelled" on a mentee's bookings (E02-S04).
+- Two to five views of one list or one object, where one view is shown at a time.
+
+## 3. When not to use
+
+| Situation                                            | Use instead                                                                                              |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Moving to a different page or section of the product | Links in a navigation, so the browser history and URLs work                                              |
+| Steps of a process                                   | A pattern with numbered steps, one page each                                                             |
+| A choice that changes data, such as an order         | [Radio group](?path=/docs/primitives-radio-group--docs) or [select](?path=/docs/primitives-select--docs) |
+| More than five views                                 | Rethink the page. A filter or separate pages fit better.                                                 |
+
+Sources: WAI-ARIA Authoring Practices (tabs), R01.1 (many items readable together).
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>
+      Tab list (required): a row with a 1px bottom border, scrolling sideways if
+      it overflows.
+    </li>
+    <li>Tab (required, two or more): text only, 32px high.</li>
+    <li>
+      Active indicator (required): 2px bar under the tab and semibold text.
+    </li>
+    <li>Panel (required): the content of the selected tab.</li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+There is one flat underline style. A filled or rounded tab would be a pill, which the references reject (A01).
+
+<Canvas of={Stories.Playground} />
+
+| Prop         | Choose it when                                    | Source   |
+| ------------ | ------------------------------------------------- | -------- |
+| `horizontal` | Always, so far. The only orientation in use.      | Proposal |
+| `vertical`   | Not used by any screen yet. Do not add one first. | n/a      |
+
+## 6. States
+
+<Canvas of={Stories.StateMatrixStory} />
+
+| State          | Behavior                                                                                                                                           | Source                |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| Default        | Muted text, transparent bar.                                                                                                                       | R01.5                 |
+| Hover          | Text turns to `--foreground`. Opaque, no movement.                                                                                                 | R01.5, P11.1          |
+| Focus          | 2px ring in `--ring`, offset 2px.                                                                                                                  | tokens.md, WCAG 2.4.7 |
+| Selected       | 2px `--foreground` bar and semibold text. Never color alone.                                                                                       | WCAG 1.4.1            |
+| Disabled       | Muted text and a `not-allowed` cursor. It looks like an unselected tab, so do not disable a tab: remove it, or show its panel with an empty state. | WCAG 1.4.1, 3.3.2     |
+| Pressed        | Same as hover. There is no movement on press.                                                                                                      | P11.1                 |
+| Loading, error | A panel shows its own skeleton or error state. The tabs themselves do not load.                                                                    | P12.2                 |
+
+## 7. Behavior and accessibility
+
+- Role: `tablist` of `tab`s, each controlling a `tabpanel` (WAI-ARIA tabs). Give the list an `aria-label`.
+- Keyboard: Tab enters the list on the selected tab. Left and Right Arrow move to the next tab and select it at once, because panels appear without delay (automatic activation). Tab then moves into the panel.
+- The selected tab has `aria-selected="true"`.
+- Tab height is 32px (WCAG 2.5.8).
+
+<Canvas of={Stories.ArrowKeysSelect} />
+
+## 8. Content
+
+- One or two words per tab, in the person's terms: "Upcoming", "Past", "Cancelled".
+- Do not put counts or icons in tabs unless a screen needs them.
+- Long labels never wrap. The list scrolls sideways when tabs do not fit.
+
+<Canvas of={Stories.ManyTabsNarrow} />
+
+## 9. Responsiveness
+
+- 320px: the list scrolls horizontally inside its own border; the page does not.
+- 768px and 1440px: the tabs sit left-aligned, with `--space-between-groups` between them.
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} include={["defaultValue", "orientation"]} />
+
+Parts: `Tabs` (`value`, `defaultValue`, `onValueChange`), `TabsList`, `TabsTrigger` (`value`, `disabled`), `TabsContent` (`value`). The controls above belong to the story wrapper.
+
+## 11. Code
+
+```tsx
+<Tabs defaultValue="upcoming">
+  <TabsList aria-label="My bookings">
+    <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
+    <TabsTrigger value="past">Past</TabsTrigger>
+    <TabsTrigger value="cancelled">Cancelled</TabsTrigger>
+  </TabsList>
+  <TabsContent value="upcoming">{/* booking list */}</TabsContent>
+  <TabsContent value="past">{/* booking list */}</TabsContent>
+  <TabsContent value="cancelled">{/* booking list */}</TabsContent>
+</Tabs>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <Tabs defaultValue="upcoming">
+        <TabsList aria-label="Bookings example, good">
+          <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
+          <TabsTrigger value="past">Past</TabsTrigger>
+        </TabsList>
+      </Tabs>
+    }
+    goodWhy="Short labels and a bar plus bold text mark the selected tab."
+    bad={
+      <p className="text-interface">
+        Rounded filled tabs where the selected one differs only by background
+        color.
+      </p>
+    }
+    badWhy="A pill-style tab marks the selection by color alone and looks like every generic dashboard (A01)."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Radio group](?path=/docs/primitives-radio-group--docs) and [select](?path=/docs/primitives-select--docs): choosing a value. [Table](?path=/docs/primitives-table--docs): the content of a panel.
+- Patterns: filtered list, my bookings.

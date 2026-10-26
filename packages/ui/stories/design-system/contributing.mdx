@@ -1,0 +1,60 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Design system/Contributing" />
+
+# Contributing: how to change the system
+
+The system stays small on purpose (rule: add nothing outside the plan). A change starts with a question, not a component.
+
+## When to add a component
+
+| Situation                                                              | Do                                                                                                          |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| The same need appears in **at least two places** and no component fits | Propose a new component.                                                                                    |
+| One screen needs something odd                                         | Compose existing components. Keep it next to that page until a second page needs it.                        |
+| An existing component almost fits                                      | Propose a **variant** only if it has a reason in a reference, a decision or WCAG. Otherwise change nothing. |
+| You want a different look for one screen                               | Nothing. A different look is a decision about the product, not about a screen.                              |
+
+Where it goes (AGENTS.md): a shadcn primitive in `packages/ui/src/components/ui/` (added with `npx shadcn@latest add` from `packages/app`, never hand-written, and checked afterwards for dependencies the plan does not list); a component tied to one concept in `packages/ui/src/components/<concept>/`; a generic admin pattern in `packages/ui/src/backend/<category>/`. Built only from base components. No new dependency without an approved plan.
+
+## What a new component needs
+
+1. **Unit tests** at 100% statements, branches, functions and lines (`npm run test`).
+2. **Tokens only**: no colour, palette class or arbitrary value (`npm run check:tokens`).
+3. **A documentation page**. A base component has the same 13 sections: purpose, when to use, when not to use, anatomy, variants, states, behaviour and accessibility, content, responsiveness, API, code, good and bad, related. A product component has stories and a row on its epic page.
+4. **Stories**: a playground with controls, every variant and size, a state matrix with frozen hover and focus (base components), long content and a narrow screen, the data states (loading, empty, error, partial, lots of data, long text) and a play function for the main behaviour.
+5. **Accessibility**: every story passes axe in both themes or has a documented exception.
+6. **Sources**: every rule on the page cites a reference, a decision or WCAG. A rule with no source is marked as a proposal and goes to the Product owner.
+7. **Catalogue entries**: the row in [Components](?path=/docs/design-system-components--docs), the table in [Start here](?path=/docs/design-system-start-here--docs), the agent file `docs/design-system.md`, and [What is missing](?path=/docs/design-system-what-is-missing--docs) if it closes or opens a gap.
+
+## After a token change
+
+A token change can break contrast without changing a component. After any change in `packages/ui/src/styles/tokens.css`:
+
+1. Run `npm run check:contrast -w @devmentor/ui`. Every pair must say `ok` in both themes; if a pair falls below 4.5 : 1 for text or 3 : 1 for interface elements, stop and ask.
+2. Run `npm run check:tokens`.
+3. Run `npm run test:stories -w @devmentor/ui` and `npm run test:stories:dark -w @devmentor/ui`.
+4. Recheck the [Foundations](?path=/docs/foundations-color--docs) colour page and one dialog and one menu in dark.
+5. Check component opacity modifiers: contrast must be recalculated after opacity is applied, not only for the base colours.
+
+## Who approves
+
+| Change                                                           | Approver                                                                | Source                                                                                                  |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| A token value, a shape, density or state decision, a new variant | Product owner                                                           | Every stage decision in `POSTEP.md` was approved by the Product owner                                   |
+| A new component                                                  | Product owner (the need) and the Tech Lead (placement and dependencies) | Proposal; the brief names the Product owner as scope decider and the Tech Lead for technical assessment |
+| A change to an existing token, theme, palette or page            | Product owner, before it is made                                        | Design system plan, rule 12                                                                             |
+
+## Commands
+
+| Command                                      | Use                                         |
+| -------------------------------------------- | ------------------------------------------- |
+| `npm run storybook -w @devmentor/ui`         | Work on a component with the controls       |
+| `npm run test`                               | Unit tests with the 100% coverage threshold |
+| `npm run lint`, `npm run typecheck`          | Static checks                               |
+| `npm run check:tokens`                       | Non-token values                            |
+| `npm run check:contrast -w @devmentor/ui`    | Contrast for every supported pair           |
+| `npm run test:stories -w @devmentor/ui`      | Stories as tests with axe as an error       |
+| `npm run test:stories:dark -w @devmentor/ui` | The same in dark                            |
+| `npm run build-storybook -w @devmentor/ui`   | The static Storybook; check every page      |
+| `npm run build`                              | The application build                       |

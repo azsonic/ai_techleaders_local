@@ -1,10 +1,11 @@
-import { defineConfig } from "eslint/config";
+import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 
 import { forbidden, importBoundaries, noRawApiFetch } from "../../eslint.boundaries.mjs";
 
 export default defineConfig([
+  globalIgnores(["storybook-static/**"]),
   ...nextVitals,
   ...nextTs,
   {

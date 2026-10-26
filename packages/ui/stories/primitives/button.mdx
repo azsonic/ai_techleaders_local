@@ -1,0 +1,177 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import { Button } from "@devmentor/ui/components/ui/button";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./button.stories";
+
+<Meta of={Stories} />
+
+# Button
+
+## 1. Purpose
+
+Lets a person start one clear action, such as booking a slot or cancelling a booking.
+
+## 2. When to use
+
+- Submit a form: "Book 25 minutes", "Save profile", "Send invitation".
+- Confirm in a dialog: "Cancel booking", "Revoke invitation".
+- Start a step that changes data or opens the session: "Open session".
+
+## 3. When not to use
+
+| Situation                                                 | Use instead                                                                    |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Go to another page (mentor profile, My bookings)          | [Text link](?path=/docs/primitives-text-link--docs) (a button never navigates) |
+| An action inside a sentence or a table cell, low priority | Text action (`variant="link"`)                                                 |
+| Many actions on one row                                   | An action menu (batch 4)                                                       |
+| An icon alone with no label                               | An icon button with an `aria-label` and a tooltip                              |
+
+Sources: WAI-ARIA Authoring Practices (button vs link), R02.5 (text labels, no decoration).
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>Label (required). A verb and an object.</li>
+    <li>Icon (optional), 16px, beside the label with `aria-hidden`.</li>
+    <li>
+      Container: fill or border, never a gradient or a shadow (A01.1, A01.2).
+    </li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+<Canvas of={Stories.Variants} />
+
+| Variant       | Choose it when                                                      | Source             |
+| ------------- | ------------------------------------------------------------------- | ------------------ |
+| `default`     | The one main action of the view. At most one per view.              | R01.5              |
+| `secondary`   | A supporting action beside the main one. It has a visible border.   | R01.5, WCAG 1.4.11 |
+| `ghost`       | A low-priority action with no border, such as "Show details".       | R01.5              |
+| `destructive` | The action cannot be undone or cancels something paid. Opaque fill. | P12.1, P12.2       |
+| `link`        | A text action that is not navigation. Always underlined.            | tokens.md          |
+
+Sizes:
+
+<Canvas of={Stories.Sizes} />
+
+- `default` 40px for forms, booking and conversation (R02.1). `dense` 32px for browsing rows and tables (R01.1, P03). `xs` 24px is the smallest click target allowed (WCAG 2.5.8). Icon sizes match.
+- Radii, heights and padding are approved decisions for this product (stage 2), not the library default.
+
+## 6. States
+
+<Canvas of={Stories.StateMatrixStory} />
+
+| State    | Behavior                                                                                                                                                                       | Source                                                        |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| Hover    | Opaque fill change (`--primary-hover`, `--destructive-hover`) or a darker border. No opacity.                                                                                  | R01.5, P11.1                                                  |
+| Focus    | 2px ring in `--ring`, offset 2px. One appearance for the whole system.                                                                                                         | tokens.md, WCAG 2.4.7                                         |
+| Pressed  | Same as hover. The button does not move.                                                                                                                                       | P11.1                                                         |
+| Disabled | `--muted` fill, muted text, border. Never opacity. **The reason must be written next to the button** and referenced with `aria-describedby`, for example "Booking opens soon". | WCAG 3.3.2, proposal approved 2026-10-25                      |
+| Loading  | Label is kept or replaced ("Saving…"). `aria-busy`, repeat activation blocked, still focusable. No spinner (P11.1).                                                            | P11.1, brief: the booking submit disables while the hold runs |
+
+## 7. Behavior and accessibility
+
+- Keyboard: Tab to focus, Enter and Space activate. Focus order follows the reading order.
+- Role: native `button`. Do not put `onClick` on a `div` (WAI-ARIA).
+- A busy button announces `aria-busy="true"`. Pointer events are off while busy and the keyboard is blocked in code.
+- Click target at least 24 × 24px (WCAG 2.5.8). Default and dense sizes are 40 and 32px.
+- Icon-only buttons need an accessible name (WCAG 4.1.2).
+
+## 8. Content
+
+- Verb and object: "Book 25 minutes", "Cancel booking", "Revoke invitation". Never "OK", "Submit" or "Yes".
+- Aim for 2 to 4 words (about 24 characters). Longer labels wrap in narrow layouts; use `whitespace-normal` with a minimum height.
+- Do not include prices or times that can change after load in the label. Show them beside the button.
+- Longer languages grow about 30%: leave room instead of fixing a width.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: buttons in a form span the full width (`w-full`). Labels wrap. (Proposal, no reference source.)
+- 768px and 1440px: buttons keep their natural width and sit in a row, main action first.
+- Heights do not change with width.
+
+## 10. API
+
+<ArgTypes
+  of={Stories.Playground}
+  include={["variant", "size", "loading", "loadingLabel", "disabled"]}
+/>
+
+All native button props are also accepted (`type`, `onClick`, `aria-describedby` and others). The component is a Base UI button; see the technical note in Contributing for the origin of the base.
+
+## 11. Code
+
+Minimal:
+
+```tsx
+import { Button } from "@devmentor/ui/components/ui/button";
+
+<Button>Book 25 minutes</Button>;
+```
+
+From the booking page: submit while the hold runs, and a visible reason when booking is closed.
+
+```tsx
+<Button type="submit" loading={holding} loadingLabel="Booking…">
+  Book 25 minutes
+</Button>
+
+<Button disabled aria-describedby="closed-note">Book 25 minutes</Button>
+<p id="closed-note">Booking opens soon.</p>
+```
+
+To style a link as a button, use `<Link className={cn(buttonVariants())}>`. Always wrap `buttonVariants` in `cn()`.
+
+## 12. Good and bad
+
+<Unstyled>
+  <div className="flex flex-col gap-between-groups">
+    <GoodBad
+      good={<Button variant="destructive">Cancel booking</Button>}
+      goodWhy="A verb and an object say what happens."
+      bad={<Button variant="destructive">OK</Button>}
+      badWhy="“OK” does not say what is confirmed."
+    />
+    <GoodBad
+      good={
+        <div className="flex flex-col items-start gap-within-group">
+          <Button disabled aria-describedby="why-disabled">
+            Book 25 minutes
+          </Button>
+          <p id="why-disabled" className="text-interface text-muted-foreground">
+            Booking opens soon.
+          </p>
+        </div>
+      }
+      goodWhy="The reason is written next to the disabled button."
+      bad={<Button disabled>Book 25 minutes</Button>}
+      badWhy="A disabled button with no reason leaves the person guessing."
+    />
+    <GoodBad
+      good={
+        <div className="flex flex-wrap gap-within-group">
+          <Button>Book 25 minutes</Button>
+          <Button variant="secondary">Message mentor</Button>
+        </div>
+      }
+      goodWhy="One main action; the other is visibly secondary."
+      bad={
+        <div className="flex flex-wrap gap-within-group">
+          <Button>Book 25 minutes</Button>
+          <Button>Message mentor</Button>
+        </div>
+      }
+      badWhy="Two equal primary buttons hide what is most important."
+    />
+  </div>
+</Unstyled>
+
+## 13. Related
+
+- [Text link](?path=/docs/primitives-text-link--docs): navigation.
+- Action menu, dialog and confirmation dialog (batch 4): many actions, confirmation of a risky action.
+- Patterns: form, deletion confirmation, booking.

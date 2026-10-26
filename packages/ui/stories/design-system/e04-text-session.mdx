@@ -1,0 +1,75 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Design system/E04 Text session" />
+
+# E04 Text session
+
+A mentee and a mentor exchange text in a session, and the mentee answers one question afterwards. **No E04 specification exists yet.** The components and screens here are proposals drawn from the brief: decisions D10, D11, D20, D32, rules R02, R16 and the references R02.1 to R02.5, P10, P11, P12. Backlog: E04-S01 (exchange text in a session), E04-S02 (usefulness check).
+
+## Flow
+
+1. The mentee books (E02, E03). The booking question becomes the first message of the session.
+2. At the start time both open the **Session** screen. A party is present when they open it in the first 10 minutes (R16).
+3. They write to each other; each message shows its state (**Conversation** pattern).
+4. When the session ends the composer says so and stays visible but disabled; both can still read.
+5. The mentee answers the **Usefulness check**: did the help arrive before the deadline (D11).
+
+## Product components
+
+| Component        | Purpose                                                          | Data states covered                                                     | Stories                                                                                    |
+| ---------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Message item     | One message: author, time, text, delivery state                  | Own, sending, sent, not sent, booking question, deleted user, long text | [Message item](?path=/story/product-e04-text-session-message-item--not-sent)               |
+| Composer         | The box to write in, always visible, with a visible label        | Empty refused, disabled with reason, Enter adds a line, narrow          | [Composer](?path=/story/product-e04-text-session-composer--empty-is-refused)               |
+| Conversation     | Scrolling log with the composer below (the conversation pattern) | Empty, 60 messages, sending, sent, not sent, retry, ended, narrow       | [Conversation](?path=/story/product-e04-text-session-conversation--playground)             |
+| Session header   | Who, when and the phase, kept small                              | Not started, in progress, ended, 50 minutes, long name                  | [Session header](?path=/story/product-e04-text-session-session-header--in-progress)        |
+| Usefulness check | One required question with three answers                         | Nothing chosen, pending, server error, offline, saved, already answered | [Usefulness check](?path=/story/product-e04-text-session-usefulness-check--nothing-chosen) |
+
+`Conversation` is not a row in the approved plan. It is the realisation of the conversation pattern, like `ProfileForm` for the form pattern; it is listed for confirmation.
+
+Pattern used: [Conversation](?path=/docs/patterns-conversation--docs).
+
+## Screens and state map
+
+### Session (`/sessions/[id]`)
+
+| State                                      | Story                                                                                                                                                                                                                                                                                                                                 | Source       |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| Not started: the booking question waits    | [Not started](?path=/story/product-e04-text-session-screens-session--not-started)                                                                                                                                                                                                                                                     | R16, D32     |
+| In progress                                | [Live](?path=/story/product-e04-text-session-screens-session--live)                                                                                                                                                                                                                                                                   | R02.1, R02.2 |
+| A message is sending                       | [Sending](?path=/story/product-e04-text-session-screens-session--sending)                                                                                                                                                                                                                                                             | P12.1        |
+| A message was not sent                     | [Not sent](?path=/story/product-e04-text-session-screens-session--not-sent)                                                                                                                                                                                                                                                           | P12.2, P10.1 |
+| Ended: composer disabled with the reason   | [Ended](?path=/story/product-e04-text-session-screens-session--ended)                                                                                                                                                                                                                                                                 | WCAG 3.3.2   |
+| Loading                                    | [Loading](?path=/story/product-e04-text-session-screens-session--loading)                                                                                                                                                                                                                                                             | P11.1        |
+| Error                                      | [Error](?path=/story/product-e04-text-session-screens-session--load-error)                                                                                                                                                                                                                                                            | P12.2        |
+| Does not exist or no access                | [Not found](?path=/story/product-e04-text-session-screens-session--not-found)                                                                                                                                                                                                                                                         | D10, R02     |
+| Lots of data (60 messages)                 | [Many](?path=/story/product-e04-text-session-screens-session--many)                                                                                                                                                                                                                                                                   | R02.2        |
+| Long name and unbroken text                | [Long text](?path=/story/product-e04-text-session-screens-session--long-text)                                                                                                                                                                                                                                                         | R01.1        |
+| Send: sent, sending, server error, offline | [Sent](?path=/story/product-e04-text-session-screens-session--send-success), [sending](?path=/story/product-e04-text-session-screens-session--send-pending), [server error](?path=/story/product-e04-text-session-screens-session--send-server-error), [offline](?path=/story/product-e04-text-session-screens-session--send-offline) | P12.1, P12.2 |
+
+### Usefulness check (`/sessions/[id]/feedback`)
+
+| State                             | Story                                                                                        | Source       |
+| --------------------------------- | -------------------------------------------------------------------------------------------- | ------------ |
+| One question, three answers       | [Ready](?path=/story/product-e04-text-session-screens-usefulness-check--ready)               | D11          |
+| Nothing chosen                    | [Nothing chosen](?path=/story/product-e04-text-session-usefulness-check--nothing-chosen)     | Form pattern |
+| Sending (pending)                 | [Pending](?path=/story/product-e04-text-session-screens-usefulness-check--pending)           | P12.1        |
+| Server error                      | [Server error](?path=/story/product-e04-text-session-screens-usefulness-check--server-error) | P12.2        |
+| Offline                           | [Offline](?path=/story/product-e04-text-session-screens-usefulness-check--offline)           | P12.2        |
+| Saved, after the server confirmed | [Saved](?path=/story/product-e04-text-session-screens-usefulness-check--saved)               | P12.1        |
+| Already answered                  | [Answered](?path=/story/product-e04-text-session-screens-usefulness-check--answered)         | D11          |
+| Long name                         | [Long text](?path=/story/product-e04-text-session-screens-usefulness-check--long-text)       | R01.1        |
+
+## Source files
+
+| Part                                 | Path                                                                           |
+| ------------------------------------ | ------------------------------------------------------------------------------ |
+| Components                           | `packages/ui/src/components/messages/`, `packages/ui/src/components/sessions/` |
+| Stories                              | `packages/ui/stories/product/e04/`                                             |
+| Documentation helpers (not exported) | `packages/ui/.storybook/docs/{e04-data,session-screen}`                        |
+
+## Product work that remains
+
+- **Not designed, recorded for "What is missing":** "Report a problem" within 24 hours of the end, with its two reasons and 1000 characters (D32); attendance ("Anna has not joined yet", R16); code in messages (R01.2, P09.2); a message length limit; a keyboard shortcut to send; the operator's read-only view of a session in a dispute (D29, R13); a booking's own page with the link into the session.
+- The session screen is one screen tall with a scrolling log. The application shell is not in the plan, so the header above it is a documentation helper.
+- The phase is computed from `now`, which the page passes. The page decides how often to re-check; nothing on screen counts down.
+- The usefulness check has three answers: the two from the brief and "I had no deadline" (approved, so a mentee without a deadline gives no false answer).

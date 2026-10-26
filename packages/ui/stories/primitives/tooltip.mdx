@@ -1,0 +1,143 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import { CopyIcon } from "lucide-react";
+import { Button } from "@devmentor/ui/components/ui/button";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./tooltip.stories";
+
+<Meta of={Stories} />
+
+# Tooltip
+
+## 1. Purpose
+
+Gives an icon-only button a short visible name, so the person does not have to guess what it does.
+
+## 2. When to use
+
+- An icon button with no text, such as "Copy booking link" or "Close notification".
+- A name that is already the button's accessible name, repeated visibly for sighted pointer and keyboard users.
+
+## 3. When not to use
+
+| Situation                                      | Use instead                                                                                           |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Information needed to take an action           | Text on the page, next to the control. Touch users never see a tooltip.                               |
+| Why an action is disabled                      | Visible text with `aria-describedby`, not a tooltip (stage 2 decision 4)                              |
+| More than a few words, or a link               | [Popover](?path=/docs/primitives-popover--docs)                                                       |
+| A button that already has a visible text label | Nothing                                                                                               |
+| An error or a warning                          | [Field error](?path=/docs/primitives-form-field--docs) or [alert](?path=/docs/primitives-alert--docs) |
+
+Sources: WCAG 1.4.13 (content on hover or focus), WAI-ARIA Authoring Practices (tooltip), brief D31.
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>
+      Trigger (required): a focusable control, usually an icon button with an
+      `aria-label`.
+    </li>
+    <li>
+      Chip (required): inverted fill (`--foreground` with `--background` text),
+      small radius, no arrow, no shadow.
+    </li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+There is one style. Only the side changes, and the chip flips when there is no room.
+
+<Canvas of={Stories.Open} />
+
+## 6. States
+
+<Canvas of={Stories.Open} />
+
+| State                    | Behavior                                                                            | Source                |
+| ------------------------ | ----------------------------------------------------------------------------------- | --------------------- |
+| Closed                   | Nothing is shown.                                                                   | n/a                   |
+| Open                     | Shows on hover and on keyboard focus of the trigger, at once, with no animation.    | P11.1, WCAG 1.4.13    |
+| Dismissed                | Escape hides it without moving focus. It stays while the pointer is over it.        | WCAG 1.4.13           |
+| Focus                    | The trigger's own 2px ring. The chip itself is not focusable.                       | tokens.md, WCAG 2.4.7 |
+| Hover, pressed           | Belong to the trigger button.                                                       | R01.5                 |
+| Disabled                 | A disabled trigger does not receive focus, so it shows no tooltip. Explain in text. | WCAG 3.3.2            |
+| Loading, error, selected | Not applicable.                                                                     | n/a                   |
+
+Contrast: the chip uses the same pair as page text and background: 16.04:1 in light, 18.92:1 in dark (WCAG 1.4.3).
+
+## 7. Behavior and accessibility
+
+- Keyboard: Tab to the trigger shows the tooltip. Escape hides it (WAI-ARIA tooltip).
+- The trigger needs its own accessible name (`aria-label`). The tooltip repeats it visually and is not the only name.
+- Touch: no hover, so no tooltip. The name must also be understandable from the icon and its context.
+- The chip is never the only place where information appears.
+
+<Canvas of={Stories.ShowsOnFocusAndHidesOnEscape} />
+
+## 8. Content
+
+- A short name in the imperative: "Copy booking link". Under about 40 characters.
+- No full sentences, no links, no buttons.
+- Long text wraps at 20rem. If it needs to wrap, it probably belongs in a popover.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: at most 20rem wide, flips to stay on screen.
+- 768px and 1440px: unchanged. The chip sits above the trigger by default.
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} include={["side", "label"]} />
+
+Parts: `TooltipProvider` (`delay`, 0 by default so a tooltip appears at once), `Tooltip` (`open`, `defaultOpen`, `onOpenChange`), `TooltipTrigger`, `TooltipContent`. The `label` control belongs to the story wrapper.
+
+## 11. Code
+
+```tsx
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger
+      render={
+        <Button
+          variant="secondary"
+          size="icon-dense"
+          aria-label="Copy booking link"
+        />
+      }
+    >
+      <CopyIcon aria-hidden />
+    </TooltipTrigger>
+    <TooltipContent>Copy booking link</TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <Button
+        variant="secondary"
+        size="icon-dense"
+        aria-label="Copy booking link"
+      >
+        <CopyIcon aria-hidden />
+      </Button>
+    }
+    goodWhy="The icon button has an accessible name; the tooltip only repeats it."
+    bad={
+      <p className="text-interface">
+        A tooltip on a disabled button saying “Add a price first”.
+      </p>
+    }
+    badWhy="Disabled buttons do not take focus and touch users never see a tooltip, so the reason is lost."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Popover](?path=/docs/primitives-popover--docs): longer content on click. [Button](?path=/docs/primitives-button--docs): the usual trigger. [Menu](?path=/docs/primitives-menu--docs): commands.

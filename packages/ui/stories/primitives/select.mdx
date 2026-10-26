@@ -1,0 +1,156 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import { Field, FieldLabel } from "@devmentor/ui/components/ui/field";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@devmentor/ui/components/ui/select";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./select.stories";
+
+<Meta of={Stories} />
+
+# Select
+
+## 1. Purpose
+
+Lets a person choose one value from a list that is too long to show as radio buttons.
+
+## 2. When to use
+
+- The start or end time of an availability window (a list of times on a 25-minute grid).
+- A list of five or more options where only the chosen one needs to stay visible.
+
+## 3. When not to use
+
+| Situation                                     | Use instead                                                                 |
+| --------------------------------------------- | --------------------------------------------------------------------------- |
+| Two to four options                           | A radio group (batch 2), so every option is visible                         |
+| Filtering a list by stack                     | Visible filters that are easy to remove (pattern: filtered list)            |
+| A long list that needs typing to find an item | A search field with results (not in this system yet; see "What is missing") |
+| Actions, not values                           | A menu (batch 4)                                                            |
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>
+      Trigger (required): the chosen value or a placeholder, and a chevron.
+    </li>
+    <li>List (required): opaque, bordered, no shadow.</li>
+    <li>Options (required) and group labels (optional).</li>
+    <li>Check mark on the chosen option (required).</li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+<Canvas of={Stories.Densities} />
+
+| Variant          | Choose it when                      | Source     |
+| ---------------- | ----------------------------------- | ---------- |
+| `default` (40px) | Forms. Same height as a text input. | R02.1      |
+| `dense` (32px)   | Filters and table rows.             | R01.1, P03 |
+
+## 6. States
+
+<Canvas of={Stories.StateMatrixStory} />
+
+| State            | Behavior                                                                                         | Source                                    |
+| ---------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------- |
+| Hover            | Border darkens to `--foreground`.                                                                | R01.5                                     |
+| Focus            | 2px ring in `--ring`, offset 2px.                                                                | tokens.md, WCAG 2.4.7                     |
+| Open             | The list is below the trigger, opaque, with a border. The highlighted option has an accent fill. | A01.2                                     |
+| Selected option  | Check mark and semibold text. Not fill alone.                                                    | tokens.md (selection cannot rely on fill) |
+| Disabled         | `--muted` fill, muted text. State the reason in the hint.                                        | WCAG 3.3.2                                |
+| Error            | Border in `--destructive` plus an error message in the Form field.                               | WCAG 1.4.1, 3.3.1                         |
+| Pressed, loading | Not applicable.                                                                                  | n/a                                       |
+
+## 7. Behavior and accessibility
+
+- Keyboard: Tab focuses the trigger. Enter, Space or Arrow Down opens. Arrow keys move, Enter chooses, Escape closes and returns focus to the trigger.
+- Role: `combobox` on the trigger with a `listbox` of `option`s (WAI-ARIA Authoring Practices, select-only combobox).
+- The label comes from a Form field. Without one, give the trigger an `aria-label`.
+- Each option is at least 32px high (WCAG 2.5.8). The list renders outside the story but takes the active theme from the document root.
+
+<Canvas of={Stories.ChooseWithKeyboard} />
+
+## 8. Content
+
+- Placeholder: an instruction ("Choose a start time"), not a repeat of the label.
+- Options: short, sortable values. A time has the same format everywhere (24-hour, with the zone in the group label).
+- Long option text is clipped to one line in the trigger and does not wrap in the list: keep options under about 40 characters.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: full width. The list is as wide as the trigger.
+- 768px and 1440px: the trigger keeps a fixed column width in forms.
+- The native mobile picker is not used. Targets stay at least 32px.
+
+## 10. API
+
+<ArgTypes
+  of={Stories.Playground}
+  include={["density", "disabled", "invalid"]}
+/>
+
+The real components are `Select`, `SelectTrigger`, `SelectValue`, `SelectContent`, `SelectGroup`, `SelectLabel` and `SelectItem`. `Select` takes `value`, `defaultValue`, `onValueChange` and `disabled`.
+
+## 11. Code
+
+```tsx
+<Field>
+  <FieldLabel>Start time</FieldLabel>
+  <Select defaultValue="10:00">
+    <SelectTrigger>
+      <SelectValue placeholder="Choose a start time" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="10:00">10:00</SelectItem>
+      <SelectItem value="10:25">10:25</SelectItem>
+    </SelectContent>
+  </Select>
+</Field>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <Field>
+        <FieldLabel>Start time</FieldLabel>
+        <Select defaultValue="10:00">
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="10:00">10:00</SelectItem>
+          </SelectContent>
+        </Select>
+      </Field>
+    }
+    goodWhy="A visible label names the control."
+    bad={
+      <Select defaultValue="10:00">
+        <SelectTrigger aria-label="Start time">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="10:00">10:00</SelectItem>
+        </SelectContent>
+      </Select>
+    }
+    badWhy="Without a visible label, only screen reader users know what it is."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Text input](?path=/docs/primitives-text-input--docs), [Form field](?path=/docs/primitives-form-field--docs).
+- Radio group (batch 2) for few options; menu (batch 4) for actions.
+- Patterns: form, availability.

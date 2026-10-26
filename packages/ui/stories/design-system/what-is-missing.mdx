@@ -1,0 +1,53 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Design system/What is missing" />
+
+# What is missing
+
+An honest list of what the design system does not cover yet: backlog coverage first, then parts and states that were recorded as gaps during the build. Nothing here is hidden behind "ready".
+
+**Readiness** means: **Built** (components and screens exist with states), **Proposal** (built from the brief with no specification; needs approval) or **Gap** (not designed). **Priority** is a proposal for the Product owner to decide, not a decision: **P1** blocks the first paid session, **P2** is needed in the pilot, **P3** can wait.
+
+## Backlog coverage
+
+| Backlog item                                                           | Component or screen                                        | Readiness               | State of the work                                                                                                                                                                 | Priority |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| E01-T01 Platform primitives                                            | Form kit: `Field`, `useForm`, `FormFeedback`; sign-in page | Built, sign-in is a Gap | The sign-in page is not designed                                                                                                                                                  | P1       |
+| E01-S01 A mentor signs in and sets up a profile                        | Join, Profile, Admin invitations                           | Built                   | The mentor's public work links (up to five, https only) are not in the profile form                                                                                               | P2       |
+| E01-S02 A mentor publishes bookable availability                       | Availability                                               | Built                   | Focus after a window is removed is a page decision                                                                                                                                | P3       |
+| E02-S01 A mentee opens a mentor by link or from the directory          | Directory, Mentor page                                     | Built                   | No search field with results; no paging for a long directory; no combobox filter                                                                                                  | P2       |
+| E02-S02 A mentee sees prices and the nearest slot                      | Mentor page                                                | Built                   |                                                                                                                                                                                   |          |
+| E02-S03 A mentee signs in, asks a question, books and gets notified    | Booking page, Notifications                                | Built                   | Sign-in page; the unread count in a header (no application shell in the plan)                                                                                                     | P1       |
+| E02-S04 A mentee sees and cancels their bookings                       | My bookings, Cancel dialog                                 | Built                   | A booking's own page `/bookings/[id]`; cancel wording still says "due when payments process" until E03-S02                                                                        | P2       |
+| E02-S05 A mentor sees booked sessions and can cancel one               | Mentor bookings, Cancel dialog                             | Built                   |                                                                                                                                                                                   |          |
+| E03-S01 A mentee pays at booking in Stripe test mode                   | Payment step                                               | Proposal                | Stripe's own form and its errors are not designed; no receipt or invoice                                                                                                          | P1       |
+| E03-S02 Refunds, cancellations and no-shows follow R04 and R09         | Refund outcome line                                        | Proposal                | The cancel dialog does not use it yet                                                                                                                                             | P1       |
+| E03-S03 A mentor receives their price minus 20%                        | Mentor earnings, Payout row                                | Proposal                | Mentee payment history is not designed                                                                                                                                            | P2       |
+| E03-S03-T01 The Tech Lead confirms the Stripe Connect details          | Mentor payout onboarding                                   | Gap                     | No screen for connecting a payout account                                                                                                                                         | P1       |
+| E04-S01 A mentee and mentor exchange text in a session                 | Session, Conversation                                      | Proposal                | Code in messages, message length limit, send shortcut, "Report a problem", attendance ("has not joined yet")                                                                      | P1       |
+| E04-S02 A mentee answers a usefulness check                            | Usefulness check                                           | Proposal                |                                                                                                                                                                                   | P2       |
+| E05-S01 The operator sees the gate status                              | Gate                                                       | Proposal                | The two-week clock per mentor is not drawn                                                                                                                                        | P2       |
+| E05-S02 The operator sees timing, payments, refunds and booking source | Metrics                                                    | Proposal                | Definitions of the measures (median, week boundaries) are not specified                                                                                                           | P2       |
+| E05-S03 The operator suspends a mentor and every action is logged      | Suspend a mentor, Audit log, Operator action dialog        | Proposal                | Viewing a session in dispute and recording its outcome; audit log filters and paging; a mentor list that leads to a mentor's page; the operator sign-in and 12-hour session state | P2       |
+| E06 Later                                                              | Not in scope                                               | Not applicable          | Vault, MCP and paid async questions are in "Later" (D01)                                                                                                                          |          |
+
+## Parts the system does not have
+
+| Missing                                                 | Why it matters                                                                                                     | Where it was recorded    | Priority |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------ | -------- |
+| A search field with results                             | The directory needs a way to find a mentor by name once the list grows. Use a labelled text input until it exists. | Batches 1, 2, 3, 4 and B | P2       |
+| A side panel                                            | No case in the screens needs one yet. A dialog or a separate page is used.                                         | How to choose            | P3       |
+| Paging or infinite scrolling                            | The directory and long lists show everything.                                                                      | Batch B                  | P2       |
+| An application shell (header, navigation, unread count) | Screens use a documentation helper header. A short labelled navigation is chosen by R02.6, not designed.           | Batches A, B             | P1       |
+| A sign-in page                                          | Sign-in is needed before booking (D10).                                                                            | Batches A, B             | P1       |
+| A booking's own page                                    | The session link and the full question live there.                                                                 | Batch B                  | P2       |
+| An editable availability window                         | Windows can be added and removed; no edit action was designed.                                                     | This page                | P3       |
+| A chart                                                 | Metrics are numbers only; no chart was designed.                                                                   | This page                | P3       |
+| Code formatting inside a message                        | R01.2 and P09.2 ask for a code font; no spec says how code is marked.                                              | Batch C                  | P2       |
+
+## Not checked
+
+- Screen reader output for every component: roles, names and focus were checked with axe, attribute assertions and interaction tests only.
+- Real mobile browsers: native date and time inputs, the on-screen keyboard with the composer, touch behaviour of tooltips and popovers.
+- A real operator session with the 12-hour rule, and real data volumes.
+- The agent test (an agent building a new screen from these pages) has not been run. See `packages/ui/POSTEP.md`.

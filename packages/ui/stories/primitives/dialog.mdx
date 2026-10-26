@@ -1,0 +1,190 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import { Button } from "@devmentor/ui/components/ui/button";
+import {
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@devmentor/ui/components/ui/dialog";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./dialog.stories";
+
+<Meta of={Stories} />
+
+# Dialog
+
+## 1. Purpose
+
+Takes a person through one short task, such as filling in a reason, without leaving the page they are on.
+
+## 2. When to use
+
+- A mentor adds or edits one availability window and needs two fields, not a page (E01).
+- A mentor cancels a booked session and must give a reason first (E02-S05, D34).
+- A short task whose result returns to the same page.
+
+## 3. When not to use
+
+| Situation                                                  | Use instead                                                                  |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| A yes or no question about something that cannot be undone | [Confirmation dialog](?path=/docs/primitives-confirmation-dialog--docs)      |
+| Help text or an explanation next to a control              | [Popover](?path=/docs/primitives-popover--docs)                              |
+| A long form, such as the whole mentor profile              | A separate page. A dialog must fit on a 320px screen without long scrolling. |
+| Showing the result of an action                            | An alert on the page or a [toast](?path=/docs/primitives-toast--docs)        |
+| A dialog opened from a dialog                              | Do not stack. Finish the first task, or move the second one to a page.       |
+
+Sources: WAI-ARIA Authoring Practices (dialog, modal), brief D34, R01.5 (one clear main action).
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>Scrim (required): flat dim, `--scrim`. No blur (A01.2).</li>
+    <li>
+      Panel (required): opaque `--popover` fill, 1px border, 10px radius, no
+      shadow.
+    </li>
+    <li>
+      Title (required): names the task. It is the dialog's accessible name.
+    </li>
+    <li>Description (optional): one sentence of context.</li>
+    <li>Body (optional): fields or text, with the same spacing as a page.</li>
+    <li>
+      Footer (required): `--muted` band with Cancel first and the main action
+      last.
+    </li>
+    <li>
+      Close button (optional but on by default): the visible way out besides
+      Escape.
+    </li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+<Canvas of={Stories.Open} />
+
+| Variant                   | Choose it when                                                   | Source   |
+| ------------------------- | ---------------------------------------------------------------- | -------- |
+| Default                   | Any task. The close button stays visible in the corner.          | WAI-ARIA |
+| `showCloseButton={false}` | The footer always offers Cancel and nothing else can strand you. | Proposal |
+
+<Canvas of={Stories.WithoutCloseButton} />
+
+There is one width (`max-w-md`, 28rem) and one surface. A wider or full-screen dialog is a page.
+
+## 6. States
+
+<Canvas of={Stories.Open} />
+
+| State             | Behavior                                                                                                        | Source                |
+| ----------------- | --------------------------------------------------------------------------------------------------------------- | --------------------- |
+| Closed            | Only the trigger is shown.                                                                                      | n/a                   |
+| Open              | Panel centered over the scrim. Page behind is inert. It appears at once, with no animation.                     | P11.1, WAI-ARIA       |
+| Focus             | Initial focus goes inside the dialog; the close button and footer buttons use the shared 2px ring.              | tokens.md, WCAG 2.4.7 |
+| Hover, pressed    | Belong to the buttons inside. See [Button](?path=/docs/primitives-button--docs).                                | R01.5                 |
+| Disabled, loading | A disabled action explains why in text above it. A saving action uses the Button `loading` prop and stays open. | WCAG 3.3.2, P12.1     |
+| Error             | Field errors stay in the Form field. A server error goes in an Alert inside the body. The dialog stays open.    | WCAG 3.3.1, P12.2     |
+| Selected          | Not applicable.                                                                                                 | n/a                   |
+
+The scrim is a proposal: the references describe no overlay. Light and dark themes both separate the panel by its border (4.61:1 on `--card` in light, 6.76:1 in dark), not by the scrim or a shadow.
+
+## 7. Behavior and accessibility
+
+- Keyboard: Enter or Space on the trigger opens. Tab and Shift+Tab stay inside the dialog. Escape closes and focus returns to the trigger (WAI-ARIA dialog, WCAG 2.1.2, 2.4.3).
+- Role: `dialog` with `aria-modal`, named by `DialogTitle` and described by `DialogDescription`.
+- Everything behind the dialog is inert while it is open, including in the dark theme and when it is portalled outside the story.
+- Click targets: close button 32px, footer buttons 40px (WCAG 2.5.8).
+- Do not auto-focus a destructive action. Cancel is first in the DOM, so it is reached first.
+
+<Canvas of={Stories.OpenAndCloseWithKeyboard} />
+
+## 8. Content
+
+- Title: a verb and an object ("Add availability window"). Not "Are you sure?".
+- Footer buttons: a verb and object ("Save window", "Cancel session"). Never "OK" or "Yes".
+- Keep descriptions to one or two sentences. State the zone when showing a time (Q3, E02 spec).
+- Long titles wrap. At 320px they wrap onto three or four lines and the dialog scrolls.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: full width minus 16px on each side. The footer stacks and the main action is on top. The viewport scrolls if the dialog is taller than the screen.
+- 768px and 1440px: 28rem wide, centered. The footer is one row with the main action on the right.
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} include={["showCloseButton"]} />
+
+Parts: `Dialog` (`open`, `defaultOpen`, `onOpenChange`), `DialogTrigger`, `DialogContent`, `DialogHeader`, `DialogTitle`, `DialogDescription`, `DialogBody`, `DialogFooter`, `DialogClose`. Use `render={<Button />}` on a trigger or close part to style it as a button.
+
+## 11. Code
+
+```tsx
+<Dialog>
+  <DialogTrigger render={<Button variant="secondary" />}>
+    Add window
+  </DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Add availability window</DialogTitle>
+      <DialogDescription>Times are shown in Europe/Warsaw.</DialogDescription>
+    </DialogHeader>
+    <DialogBody>{/* Form fields */}</DialogBody>
+    <DialogFooter>
+      <DialogClose render={<Button variant="secondary" />}>Cancel</DialogClose>
+      <Button>Save window</Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+
+Typical: a mentor cancels a booked session and must give a reason.
+
+<Canvas of={Stories.TaskDialog} />
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <div className="flex flex-col gap-within-group text-interface">
+        <p className="font-emphasis">
+          Cancel Friday 14:00 with Marta Zielińska?
+        </p>
+        <div className="flex gap-within-group">
+          <Button variant="secondary" size="dense">
+            Keep session
+          </Button>
+          <Button variant="destructive" size="dense">
+            Cancel session
+          </Button>
+        </div>
+      </div>
+    }
+    goodWhy="The title names the object and both buttons say what they do."
+    bad={
+      <div className="flex flex-col gap-within-group text-interface">
+        <p className="font-emphasis">Are you sure?</p>
+        <div className="flex gap-within-group">
+          <Button variant="secondary" size="dense">
+            No
+          </Button>
+          <Button size="dense">OK</Button>
+        </div>
+      </div>
+    }
+    badWhy="“Are you sure?” and “OK” force the person to remember what is being decided."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Confirmation dialog](?path=/docs/primitives-confirmation-dialog--docs): a question that blocks the page. [Popover](?path=/docs/primitives-popover--docs): non-modal help. [Form field](?path=/docs/primitives-form-field--docs): fields inside the body.
+- Patterns: form (inside a dialog), deletion confirmation.

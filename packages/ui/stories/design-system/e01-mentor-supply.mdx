@@ -1,0 +1,103 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Design system/E01 Mentor supply" />
+
+# E01 Mentor supply
+
+An invited mentor signs in, sets up a profile, chooses to be listed or link-only, and publishes availability. The operator creates the invitations. Source: [E01 spec](https://github.com/azsonic/ai_techleaders_local/blob/main/.ai/specs/2026-10-24-mentor-supply.md) (`.ai/specs/2026-10-24-mentor-supply.md`), decisions D05, D06, D07, D08, D23, D24, rules R05, R08, R11.
+
+## Flow
+
+1. The operator creates an invitation and copies the link, shown once (**Admin invitations**).
+2. The mentor opens the link (**Join**), signs in if needed and accepts.
+3. The mentor fills the profile and saves it (**Profile**). Listing stays off until both prices and a stack are saved.
+4. The mentor adds availability windows and sees what mentees could book (**Availability**).
+5. The mentor copies the share link (**Profile**, share link). Mentees reach the page in E02.
+
+## Product components
+
+| Component      | Purpose                                             | Data states covered                                     | Stories                                                                               |
+| -------------- | --------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Stack badge    | Names one of four stacks                            | All four                                                | [Stack badge](?path=/story/product-e01-mentor-supply-stack-badge--all-stacks)         |
+| Mentor card    | Main-object card: name, stacks, price, nearest slot | Loading, partial, long text, all stacks, public profile | [Mentor card](?path=/story/product-e01-mentor-supply-mentor-card--playground)         |
+| Share link     | Copy the mentor's own link                          | Copied, copy failed, long link                          | [Share link](?path=/story/product-e01-mentor-supply-share-link--playground)           |
+| Profile form   | Edit experience, stacks, prices, listing            | New, ready to list, long text, five API responses       | [Profile form](?path=/story/product-e01-mentor-supply-profile-form--new-mentor)       |
+| Window form    | Add one availability window                         | All form states                                         | [Window form](?path=/story/product-e01-mentor-supply-window-form--playground)         |
+| Window list    | Upcoming windows, remove with confirmation          | Loading, empty, error, lots, narrow, dialog states      | [Window list](?path=/story/product-e01-mentor-supply-window-list--playground)         |
+| Slot preview   | What a mentee could book                            | Loading, empty, error, partial, lots, narrow            | [Slot preview](?path=/story/product-e01-mentor-supply-slot-preview--playground)       |
+| Invitation row | One row of the operator table                       | Every status, long e-mail                               | [Invitation row](?path=/story/product-e01-mentor-supply-invitation-row--all-statuses) |
+
+Patterns used: [Form](?path=/docs/patterns-form--docs), [Deletion confirmation](?path=/docs/patterns-deletion-confirmation--docs).
+
+## Screens and state map
+
+Every state a screen can be in is a story. The "Source" column says where the state comes from.
+
+### Join (`/join/[token]`)
+
+| State                                    | Story                                                                                         | Source                    |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------- |
+| Signed in, valid invitation              | [Signed in](?path=/story/product-e01-mentor-supply-screens-join--signed-in)                   | E01 spec, UI/UX "Join"    |
+| Signed out                               | [Signed out](?path=/story/product-e01-mentor-supply-screens-join--signed-out)                 | E01 spec, UI/UX "Join"    |
+| Accepting                                | [Accepting](?path=/story/product-e01-mentor-supply-screens-join--accepting)                   | P12.1                     |
+| Already registered                       | [Already registered](?path=/story/product-e01-mentor-supply-screens-join--already-registered) | E01 spec, accept outcomes |
+| Expired, revoked or used                 | [Unusable](?path=/story/product-e01-mentor-supply-screens-join--unusable)                     | E01 spec, accept outcomes |
+| Bound to another e-mail                  | [Wrong e-mail](?path=/story/product-e01-mentor-supply-screens-join--wrong-email)              | E01 spec, accept outcomes |
+| GitHub account without a verified e-mail | [No verified e-mail](?path=/story/product-e01-mentor-supply-screens-join--no-verified-email)  | E01 spec, accept outcomes |
+| Server error                             | [Server error](?path=/story/product-e01-mentor-supply-screens-join--server-error)             | P12.2                     |
+
+### Profile (`/mentor/profile`)
+
+| State                                                      | Story                                                                                             | Source       |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------ |
+| New mentor, nothing saved                                  | [New mentor](?path=/story/product-e01-mentor-supply-screens-profile--new-mentor)                  | D06, D24     |
+| Saved and listed, share link                               | [Listed](?path=/story/product-e01-mentor-supply-screens-profile--listed)                          | D05, D06     |
+| Loading                                                    | [Loading](?path=/story/product-e01-mentor-supply-screens-profile--loading)                        | P11.1        |
+| Error                                                      | [Error](?path=/story/product-e01-mentor-supply-screens-profile--load-error)                       | P12.2        |
+| Signed-in user with no profile                             | [No profile](?path=/story/product-e01-mentor-supply-screens-profile--no-profile)                  | D23          |
+| Save: success, pending, field error, server error, offline | [Profile form: API responses](?path=/story/product-e01-mentor-supply-profile-form--api-responses) | Form pattern |
+
+### Availability (`/mentor/availability`)
+
+| State                           | Story                                                                                               | Source        |
+| ------------------------------- | --------------------------------------------------------------------------------------------------- | ------------- |
+| No windows yet                  | [Empty](?path=/story/product-e01-mentor-supply-screens-availability--empty)                         | E01 spec      |
+| Windows and preview             | [With windows](?path=/story/product-e01-mentor-supply-screens-availability--with-windows)           | E01 spec, R08 |
+| Windows exist, nothing bookable | [No bookable slots](?path=/story/product-e01-mentor-supply-screens-availability--no-bookable-slots) | R08           |
+| Loading                         | [Loading](?path=/story/product-e01-mentor-supply-screens-availability--loading)                     | P11.1         |
+| Error                           | [Error](?path=/story/product-e01-mentor-supply-screens-availability--load-error)                    | P12.2         |
+| Lots of data                    | [Many windows](?path=/story/product-e01-mentor-supply-screens-availability--many-windows)           | R01.1         |
+| Add a window: every response    | [Window form: API responses](?path=/story/product-e01-mentor-supply-window-form--api-responses)     | Form pattern  |
+| Remove a window                 | [Deletion confirmation](?path=/docs/patterns-deletion-confirmation--docs)                           | Pattern       |
+
+### Admin invitations (`/admin/invitations`)
+
+| State                                   | Story                                                                                        | Source                                                             |
+| --------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Invitations in every status             | [List](?path=/story/product-e01-mentor-supply-screens-admin-invitations--list)               | D23                                                                |
+| No invitations yet                      | [Empty](?path=/story/product-e01-mentor-supply-screens-admin-invitations--empty)             | E01 spec                                                           |
+| Loading                                 | [Loading](?path=/story/product-e01-mentor-supply-screens-admin-invitations--loading)         | P11.1                                                              |
+| Error                                   | [Error](?path=/story/product-e01-mentor-supply-screens-admin-invitations--load-error)        | P12.2                                                              |
+| Created, link shown once                | [Created](?path=/story/product-e01-mentor-supply-screens-admin-invitations--created)         | E01 spec                                                           |
+| Create refused, person already a mentor | [Conflict](?path=/story/product-e01-mentor-supply-screens-admin-invitations--conflict)       | E01 spec, edge cases                                               |
+| Lots of data                            | [Many](?path=/story/product-e01-mentor-supply-screens-admin-invitations--many)               | R01.1                                                              |
+| Revoke: reason required                 | [Revoke open](?path=/story/product-e01-mentor-supply-screens-admin-invitations--revoke-open) | R13, [Operator action](?path=/docs/patterns-operator-action--docs) |
+| Revoked, after the server confirmed     | [Revoked](?path=/story/product-e01-mentor-supply-screens-admin-invitations--revoked)         | R13, P12.1                                                         |
+
+The public profile card (`/mentors/[slug]`) is the [Mentor card](?path=/story/product-e01-mentor-supply-mentor-card--public-profile), public profile variant.
+
+## Source files
+
+| Part                                 | Path                                                                                |
+| ------------------------------------ | ----------------------------------------------------------------------------------- |
+| Components                           | `packages/ui/src/components/{mentors,availability,invitations}/`                    |
+| Form hook and feedback               | `packages/ui/src/hooks/use-form.ts`, `packages/ui/src/components/form-feedback.tsx` |
+| Stories                              | `packages/ui/stories/product/e01/`                                                  |
+| Documentation helpers (not exported) | `packages/ui/.storybook/docs/{mock-api,screen,e01-data}`                            |
+
+## Product work that remains
+
+- The pages themselves (`/join/[token]`, `/mentor/profile`, `/mentor/availability`, `/admin/invitations`, `/mentors/[slug]`) are not built in the application; these stories are their compositions.
+- **Not designed yet, and recorded for "What is missing":** the mentor's public work links (up to five, https only); the sign-in page; the revoke action with a required reason (operator action pattern, batch D, R13); where focus goes after a window is removed.
+- The price bounds and stacks live in `components/mentors/pricing.ts` until `@devmentor/core` has its mentor schemas.
+- Messages for the server's field errors are written by the server; this system only shows them.

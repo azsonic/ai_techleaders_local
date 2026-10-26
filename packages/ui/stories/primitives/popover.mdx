@@ -1,0 +1,143 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import { Button } from "@devmentor/ui/components/ui/button";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./popover.stories";
+
+<Meta of={Stories} />
+
+# Popover
+
+## 1. Purpose
+
+Shows a small amount of extra information or one small control next to the thing that opened it, without leaving the page.
+
+## 2. When to use
+
+- Explaining a time shown in the person's zone while a limit counts in Europe/Warsaw (E02 spec, Q3).
+- A short note behind a "Why?" link, such as why a slot is no longer offered.
+- Information the person asks for. It opens on click and stays until dismissed.
+
+## 3. When not to use
+
+| Situation                                    | Use instead                                                            |
+| -------------------------------------------- | ---------------------------------------------------------------------- |
+| The name of an icon button                   | [Tooltip](?path=/docs/primitives-tooltip--docs)                        |
+| A list of commands                           | [Menu](?path=/docs/primitives-menu--docs)                              |
+| A task with fields and a Save button         | [Dialog](?path=/docs/primitives-dialog--docs)                          |
+| Information a person must read before acting | Put it on the page, next to the control. Never hide it behind a click. |
+| An error                                     | The field error or an [alert](?path=/docs/primitives-alert--docs)      |
+
+Sources: WAI-ARIA Authoring Practices (disclosure, dialog non-modal), WCAG 1.4.13, brief D31.
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>
+      Trigger (required): a button with a text label. It carries
+      `aria-expanded`.
+    </li>
+    <li>
+      Panel (required): opaque `--popover` fill, 1px border, 10px radius, no
+      shadow, no arrow.
+    </li>
+    <li>Title (optional): names the content.</li>
+    <li>Description (optional) and any content or controls.</li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+There is one style. Only the side changes, and the panel flips when there is no room.
+
+<Canvas of={Stories.Open} />
+
+| Prop   | Choose it when                                                | Source   |
+| ------ | ------------------------------------------------------------- | -------- |
+| `side` | The default `bottom` hides something the person needs to see. | Proposal |
+
+## 6. States
+
+<Canvas of={Stories.Open} />
+
+| State          | Behavior                                                                                     | Source                |
+| -------------- | -------------------------------------------------------------------------------------------- | --------------------- |
+| Closed         | Trigger has `aria-expanded="false"`.                                                         | WAI-ARIA              |
+| Open           | Panel beside the trigger, no animation. Trigger has `aria-expanded="true"`.                  | P11.1                 |
+| Focus          | The trigger uses the shared 2px ring. Controls inside the panel use the same ring.           | tokens.md, WCAG 2.4.7 |
+| Hover, pressed | Belong to the trigger button.                                                                | R01.5                 |
+| Disabled       | Disable the trigger and say why in text next to it, like any disabled button.                | WCAG 3.3.2            |
+| Loading, error | Content that loads uses a skeleton inside the panel. An error is shown as text in the panel. | P12.2                 |
+| Selected       | Not applicable.                                                                              | n/a                   |
+
+## 7. Behavior and accessibility
+
+- Keyboard: Enter or Space on the trigger opens. Tab continues through the panel's controls, if it has any. Escape closes and focus returns to the trigger (WAI-ARIA, WCAG 2.1.2).
+- Role: the panel is a non-modal `dialog` named by its title. The page behind stays usable.
+- Dismissible, hoverable and persistent: it stays open until the person closes it, a click outside or Escape (WCAG 1.4.13).
+- The trigger is at least 32px high (WCAG 2.5.8).
+
+<Canvas of={Stories.OpenAndCloseWithKeyboard} />
+
+## 8. Content
+
+- Title: the question the person has ("Which time zone?"). Body: two or three sentences at most.
+- A time always carries its zone name. Include the weekday and 24-hour time.
+- Long content wraps. The panel is 18rem wide and never wider than the screen.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: the panel is at most the available width and flips above or below to stay on screen.
+- 768px and 1440px: 18rem wide, beside its trigger.
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} include={["side"]} />
+
+Parts: `Popover` (`open`, `defaultOpen`, `onOpenChange`), `PopoverTrigger`, `PopoverContent`, `PopoverHeader`, `PopoverTitle`, `PopoverDescription`. Use `render={<Button />}` on the trigger.
+
+## 11. Code
+
+```tsx
+<Popover>
+  <PopoverTrigger render={<Button variant="secondary" size="dense" />}>
+    Fri 14:00 (Europe/London)
+  </PopoverTrigger>
+  <PopoverContent>
+    <PopoverHeader>
+      <PopoverTitle>Which time zone?</PopoverTitle>
+      <PopoverDescription>
+        The two-hour cancellation limit counts in Europe/Warsaw.
+      </PopoverDescription>
+    </PopoverHeader>
+  </PopoverContent>
+</Popover>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <p className="text-interface">
+        The cancellation rule is written under the booking summary. A popover
+        adds the zone detail for those who want it.
+      </p>
+    }
+    goodWhy="The rule the person must act on is on the page; the popover holds only the extra explanation."
+    bad={
+      <p className="text-interface">
+        “Cancel at least 2 hours before (see info)” with the 2-hour rule only
+        inside the popover.
+      </p>
+    }
+    badWhy="Information needed to decide is hidden behind a click, and people who never click it will miss it."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Tooltip](?path=/docs/primitives-tooltip--docs): the name of a control, not content. [Menu](?path=/docs/primitives-menu--docs): commands. [Dialog](?path=/docs/primitives-dialog--docs): a task.
+- Patterns: booking summary, detail view.

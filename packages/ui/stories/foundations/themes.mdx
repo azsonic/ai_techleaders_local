@@ -1,0 +1,36 @@
+import { Meta, Unstyled } from "@storybook/addon-docs/blocks";
+import { ThemePair } from "../../.storybook/docs/helpers";
+import { Button } from "@devmentor/ui/components/ui/button";
+
+<Meta title="Foundations/Themes" />
+
+# Themes
+
+DevMentor has a light and a dark theme. Both define every semantic token and both pass the contrast table on the Color page.
+
+- Light is the default, defined on `:root` in `src/styles/tokens.css`.
+- Dark redefines only the tokens that change, under `.dark`.
+- The theme switch in the Storybook toolbar adds or removes `dark` on `<html>`. Dialogs, menus and popovers render outside the story, so they receive the theme from the root too.
+
+<Unstyled>
+  <ThemePair>
+    <div className="flex flex-col gap-within-group border border-border bg-card p-panel">
+      <p className="text-conversation font-emphasis">Booking confirmed</p>
+      <p className="text-interface text-muted-foreground">
+        Tuesday, 14:00, 25 minutes
+      </p>
+      <div className="flex flex-wrap gap-within-group">
+        <Button>Open session</Button>
+        <Button variant="outline">Cancel booking</Button>
+      </div>
+    </div>
+  </ThemePair>
+</Unstyled>
+
+## Rules
+
+| Rule                                                                                                       | Source                            |
+| ---------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| Define a token in both themes at once.                                                                     | tokens.md contract                |
+| Recalculate contrast for every changed pair before saving.                                                 | tokens.md contract                |
+| Components never branch on theme (`dark:` classes with colors). The token changes, the component does not. | Rule 3 of the design system brief |

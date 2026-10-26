@@ -1,0 +1,133 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@devmentor/ui/components/ui/alert";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./alert.stories";
+
+<Meta of={Stories} />
+
+# Alert
+
+## 1. Purpose
+
+Tells a person something about the page they are on, next to the content it concerns, and what it means for them.
+
+## 2. When to use
+
+- While paid booking is closed: "Booking opens soon" in place of the slot picker (D31).
+- A failed payment or a slot taken at the same moment, where the person must act (price changed, slot taken).
+- The outcome of a cancellation: "Full refund due when payments process" (R04, R09).
+
+## 3. When not to use
+
+| Situation                                                | Use instead                                                            |
+| -------------------------------------------------------- | ---------------------------------------------------------------------- |
+| A wrong value in one field                               | The error in the [Form field](?path=/docs/primitives-form-field--docs) |
+| Content that failed to load                              | [Error state](?path=/docs/primitives-error-state--docs)                |
+| A short confirmation after the server accepted something | A toast (batch 4). **An error that needs action is never a toast.**    |
+| A decision that needs an answer                          | A confirmation dialog (batch 4)                                        |
+
+Sources: WAI-ARIA Authoring Practices (alert), brief D31, R04, R09.
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>
+      Icon (always, added by the component, `aria-hidden`). Information or
+      warning shape, so meaning is not only color.
+    </li>
+    <li>Title (required): what happened, in a sentence.</li>
+    <li>
+      Description (optional): what to do next, with a link or button if needed.
+    </li>
+    <li>
+      Border: `--border` for information, `--destructive` for a failure. Opaque
+      card fill, no shadow.
+    </li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+<Canvas of={Stories.Variants} />
+
+| Variant       | Choose it when                                                                    | Source       |
+| ------------- | --------------------------------------------------------------------------------- | ------------ |
+| `default`     | Information the person may read when ready. Announced politely (`role="status"`). | WAI-ARIA     |
+| `destructive` | Something failed or cannot continue. Announced at once (`role="alert"`).          | P12.1, P12.2 |
+
+<Canvas of={Stories.RefundOutcome} />
+
+## 6. States
+
+An alert has no interactive states: no hover, focus, pressed, disabled, loading or selected. It is either on screen or not. It cannot be dismissed. Links and buttons inside it are normal controls.
+
+## 7. Behavior and accessibility
+
+- `default` is `role="status"` (polite). `destructive` is `role="alert"` (assertive). Screen readers announce the message when it appears.
+- Insert an alert near the content it concerns; do not move focus to it unless it blocks the task.
+- Text contrast: foreground on card 16.76:1, muted on card 7.32:1, red border 6.15:1 (WCAG 1.4.3, 1.4.11).
+
+<Canvas of={Stories.AnnouncesByVariant} />
+
+## 8. Content
+
+- Title: what happened ("The payment did not go through"). Description: what to do ("Try another card").
+- Say whether anything was charged. Never "Error" alone, never "Invalid".
+- Keep titles to one sentence. Refund outcomes use "due when payments process", never "you have been refunded" before it is true (E02 spec).
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- Full width of its container at every size. At 320px title and description wrap; the icon stays in its own column.
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} include={["variant"]} />
+
+Parts: `AlertTitle`, `AlertDescription`.
+
+## 11. Code
+
+```tsx
+<Alert variant="destructive">
+  <AlertTitle>The payment did not go through</AlertTitle>
+  <AlertDescription>
+    You were not charged. Try another card or{" "}
+    <TextLink href="/mentors">choose another slot</TextLink>.
+  </AlertDescription>
+</Alert>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <Alert variant="destructive">
+        <AlertTitle>The payment did not go through</AlertTitle>
+        <AlertDescription>
+          You were not charged. Try another card.
+        </AlertDescription>
+      </Alert>
+    }
+    goodWhy="It says what happened, whether money moved and what to do."
+    bad={
+      <Alert variant="destructive">
+        <AlertTitle>Error</AlertTitle>
+      </Alert>
+    }
+    badWhy="“Error” gives no cause and no next step."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Error state](?path=/docs/primitives-error-state--docs): replaces content that failed to load. [Form field](?path=/docs/primitives-form-field--docs): errors for one field.
+- Toast, confirmation dialog (batch 4).
+- Patterns: form (server error), booking.

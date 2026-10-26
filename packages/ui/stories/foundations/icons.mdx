@@ -1,0 +1,25 @@
+import { Meta, Unstyled } from "@storybook/addon-docs/blocks";
+import { IconSamples } from "../../.storybook/docs/helpers";
+
+<Meta title="Foundations/Icons" />
+
+# Icons
+
+**Library:** Lucide (`lucide-react`), the library in `components.json`. Icons come from it only. No custom SVG, no emoji, no sparkles.
+
+<Unstyled>
+  <IconSamples />
+</Unstyled>
+
+## Sizes
+
+Icons take the size of the control they sit in: 16px by default (`size-4`), 14px in small controls, 12px in extra-small ones. These are the sizes the current Button uses and are shown here as they exist. They are not yet reviewed in stage 2.
+
+## When an icon needs a label
+
+| Situation                       | Rule                                                                | Source            |
+| ------------------------------- | ------------------------------------------------------------------- | ----------------- |
+| Icon beside a text label        | Decorative: `aria-hidden`.                                          | WCAG 1.1.1        |
+| Icon-only button                | Needs an accessible name (`aria-label`) and a visible tooltip.      | WCAG 4.1.2, 1.1.1 |
+| Icon that carries a status      | Add the status text next to it. Color or shape alone is not enough. | WCAG 1.4.1        |
+| Decoration in labels and status | Do not use. Use text labels for controls and statuses.              | R02.5, A01.3      |

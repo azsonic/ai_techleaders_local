@@ -1,0 +1,123 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import { Avatar } from "@devmentor/ui/components/ui/avatar";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./avatar.stories";
+
+<Meta of={Stories} />
+
+# Avatar
+
+## 1. Purpose
+
+Marks who a message or a card belongs to, so people can follow who said what.
+
+## 2. When to use
+
+- Next to the author and time of a message in a session (R02.3).
+- On a mentor card or profile beside the display name.
+
+Where it appears is a **proposal**: the brief does not mention mentor photos. The Product owner approved adding an avatar on 2026-10-25 and left its use to this system.
+
+## 3. When not to use
+
+| Situation                   | Use instead                                               |
+| --------------------------- | --------------------------------------------------------- |
+| A rating or a trust signal  | Public-work links and experience text (N02)               |
+| Decoration, or an AI symbol | Nothing (R02.5, A01.3)                                    |
+| A status                    | [Status badge](?path=/docs/primitives-status-badge--docs) |
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>
+      Container: square with a control radius and a 1px border (required).
+    </li>
+    <li>Image (optional). Hides itself if it fails to load.</li>
+    <li>
+      Initials (required fallback): one or two capital letters from the name, as
+      text.
+    </li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+<Canvas of={Stories.Sizes} />
+
+| Size           | Choose it when                         | Source       |
+| -------------- | -------------------------------------- | ------------ |
+| `xs` 24px      | Message attribution in a dense thread. | R01.1, R02.3 |
+| `default` 32px | Browsing rows and cards.               | R01.1        |
+| `lg` 40px      | A profile header or a booking summary. | Proposal     |
+
+## 6. States
+
+Static component. It has no hover, focus, pressed, disabled, loading or error state. It shows **image** or **initials**.
+
+| State                       | Behavior                                             | Source |
+| --------------------------- | ---------------------------------------------------- | ------ |
+| Image loaded                | The image fills the square.                          | n/a    |
+| No image, loading or failed | Initials on a muted fill. Never a broken image icon. | n/a    |
+
+## 7. Behavior and accessibility
+
+- Not interactive, not focusable. If it must be clickable, wrap it in a link or button with a name.
+- The avatar is an image named by the person's name. When the name is written next to it, set `decorative` so screen readers do not read it twice.
+- Initials against the muted fill measure 13.92:1 light (WCAG 1.4.3).
+
+## 8. Content
+
+- Initials come from the first and last word of the name ("Anna Kowalska" gives AK). A single name gives its first two letters. Empty gives "?".
+- Never show a different name than the one beside it.
+
+<Canvas of={Stories.LongNames} />
+
+## 9. Responsiveness
+
+- Fixed sizes. At 320px, keep the name to the right and let it wrap; the avatar does not shrink.
+
+## 10. API
+
+<ArgTypes
+  of={Stories.Playground}
+  include={["name", "size", "src", "decorative"]}
+/>
+
+## 11. Code
+
+```tsx
+<div className="flex items-center gap-within-group">
+  <Avatar name={author.displayName} decorative />
+  <span className="font-emphasis">{author.displayName}</span>
+  <time className="text-muted-foreground">14:25</time>
+</div>
+```
+
+<Canvas of={Stories.WithNameBeside} />
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <div className="flex items-center gap-within-group text-interface">
+        <Avatar name="Jan Nowak" decorative />
+        <span className="font-emphasis">Jan Nowak</span>
+      </div>
+    }
+    goodWhy="Decorative next to the name: the name is announced once."
+    bad={
+      <div className="flex items-center gap-within-group text-interface">
+        <Avatar name="Jan Nowak" />
+        <span className="font-emphasis">Jan Nowak</span>
+      </div>
+    }
+    badWhy="A screen reader says “Jan Nowak” twice."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Status badge](?path=/docs/primitives-status-badge--docs).
+- Patterns: detail view (mentor profile), session thread (attribution).

@@ -1,0 +1,630 @@
+import { Meta, Story, Unstyled } from "@storybook/addon-docs/blocks";
+import * as S0 from "../primitives/button.stories";
+import * as S1 from "../primitives/text-link.stories";
+import * as S2 from "../primitives/dropdown-menu.stories";
+import * as S3 from "../primitives/input.stories";
+import * as S4 from "../primitives/textarea.stories";
+import * as S5 from "../primitives/select.stories";
+import * as S6 from "../primitives/checkbox.stories";
+import * as S7 from "../primitives/radio-group.stories";
+import * as S8 from "../primitives/switch.stories";
+import * as S9 from "../primitives/field.stories";
+import * as S10 from "../primitives/card.stories";
+import * as S11 from "../primitives/separator.stories";
+import * as S12 from "../primitives/table.stories";
+import * as S13 from "../primitives/tabs.stories";
+import * as S14 from "../primitives/badge.stories";
+import * as S15 from "../primitives/avatar.stories";
+import * as S16 from "../primitives/alert.stories";
+import * as S17 from "../primitives/toast.stories";
+import * as S18 from "../primitives/skeleton.stories";
+import * as S19 from "../primitives/empty-state.stories";
+import * as S20 from "../primitives/error-state.stories";
+import * as S21 from "../primitives/dialog.stories";
+import * as S22 from "../primitives/alert-dialog.stories";
+import * as S23 from "../primitives/popover.stories";
+import * as S24 from "../primitives/tooltip.stories";
+import * as S25 from "../product/e01/stack-badge.stories";
+import * as S26 from "../product/e01/mentor-card.stories";
+import * as S27 from "../product/e01/share-link.stories";
+import * as S28 from "../product/e01/profile-form.stories";
+import * as S29 from "../product/e01/window-form.stories";
+import * as S30 from "../product/e01/window-list.stories";
+import * as S31 from "../product/e01/slot-preview.stories";
+import * as S32 from "../product/e01/invitation-row.stories";
+import * as S33 from "../product/e02/local-time.stories";
+import * as S34 from "../product/e02/booking-status.stories";
+import * as S35 from "../product/e02/booking-closed-notice.stories";
+import * as S36 from "../product/e02/length-choice.stories";
+import * as S37 from "../product/e02/slot-picker.stories";
+import * as S38 from "../product/e02/booking-summary.stories";
+import * as S39 from "../product/e02/booking-card.stories";
+import * as S40 from "../product/e02/cancel-dialog.stories";
+import * as S41 from "../product/e02/notification-row.stories";
+import * as S42 from "../product/e02/mentor-directory.stories";
+import * as S43 from "../product/e03/refund-outcome-line.stories";
+import * as S44 from "../product/e03/payout-row.stories";
+import * as S45 from "../product/e04/message-item.stories";
+import * as S46 from "../product/e04/composer.stories";
+import * as S47 from "../product/e04/conversation.stories";
+import * as S48 from "../product/e04/session-header.stories";
+import * as S49 from "../product/e04/usefulness-check.stories";
+import * as S50 from "../product/e05/gate-status.stories";
+import * as S51 from "../product/e05/metric-row.stories";
+import * as S52 from "../product/e05/operator-action-dialog.stories";
+import * as S53 from "../product/e05/audit-row.stories";
+
+<Meta title="Design system/Components" />
+
+# Components
+
+Every component in the system with a small working preview, its group, one sentence on what it does and where to read more. The previews are the real components; use the controls on each documentation page to change them. To choose between two components, go to [How to choose](?path=/docs/design-system-how-to-choose--docs).
+
+**Base components** are the shadcn `base-nova` components (built on Base UI, not Radix) adapted to the product's tokens. Each has a documentation page with 13 sections and a state matrix. **Product components** are built only from base components for one epic; their stories show the data states (loading, empty, error, partial data, lots of data, long text). E03, E04 and E05 have no specification yet: their components are proposals.
+
+## Base: actions
+
+### Button
+
+Lets a person start one clear action, such as booking a slot or cancelling a booking.
+
+`@devmentor/ui/components/ui/button { Button }` · [Documentation page](?path=/docs/primitives-button--docs)
+
+<Unstyled>
+  <Story of={S0.Playground} />
+</Unstyled>
+
+### Text link
+
+Takes a person to another page or resource, in a sentence or on its own line.
+
+`@devmentor/ui/frontend/text-link { TextLink, textLinkClassName }` · [Documentation page](?path=/docs/primitives-text-link--docs)
+
+<Unstyled>
+  <Story of={S1.Playground} />
+</Unstyled>
+
+### Menu
+
+Groups the secondary commands for one object behind a single button, so a dense row stays readable.
+
+`@devmentor/ui/components/ui/dropdown-menu { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem }` · [Documentation page](?path=/docs/primitives-menu--docs)
+
+<Unstyled>
+  <Story of={S2.Playground} />
+</Unstyled>
+
+## Base: form controls
+
+### Text input
+
+Lets a person type one short line, such as a name, a price or a link.
+
+`@devmentor/ui/components/ui/input { Input }` · [Documentation page](?path=/docs/primitives-text-input--docs)
+
+<Unstyled>
+  <Story of={S3.Playground} />
+</Unstyled>
+
+### Textarea
+
+Lets a person write several lines, such as the question a mentor will answer.
+
+`@devmentor/ui/components/ui/textarea { Textarea }` · [Documentation page](?path=/docs/primitives-textarea--docs)
+
+<Unstyled>
+  <Story of={S4.Playground} />
+</Unstyled>
+
+### Select
+
+Lets a person choose one value from a list that is too long to show as radio buttons.
+
+`@devmentor/ui/components/ui/select { Select, SelectTrigger, SelectContent, SelectItem }` · [Documentation page](?path=/docs/primitives-select--docs)
+
+<Unstyled>
+  <Story of={S5.Playground} />
+</Unstyled>
+
+### Checkbox
+
+Lets a person turn each of several independent options on or off.
+
+`@devmentor/ui/components/ui/checkbox { Checkbox }` · [Documentation page](?path=/docs/primitives-checkbox--docs)
+
+<Unstyled>
+  <Story of={S6.Playground} />
+</Unstyled>
+
+### Radio group
+
+Lets a person choose exactly one option while seeing all the options.
+
+`@devmentor/ui/components/ui/radio-group { RadioGroup, RadioGroupItem }` · [Documentation page](?path=/docs/primitives-radio-group--docs)
+
+<Unstyled>
+  <Story of={S7.Playground} />
+</Unstyled>
+
+### Switch
+
+Lets a person turn one setting on or off.
+
+`@devmentor/ui/components/ui/switch { Switch }` · [Documentation page](?path=/docs/primitives-switch--docs)
+
+<Unstyled>
+  <Story of={S8.Playground} />
+</Unstyled>
+
+### Form field
+
+Joins a control to its label, hint and error so that everyone, including screen reader users, knows what to enter and what went wrong.
+
+`@devmentor/ui/components/ui/field { Field, FieldLabel, FieldDescription, FieldError, FieldSet, FieldLegend }` · [Documentation page](?path=/docs/primitives-form-field--docs)
+
+<Unstyled>
+  <Story of={S9.Playground} />
+</Unstyled>
+
+## Base: structure
+
+### Card and panel
+
+Groups the information about one object, such as a booking or a mentor, so it can be read and acted on as a unit.
+
+`@devmentor/ui/components/ui/card { Card, CardHeader, CardTitle, CardContent, CardFooter }` · [Documentation page](?path=/docs/primitives-card--docs)
+
+<Unstyled>
+  <Story of={S10.Playground} />
+</Unstyled>
+
+### Separator
+
+Draws the thin line that separates adjacent rows or groups, so a dense list stays readable.
+
+`@devmentor/ui/components/ui/separator { Separator }` · [Documentation page](?path=/docs/primitives-separator--docs)
+
+<Unstyled>
+  <Story of={S11.Playground} />
+</Unstyled>
+
+### Table
+
+Lets a person compare the same facts across many objects, such as invitations or bookings, in dense rows.
+
+`@devmentor/ui/components/ui/table { Table, TableHeader, TableBody, TableRow, TableHead, TableCell }` · [Documentation page](?path=/docs/primitives-table--docs)
+
+<Unstyled>
+  <Story of={S12.Playground} />
+</Unstyled>
+
+### Tabs
+
+Lets a person switch between a few views of the same thing on one page, such as upcoming and past bookings.
+
+`@devmentor/ui/components/ui/tabs { Tabs, TabsList, TabsTrigger, TabsContent }` · [Documentation page](?path=/docs/primitives-tabs--docs)
+
+<Unstyled>
+  <Story of={S13.Playground} />
+</Unstyled>
+
+## Base: feedback
+
+### Status badge
+
+Tells a person the current state of an object, such as a booking or an invitation.
+
+`@devmentor/ui/components/ui/badge { Badge }` · [Documentation page](?path=/docs/primitives-status-badge--docs)
+
+<Unstyled>
+  <Story of={S14.Playground} />
+</Unstyled>
+
+### Avatar
+
+Marks who a message or a card belongs to, so people can follow who said what.
+
+`@devmentor/ui/components/ui/avatar { Avatar }` · [Documentation page](?path=/docs/primitives-avatar--docs)
+
+<Unstyled>
+  <Story of={S15.Playground} />
+</Unstyled>
+
+### Alert
+
+Tells a person something about the page they are on, next to the content it concerns, and what it means for them.
+
+`@devmentor/ui/components/ui/alert { Alert, AlertTitle, AlertDescription }` · [Documentation page](?path=/docs/primitives-alert--docs)
+
+<Unstyled>
+  <Story of={S16.Playground} />
+</Unstyled>
+
+### Toast
+
+Confirms in a few words that the server accepted something the person just did, without taking over the page.
+
+`@devmentor/ui/components/ui/toast { ToastProvider, useToast }` · [Documentation page](?path=/docs/primitives-toast--docs)
+
+<Unstyled>
+  <Story of={S17.Playground} />
+</Unstyled>
+
+### Loading skeleton
+
+Shows the shape of content that is on its way, so the page does not jump when it arrives.
+
+`@devmentor/ui/components/ui/skeleton { Skeleton }` · [Documentation page](?path=/docs/primitives-loading-skeleton--docs)
+
+<Unstyled>
+  <Story of={S18.Playground} />
+</Unstyled>
+
+### Empty state
+
+Explains why a place has nothing in it and gives the one next step.
+
+`@devmentor/ui/backend/feedback/empty-state { EmptyState }` · [Documentation page](?path=/docs/primitives-empty-state--docs)
+
+<Unstyled>
+  <Story of={S19.Playground} />
+</Unstyled>
+
+### Error state
+
+Takes the place of content that could not load or does not exist, and says what happened and what to do.
+
+`@devmentor/ui/backend/feedback/error-message { ErrorMessage }` · [Documentation page](?path=/docs/primitives-error-state--docs)
+
+<Unstyled>
+  <Story of={S20.Playground} />
+</Unstyled>
+
+## Base: overlays
+
+### Dialog
+
+Takes a person through one short task, such as filling in a reason, without leaving the page they are on.
+
+`@devmentor/ui/components/ui/dialog { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter }` · [Documentation page](?path=/docs/primitives-dialog--docs)
+
+<Unstyled>
+  <Story of={S21.Playground} />
+</Unstyled>
+
+### Confirmation dialog
+
+Makes a person answer one question, with its outcome stated, before something that cannot be undone happens.
+
+`@devmentor/ui/components/ui/alert-dialog { AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel, AlertDialogAction }` · [Documentation page](?path=/docs/primitives-confirmation-dialog--docs)
+
+<Unstyled>
+  <Story of={S22.Playground} />
+</Unstyled>
+
+### Popover
+
+Shows a small amount of extra information or one small control next to the thing that opened it, without leaving the page.
+
+`@devmentor/ui/components/ui/popover { Popover, PopoverTrigger, PopoverContent }` · [Documentation page](?path=/docs/primitives-popover--docs)
+
+<Unstyled>
+  <Story of={S23.Playground} />
+</Unstyled>
+
+### Tooltip
+
+Gives an icon-only button a short visible name, so the person does not have to guess what it does.
+
+`@devmentor/ui/components/ui/tooltip { Tooltip, TooltipTrigger, TooltipContent }` · [Documentation page](?path=/docs/primitives-tooltip--docs)
+
+<Unstyled>
+  <Story of={S24.Playground} />
+</Unstyled>
+
+## E01 Mentor supply
+
+### Stack badge
+
+Names one of the four stacks a mentor works in.
+
+`@devmentor/ui/components/mentors/stack-badge { StackBadge }` · [Stories](?path=/story/product-e01-mentor-supply-stack-badge--playground) · [Epic page](?path=/docs/design-system-e01-mentor-supply--docs)
+
+<Unstyled>
+  <Story of={S25.Playground} />
+</Unstyled>
+
+### Mentor card
+
+The main-object card for a mentor: name, stacks, price range and nearest slot.
+
+`@devmentor/ui/components/mentors/mentor-card { MentorCard, MentorCardSkeleton }` · [Stories](?path=/story/product-e01-mentor-supply-mentor-card--playground) · [Epic page](?path=/docs/design-system-e01-mentor-supply--docs)
+
+<Unstyled>
+  <Story of={S26.Playground} />
+</Unstyled>
+
+### Share link
+
+Lets a mentor copy their own link.
+
+`@devmentor/ui/components/mentors/share-link { ShareLink }` · [Stories](?path=/story/product-e01-mentor-supply-share-link--playground) · [Epic page](?path=/docs/design-system-e01-mentor-supply--docs)
+
+<Unstyled>
+  <Story of={S27.Playground} />
+</Unstyled>
+
+### Profile form
+
+The mentor's profile as one form: prices, stacks, experience, listing switch.
+
+`@devmentor/ui/components/mentors/profile-form { ProfileForm }` · [Stories](?path=/story/product-e01-mentor-supply-profile-form--new-mentor) · [Epic page](?path=/docs/design-system-e01-mentor-supply--docs)
+
+<Unstyled>
+  <Story of={S28.NewMentor} />
+</Unstyled>
+
+### Window form
+
+Adds one availability window inside the 10:00 to 22:00 Warsaw band.
+
+`@devmentor/ui/components/availability/window-form { WindowForm }` · [Stories](?path=/story/product-e01-mentor-supply-window-form--playground) · [Epic page](?path=/docs/design-system-e01-mentor-supply--docs)
+
+<Unstyled>
+  <Story of={S29.Playground} />
+</Unstyled>
+
+### Window list
+
+Lists a mentor's windows and removes one after a confirmation.
+
+`@devmentor/ui/components/availability/window-list { WindowList }` · [Stories](?path=/story/product-e01-mentor-supply-window-list--playground) · [Epic page](?path=/docs/design-system-e01-mentor-supply--docs)
+
+<Unstyled>
+  <Story of={S30.Playground} />
+</Unstyled>
+
+### Slot preview
+
+Shows which 25-minute and 50-minute slots a window creates.
+
+`@devmentor/ui/components/availability/slot-preview { SlotPreview }` · [Stories](?path=/story/product-e01-mentor-supply-slot-preview--playground) · [Epic page](?path=/docs/design-system-e01-mentor-supply--docs)
+
+<Unstyled>
+  <Story of={S31.Playground} />
+</Unstyled>
+
+### Invitation row
+
+One invitation in the operator's table, with its status and a revoke action.
+
+`@devmentor/ui/components/invitations/invitation-row { InvitationRow }` · [Stories](?path=/story/product-e01-mentor-supply-invitation-row--playground) · [Epic page](?path=/docs/design-system-e01-mentor-supply--docs)
+
+<Unstyled>
+  <Story of={S32.Playground} />
+</Unstyled>
+
+## E02 Find and book
+
+### Local time
+
+A moment in the viewer's zone with the zone written.
+
+`@devmentor/ui/components/bookings/local-time { LocalTime }` · [Stories](?path=/story/product-e02-find-and-book-local-time--playground) · [Epic page](?path=/docs/design-system-e02-find-and-book--docs)
+
+<Unstyled>
+  <Story of={S33.Playground} />
+</Unstyled>
+
+### Booking status
+
+The state of a booking as words, worded for who is looking.
+
+`@devmentor/ui/components/bookings/booking-status { BookingStatus }` · [Stories](?path=/story/product-e02-find-and-book-booking-status--playground) · [Epic page](?path=/docs/design-system-e02-find-and-book--docs)
+
+<Unstyled>
+  <Story of={S34.Playground} />
+</Unstyled>
+
+### Booking closed notice
+
+The fixed sentence "Booking opens soon" while paid booking is closed.
+
+`@devmentor/ui/components/bookings/booking-closed-notice { BookingClosedNotice }` · [Stories](?path=/story/product-e02-find-and-book-booking-closed-notice--playground) · [Epic page](?path=/docs/design-system-e02-find-and-book--docs)
+
+<Unstyled>
+  <Story of={S35.Playground} />
+</Unstyled>
+
+### Length choice
+
+Both prices side by side, choose 25 or 50 minutes.
+
+`@devmentor/ui/components/bookings/length-choice { LengthChoice }` · [Stories](?path=/story/product-e02-find-and-book-length-choice--playground) · [Epic page](?path=/docs/design-system-e02-find-and-book--docs)
+
+<Unstyled>
+  <Story of={S36.Playground} />
+</Unstyled>
+
+### Slot picker
+
+Slots grouped by day for the chosen length, in the viewer's zone.
+
+`@devmentor/ui/components/bookings/slot-picker { SlotPicker }` · [Stories](?path=/story/product-e02-find-and-book-slot-picker--playground) · [Epic page](?path=/docs/design-system-e02-find-and-book--docs)
+
+<Unstyled>
+  <Story of={S37.Playground} />
+</Unstyled>
+
+### Booking summary
+
+What is being booked: mentor, length, time in two zones, price, cancellation rule.
+
+`@devmentor/ui/components/bookings/booking-summary { BookingSummary }` · [Stories](?path=/story/product-e02-find-and-book-booking-summary--playground) · [Epic page](?path=/docs/design-system-e02-find-and-book--docs)
+
+<Unstyled>
+  <Story of={S38.Playground} />
+</Unstyled>
+
+### Booking card
+
+One booking as a dense row, with status, question and cancel.
+
+`@devmentor/ui/components/bookings/booking-card { BookingCard }` · [Stories](?path=/story/product-e02-find-and-book-booking-card--playground) · [Epic page](?path=/docs/design-system-e02-find-and-book--docs)
+
+<Unstyled>
+  <Story of={S39.Playground} />
+</Unstyled>
+
+### Cancel dialog
+
+Cancel a confirmed session: a mentee confirms the refund outcome, a mentor gives a reason.
+
+`@devmentor/ui/components/bookings/cancel-dialog { CancelDialog }` · [Stories](?path=/story/product-e02-find-and-book-cancel-dialog--playground) · [Epic page](?path=/docs/design-system-e02-find-and-book--docs)
+
+<Unstyled>
+  <Story of={S40.Playground} />
+</Unstyled>
+
+### Notification row
+
+A notice for a confirmed or cancelled booking.
+
+`@devmentor/ui/components/bookings/notification-row { NotificationRow }` · [Stories](?path=/story/product-e02-find-and-book-notification-row--playground) · [Epic page](?path=/docs/design-system-e02-find-and-book--docs)
+
+<Unstyled>
+  <Story of={S41.Playground} />
+</Unstyled>
+
+### Mentor directory
+
+Filters, result count, cards and their states: the filtered list.
+
+`@devmentor/ui/components/mentors/mentor-directory { MentorDirectory }` · [Stories](?path=/story/product-e02-find-and-book-mentor-directory--playground) · [Epic page](?path=/docs/design-system-e02-find-and-book--docs)
+
+<Unstyled>
+  <Story of={S42.Playground} />
+</Unstyled>
+
+## E03 Payments
+
+### Refund outcome line
+
+One line: the money outcome, amount first, then the reason.
+
+`@devmentor/ui/components/payments/refund-outcome-line { RefundOutcomeLine }` · [Stories](?path=/story/product-e03-payments-refund-outcome-line--playground) · [Epic page](?path=/docs/design-system-e03-payments--docs)
+
+<Unstyled>
+  <Story of={S43.Playground} />
+</Unstyled>
+
+### Payout row
+
+One session in the mentor's earnings table: price, commission, payout.
+
+`@devmentor/ui/components/payments/payout-row { PayoutRow }` · [Stories](?path=/story/product-e03-payments-payout-row--playground) · [Epic page](?path=/docs/design-system-e03-payments--docs)
+
+<Unstyled>
+  <Story of={S44.Playground} />
+</Unstyled>
+
+## E04 Text session
+
+### Message item
+
+One message: author, time, text, delivery state.
+
+`@devmentor/ui/components/messages/message-item { MessageItem }` · [Stories](?path=/story/product-e04-text-session-message-item--playground) · [Epic page](?path=/docs/design-system-e04-text-session--docs)
+
+<Unstyled>
+  <Story of={S45.Playground} />
+</Unstyled>
+
+### Composer
+
+The box to write in, always visible, with a visible label.
+
+`@devmentor/ui/components/messages/composer { Composer }` · [Stories](?path=/story/product-e04-text-session-composer--playground) · [Epic page](?path=/docs/design-system-e04-text-session--docs)
+
+<Unstyled>
+  <Story of={S46.Playground} />
+</Unstyled>
+
+### Conversation
+
+Scrolling message log with the composer below it.
+
+`@devmentor/ui/components/messages/conversation { Conversation }` · [Stories](?path=/story/product-e04-text-session-conversation--playground) · [Epic page](?path=/docs/design-system-e04-text-session--docs)
+
+<Unstyled>
+  <Story of={S47.Playground} />
+</Unstyled>
+
+### Session header
+
+Who the session is with, when, and its phase, kept small.
+
+`@devmentor/ui/components/sessions/session-header { SessionHeader }` · [Stories](?path=/story/product-e04-text-session-session-header--playground) · [Epic page](?path=/docs/design-system-e04-text-session--docs)
+
+<Unstyled>
+  <Story of={S48.Playground} />
+</Unstyled>
+
+### Usefulness check
+
+One required question after the session: did the help arrive before the deadline.
+
+`@devmentor/ui/components/sessions/usefulness-check { UsefulnessCheck }` · [Stories](?path=/story/product-e04-text-session-usefulness-check--playground) · [Epic page](?path=/docs/design-system-e04-text-session--docs)
+
+<Unstyled>
+  <Story of={S49.Playground} />
+</Unstyled>
+
+## E05 Supply gate and pilot
+
+### Gate status
+
+Invited, accepted and published counts and whether paid booking is open.
+
+`@devmentor/ui/components/operator/gate-status { GateStatus }` · [Stories](?path=/story/product-e05-supply-gate-and-pilot-gate-status--playground) · [Epic page](?path=/docs/design-system-e05-supply-gate-and-pilot--docs)
+
+<Unstyled>
+  <Story of={S50.Playground} />
+</Unstyled>
+
+### Metric row
+
+One measure with how it is counted.
+
+`@devmentor/ui/components/operator/metric-row { MetricRow }` · [Stories](?path=/story/product-e05-supply-gate-and-pilot-metric-row--playground) · [Epic page](?path=/docs/design-system-e05-supply-gate-and-pilot--docs)
+
+<Unstyled>
+  <Story of={S51.Playground} />
+</Unstyled>
+
+### Operator action dialog
+
+A change to someone else's data, with a required reason.
+
+`@devmentor/ui/components/operator/operator-action-dialog { OperatorActionDialog }` · [Stories](?path=/story/product-e05-supply-gate-and-pilot-operator-action-dialog--playground) · [Epic page](?path=/docs/design-system-e05-supply-gate-and-pilot--docs)
+
+<Unstyled>
+  <Story of={S52.Playground} />
+</Unstyled>
+
+### Audit row
+
+One logged operator action: when, who, what, why.
+
+`@devmentor/ui/components/operator/audit-row { AuditRow }` · [Stories](?path=/story/product-e05-supply-gate-and-pilot-audit-row--playground) · [Epic page](?path=/docs/design-system-e05-supply-gate-and-pilot--docs)
+
+<Unstyled>
+  <Story of={S53.Playground} />
+</Unstyled>
+
+## Shared parts
+
+| Part          | Import                                                    | What it is                                                                                                             | Documentation                                   |
+| ------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| Form feedback | `@devmentor/ui/components/form-feedback { FormFeedback }` | Outcome of a form submit above the button: success after the server confirmed, or what failed.                         | [Form pattern](?path=/docs/patterns-form--docs) |
+| useForm       | `@devmentor/ui/hooks/use-form { useForm }`                | The Form pattern as one hook: validation on blur and submit, focus on the first error, kept entries, no double submit. | [Form pattern](?path=/docs/patterns-form--docs) |

@@ -18,4 +18,10 @@ describe("ErrorMessage", () => {
     expect(alert.textContent).toContain("Database is unavailable");
     expect(alert.className).toContain("extra");
   });
+
+  it("renders the next step", () => {
+    render(<ErrorMessage title="Could not load bookings" action={<button>Try again</button>} />);
+
+    expect(screen.getByRole("button", { name: "Try again" })).toBeTruthy();
+  });
 });

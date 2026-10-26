@@ -1,0 +1,95 @@
+import { Meta, Canvas, Unstyled } from "@storybook/addon-docs/blocks";
+import * as MentorPage from "../product/e02/screen-mentor-page.stories";
+
+<Meta title="Patterns/Detail view" />
+
+# Detail view
+
+How a page about one object is laid out: the mentor page (E02-S01, E02-S02) today, and a booking's own page later.
+
+## Purpose
+
+A person understands what the object is and can take the main action without hunting for it.
+
+## When to use
+
+- The mentor page: who the mentor is, both prices, a length, a slot, and a way to continue.
+- Any page that shows one object and offers one main action on it.
+
+## When not to use
+
+| Situation                            | Use instead                                                   |
+| ------------------------------------ | ------------------------------------------------------------- |
+| Many objects to compare              | The [filtered list](?path=/docs/patterns-filtered-list--docs) |
+| A task with fields and a save button | The [form pattern](?path=/docs/patterns-form--docs)           |
+
+## Rules
+
+| #   | Rule                                                                                                            | How it is built                                                                                          | Source       |
+| --- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------ |
+| 1   | The main information and the main action are visible without scrolling at 1440 px.                              | Two columns from the `lg` width: profile left, booking panel right. At 320 px they stack, profile first. | R01.5, R05   |
+| 2   | The name is the page heading (`h1`) and the strongest element.                                                  | `MentorCard variant="profile" headingLevel={1}`.                                                         | R01.5        |
+| 3   | Both prices are shown before a length is chosen.                                                                | `LengthChoice` lists both lengths with prices; nothing is hidden behind a choice.                        | R05, D08     |
+| 4   | The main action is always present. While it cannot be used, it is disabled and the reason is written beside it. | "Continue to booking", `aria-describedby` pointing at "Choose a length and a start time to continue."    | WCAG 3.3.2   |
+| 5   | When booking is closed the booking panel is replaced by one fixed sentence; the profile and prices stay.        | `BookingClosedNotice` instead of `SlotPicker`; the button is not shown.                                  | D31          |
+| 6   | "Does not exist" and "no access" look the same: one state, with a way out.                                      | `EmptyState` "This mentor does not exist, or you cannot see this page" with a link to the directory.     | P10.1        |
+| 7   | Times are in the viewer's zone, with the zone written.                                                          | `SlotPicker` names the zone once above the list; `BookingSummary` adds Europe/Warsaw.                    | E02 spec, Q3 |
+
+## States, each as a story
+
+| State                            | Story                                                                              |
+| -------------------------------- | ---------------------------------------------------------------------------------- |
+| Open: choose a length and a slot | [Open](?path=/story/product-e02-find-and-book-screens-mentor-page--open)           |
+| Booking closed                   | [Closed](?path=/story/product-e02-find-and-book-screens-mentor-page--closed)       |
+| No bookable slots                | [No slots](?path=/story/product-e02-find-and-book-screens-mentor-page--no-slots)   |
+| Loading                          | [Loading](?path=/story/product-e02-find-and-book-screens-mentor-page--loading)     |
+| Error                            | [Error](?path=/story/product-e02-find-and-book-screens-mentor-page--load-error)    |
+| Does not exist or no access      | [Not found](?path=/story/product-e02-find-and-book-screens-mentor-page--not-found) |
+| Long name and text               | [Long text](?path=/story/product-e02-find-and-book-screens-mentor-page--long-text) |
+
+### Does not exist or no access
+
+<Canvas of={MentorPage.NotFound} story={{ inline: false, height: "340px" }} />
+
+### Booking closed
+
+<Canvas of={MentorPage.Closed} story={{ inline: false, height: "620px" }} />
+
+## Code
+
+```tsx
+<MentorCard variant="profile" displayName={name} stacks={stacks} headingLevel={1} />
+<LengthChoice prices={{ 25: 120, 50: 220 }} value={length} onValueChange={setLength} />
+{closed ? <BookingClosedNotice /> : <SlotPicker slots={slots} minutes={Number(length)} value={slot} onValueChange={setSlot} />}
+<Button aria-describedby="continue-reason" disabled={!slot}>Continue to booking</Button>
+```
+
+## Good and bad
+
+<Unstyled>
+  <div className="grid gap-between-groups sm:grid-cols-2 text-interface">
+    <div className="border border-border bg-card p-panel">
+      <p className="font-emphasis">Do</p>
+      <p>
+        Both prices on the page before anything is chosen, and a disabled button
+        with its reason written next to it.
+      </p>
+    </div>
+    <div className="border border-border bg-card p-panel">
+      <p className="font-emphasis">Don’t</p>
+      <p>
+        A price that appears only after choosing a length, or a disabled button
+        with a tooltip as the only explanation.
+      </p>
+    </div>
+  </div>
+</Unstyled>
+
+## Known limits
+
+- A booking's own page (`/bookings/[id]`, with the session link once E04 lands) uses this pattern but has no screen yet. Recorded for "What is missing".
+- The profile column shows experience and the text-only line. The mentor's public work links are not designed yet.
+
+## Related
+
+[Mentor card](?path=/story/product-e01-mentor-supply-mentor-card--public-profile), [Alert](?path=/docs/primitives-alert--docs), [Button](?path=/docs/primitives-button--docs) (disabled with a reason).

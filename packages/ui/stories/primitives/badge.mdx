@@ -1,0 +1,111 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import { Badge } from "@devmentor/ui/components/ui/badge";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./badge.stories";
+
+<Meta of={Stories} />
+
+# Status badge
+
+## 1. Purpose
+
+Tells a person the current state of an object, such as a booking or an invitation.
+
+## 2. When to use
+
+- Booking status on My bookings and the mentor's bookings list.
+- Invitation status in the operator's list.
+- Any object with a small, fixed set of states.
+
+The exact status names come from the E02 and E01 specs ("status" on bookings, "list with status" on invitations); stage 3 fixes the final set.
+
+## 3. When not to use
+
+| Situation                        | Use instead                                   |
+| -------------------------------- | --------------------------------------------- |
+| A count or a rating              | Plain text. Ratings are out of scope (N02)    |
+| An action                        | [Button](?path=/docs/primitives-button--docs) |
+| A message that needs attention   | An alert (batch 3)                            |
+| A pill-shaped tag for decoration | Nothing (A01: pills everywhere)               |
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>Status text (required). The status is always a word.</li>
+    <li>Icon (optional), 14px, hidden from screen readers.</li>
+    <li>Container: fill or border, with a control radius (not a pill).</li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+<Canvas of={Stories.BookingStatuses} />
+
+| Variant                                | Choose it when                                                              | Source |
+| -------------------------------------- | --------------------------------------------------------------------------- | ------ |
+| `default` (filled)                     | The current or active status the person should notice: Confirmed, Accepted. | R01.5  |
+| `secondary` (bordered, regular weight) | A waiting or finished state: Pending, Completed, Expired.                   | R01.5  |
+| `destructive` (bordered, red text)     | A negative outcome: Cancelled, Revoked, Failed.                             | P12.1  |
+
+<Canvas of={Stories.InvitationStatuses} />
+
+## 6. States
+
+Static component. It has no hover, focus, pressed, disabled, loading or error state; the variants are the states. A badge that must be clicked is a button.
+
+## 7. Behavior and accessibility
+
+- Not interactive, not focusable.
+- The text carries the status. Color supports it and never carries it alone (WCAG 1.4.1).
+- Icons are `aria-hidden` and repeat the text; they are not the only cue.
+- Height 24px. Text contrast: primary on page 16:1, red on card 6.15:1 light (WCAG 1.4.3).
+
+<Canvas of={Stories.StatusIsText} />
+
+## 8. Content
+
+- One or two words in sentence case: "Confirmed", "Cancelled by mentor".
+- Use the same word everywhere for the same state.
+- Longer text wraps only in narrow layouts; keep badges short, and put detail in a sentence beside the badge.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: badges wrap onto the next line with their row. 768px and 1440px: no change.
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} include={["variant"]} />
+
+All native span props are accepted.
+
+## 11. Code
+
+```tsx
+<Badge>Confirmed</Badge>
+<Badge variant="secondary">Pending</Badge>
+<Badge variant="destructive">Cancelled</Badge>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={<Badge variant="destructive">Cancelled</Badge>}
+    goodWhy="The word names the status."
+    bad={
+      <span
+        className="inline-block size-3 border border-destructive bg-destructive"
+        aria-hidden
+      />
+    }
+    badWhy="A colored dot with no text fails people who cannot tell the colors apart."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Avatar](?path=/docs/primitives-avatar--docs), [Button](?path=/docs/primitives-button--docs).
+- Patterns: filtered list, detail view.

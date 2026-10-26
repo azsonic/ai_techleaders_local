@@ -1,0 +1,93 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Design system/Usage and accessibility" />
+
+# Usage and accessibility
+
+The rules every screen follows. Each cites its source: a reference (R, C, AC, P, N, A numbers from `lekcja-06/referencje.md`), a brief or specification decision (D and R numbers from the brief), a stage decision recorded in `packages/ui/POSTEP.md`, or WCAG 2.2 and WAI-ARIA. A rule marked **proposal** was approved by the Product owner but has no source of its own. Every story is also checked by axe as an error in both themes (`test:stories`, `test:stories:dark`). Screen reader output was not tested.
+
+## Keyboard and focus
+
+| Rule                                                                                  | How the system does it                                                        | Source                                    |
+| ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------- |
+| Everything interactive works with the keyboard, in reading order.                     | Native controls and Base UI parts; no `div` with `onClick`.                   | WCAG 2.1.1, 2.4.3                         |
+| Focus is always visible: a 2px ring in `--ring`, offset 2px, full opacity.            | The `focus-ring` utility on every control.                                    | WCAG 2.4.7, tokeny.md, stage 2 decision 3 |
+| A dialog traps focus, closes with Escape and returns focus to what opened it.         | Base UI Dialog.                                                               | WAI-ARIA dialog (modal)                   |
+| A confirmation dialog starts on the safe action.                                      | Cancel ("Keep session") has initial focus; tested in the Cancel dialog story. | WAI-ARIA alertdialog                      |
+| A radio group has one tab stop; arrow keys move and select.                           | `RadioGroup`; the slot picker is one radio group.                             | WAI-ARIA radio group                      |
+| Arrow keys switch tabs at once.                                                       | `Tabs`; a disabled tab is not used.                                           | WAI-ARIA tabs, batch 4 decision 5         |
+| A scrolling region can be focused and scrolled by keyboard, and has a name.           | `Table` (`label` is required) and the message log.                            | WCAG 2.1.1                                |
+| After a failed submit the first invalid field takes focus.                            | `useForm`.                                                                    | Form pattern, WCAG 3.3.1                  |
+| Click and touch targets are at least 24 by 24 px.                                     | Controls are 24, 32 or 40 px high; label rows are 28 px.                      | WCAG 2.5.8                                |
+| No keyboard shortcut is assumed. Enter adds a line in the composer; the button sends. | `Composer`.                                                                   | R02.2 (no shortcut inferred)              |
+
+## Forms and messages
+
+| Rule                                                                                   | How the system does it                                                     | Source                          |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------- |
+| Every control has a visible label. A placeholder is an example, never the name.        | `Field` with `FieldLabel`.                                                 | WCAG 3.3.2, 1.3.1, Form pattern |
+| Optional fields say "(optional)"; required is the default and unmarked.                | `FieldLabel optional`.                                                     | Batch 1 decision 3              |
+| Validate on blur and on submit; show the error in text next to the field; announce it. | `FieldError` has `role="alert"` and sets `aria-invalid`.                   | WCAG 3.3.1, 3.3.3               |
+| Keep what was entered when something fails.                                            | `useForm` keeps values on every failure.                                   | Form pattern, P12.2             |
+| Prevent a double submit.                                                               | A pending form ignores a second submit; `Button loading`.                  | Form pattern                    |
+| Say "done" only after the server confirmed.                                            | `FormFeedback`, screens set results after `onConfirm`.                     | P12.1                           |
+| A disabled control says why, in text linked with `aria-describedby`.                   | Disabled style uses tokens (no opacity); the reason is a visible sentence. | WCAG 3.3.2, stage 2 decision 4  |
+| A failure says what happened and what to do, in plain words.                           | `ErrorMessage`, `FormFeedback`.                                            | P10.1, P12.2                    |
+| An error that needs action is never a toast.                                           | Alerts and field errors.                                                   | WCAG 2.2.1                      |
+
+## Color
+
+| Rule                                                                           | How the system does it                                                                                           | Source                        |
+| ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| Color never carries meaning alone.                                             | Status badges say the status in words; checked and selected states show a check, dash or dot; unread says "New". | WCAG 1.4.1                    |
+| Text is at least 4.5 : 1; interface boundaries and focus at least 3 : 1.       | `npm run check:contrast` recalculates 22 pairs in both themes.                                                   | WCAG 1.4.3, 1.4.11, tokeny.md |
+| Both themes work, including dialogs, menus and popovers.                       | The theme class is on the document root.                                                                         | Stage 1 rule 9                |
+| Only semantic tokens in components.                                            | `npm run check:tokens`.                                                                                          | Stage 1, tokeny.md            |
+| Fills of `--card` and `--muted` never identify a control or a selection alone. | A 1px `--border` or an explicit indicator.                                                                       | tokeny.md contrast notes      |
+
+## Motion
+
+| Rule                                                                        | How the system does it                                         | Source                                     |
+| --------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------ |
+| No decorative animation. State changes are understandable without movement. | No enter or exit animation, no pulse on skeletons, no spinner. | P11.1                                      |
+| One functional duration: 150 ms, color and border only.                     | `--duration-functional`.                                       | Stage 1 proposal 3 (approved)              |
+| Under `prefers-reduced-motion` transitions are removed.                     | A rule in `globals.css`.                                       | Proposal (approved in stage 1), WCAG 2.3.3 |
+| No countdown or ticking timer.                                              | The session header writes the end time.                        | P11.1, N01.1                               |
+
+## Content
+
+| Rule                                                                                       | How the system does it                                            | Source                                  |
+| ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- | --------------------------------------- |
+| Short, direct, respectful wording that names the action, the outcome and the next step.    | See [Content](?path=/docs/design-system-content--docs).           | P10.1                                   |
+| Text labels, not emoji, for controls and statuses. Participants may use emoji in messages. | No emoji in components.                                           | R02.5, A01.3                            |
+| Code and filenames in the code font.                                                       | `--font-code`. Marking code in a message is not designed.         | R01.2, P09.2                            |
+| Body text is at most about 65 characters wide.                                             | `max-w-prose` for forms and conversation.                         | Stage 1 typography rule                 |
+| Long text wraps; nothing overflows at 320 px.                                              | `wrap-anywhere`, `min-w-0`; each epic page has a long-text story. | WCAG 1.4.10                             |
+| Numbers in tabular figures.                                                                | `tabular-nums` on money and counts.                               | Stage 1 decision 5 (proposal, approved) |
+
+## Layout at different widths
+
+| Width   | Rule                                                                                                            | Source                          |
+| ------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| 320 px  | One column. No horizontal page scroll; only tables scroll inside their own region. Form buttons are full width. | WCAG 1.4.10, batch 1 decision 4 |
+| 768 px  | Two columns only where both stay readable (the mentor page from `lg`).                                          | Detail view pattern             |
+| 1440 px | Browsing and booking are at most `72rem` wide (`max-w-content`); forms and conversation use `max-w-prose`.      | Stage 1 proposal 2 (approved)   |
+
+Every screen story is checked at 320, 768 and 1440 px in both themes (see `POSTEP.md`).
+
+## Product rules the interface enforces
+
+| Rule                                                                                                    | Where the UI enforces it           | Source        |
+| ------------------------------------------------------------------------------------------------------- | ---------------------------------- | ------------- |
+| Both prices are shown before a length is chosen.                                                        | `LengthChoice`                     | R05, D08      |
+| Prices stay inside 90 to 600 PLN (25 min) and 180 to 1200 PLN (50 min).                                 | `ProfileForm` validation           | R05           |
+| Hours stay inside 10:00 to 22:00 Europe/Warsaw, at least 25 minutes.                                    | `WindowForm` validation            | D24, R08      |
+| While paid booking is closed, a fixed sentence replaces the slot picker.                                | `BookingClosedNotice`              | D31           |
+| Times appear in the viewer's zone with the zone named; the Warsaw time is shown on the booking summary. | `LocalTime`, `BookingSummary`      | E02 spec      |
+| The cancellation outcome is stated in words before the person confirms.                                 | `CancelDialog` for a mentee        | R09, R15, D33 |
+| A mentor cancelling must give a reason.                                                                 | `CancelDialog` for a mentor        | D34, R17      |
+| An operator action needs a reason, logged with the operator and the time.                               | `OperatorActionDialog`, `AuditRow` | R13, D29      |
+| The composer stays visible with the conversation.                                                       | `Conversation`                     | R02.2         |
+| Author and time on every message; delivery state beside the message.                                    | `MessageItem`                      | R02.3, P12.1  |
+| No ratings, stars or rating badges.                                                                     | No such component exists.          | N02           |
+| No course progress bars, modules or certificates.                                                       | No such component exists.          | N01           |

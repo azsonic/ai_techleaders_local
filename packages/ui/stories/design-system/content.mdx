@@ -1,0 +1,73 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Design system/Content" />
+
+# Content and messages
+
+The product's words are short, direct and respectful. A message names the action, the outcome and the next step, and warmth comes from being helpful, not from decoration (P10.1, C02). All examples below are strings the system already uses. The product language is English.
+
+## What the product says, and what it does not
+
+| It says (three examples)                                                                                                      | It does not say                                                                                                                                      |
+| ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **"Message wasn't sent. Try again."** What happened and what to do (P10.1, P12.2).                                            | **"Oops! Something went wrong."** It says nothing about what happened or what to do (AC01, AC03, P10.1).                                             |
+| **"Full refund due: 120 PLN."** and **"No refund. The mentor is paid."** The money outcome in words, amount first (R09, R15). | **"Are you sure?"** with "OK" and "Cancel". The question must name the object and the buttons must name the actions (Deletion confirmation pattern). |
+| **"Nothing was charged."** when a booking could not be made: the person's first worry, answered (R06, E02 spec).              | **"Boost your career ✨"** or **"Rated 4.9 ★"**. Decoration, sparkles and ratings are rejected (A01.3, R02.5, N02).                                  |
+
+## Buttons: a verb and an object
+
+A button says what will happen. Never "OK", "Submit", "Yes" or "Confirm".
+
+| Use                                                             | Not                                               |
+| --------------------------------------------------------------- | ------------------------------------------------- |
+| Book session for 120 PLN, Pay 120 PLN and book                  | Submit, Continue                                  |
+| Send message, Send answer                                       | OK, Send                                          |
+| Cancel session, Suspend mentor, Revoke invitation               | Yes, Confirm                                      |
+| Keep session, Keep as it is (the safe choice, first in the DOM) | No, Cancel (when it is unclear what is cancelled) |
+| Try again                                                       | Retry (a developer's word)                        |
+
+While the server works, the button keeps the verb in the present: "Booking…", "Paying…", "Suspending…" (P12.1).
+
+## Errors: what happened and what to do
+
+An error says what happened, what is safe and what to do. It never blames the person and never loses their entries.
+
+| Case                         | Message                                                                                     | Source                |
+| ---------------------------- | ------------------------------------------------------------------------------------------- | --------------------- |
+| The server broke             | "Something broke on our side. Try again in a minute."                                       | P10.1, P12.2          |
+| No answer from the server    | "The server did not answer. Check your connection and try again. What you entered is kept." | P12.2                 |
+| The slot was taken           | "This slot was taken a moment ago. Nothing was charged. Choose another slot."               | R06                   |
+| The card was declined        | "Your card was declined. Nothing was charged. Use another card."                            | P12.2 (proposal, E03) |
+| A field is empty             | "Write your question so the mentor can prepare." (names the field and why)                  | WCAG 3.3.3            |
+| A required choice is missing | "Choose an answer."                                                                         | WCAG 3.3.1            |
+| A message did not send       | "Message wasn't sent." with the button "Try again"                                          | P12.2                 |
+
+## Empty states: why it is empty and the next step
+
+| Place                            | Title and sentence                                                                                                               | Source                                    |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Upcoming bookings (mentee)       | "No upcoming bookings" and "Find a mentor and book a text session." with a link "Find a mentor"                                  | P10.1                                     |
+| Notifications                    | "No notifications yet." "You will see a notice here when a booking is confirmed or cancelled."                                   | R10                                       |
+| Invitations (operator)           | "No invitations yet." "Create the first one above. The mentor gets a link to open."                                              | E01 spec                                  |
+| Audit log                        | "No operator actions yet." "Revoking an invitation, suspending a mentor and viewing a session in dispute are logged here."       | R13                                       |
+| Directory, filters match nothing | "No mentors for these filters" with the action "Clear filters"                                                                   | Filtered list pattern                     |
+| Directory, no mentor listed      | "No mentors are listed yet" (a different state from "no results"; a mentee cannot create a mentor, so there is no create action) | Filtered list pattern, batch B decision 2 |
+
+## Statuses
+
+Statuses are words from the state machine, worded for who is looking (approved in stage 3): Pending, Confirmed, Cancelled by you, Cancelled by mentor (a mentor sees "Cancelled by mentee" and "Cancelled by you"), Completed, No-show. Invitations: Pending, Accepted, Expired, Revoked. Payouts (proposal): Held, Paid, Refunded, In dispute. Gate (proposal): Closed, Open, Stopped.
+
+## Dates, times, money and numbers
+
+| What          | Format                                                                          | Example                                 | Source                    |
+| ------------- | ------------------------------------------------------------------------------- | --------------------------------------- | ------------------------- |
+| Day           | Short weekday, day, short month                                                 | Fri 13 Nov                              | E02 spec                  |
+| Time          | 24-hour, with the zone name                                                     | 10:00 CET                               | E02 spec, Q3              |
+| A moment      | Day, time and zone                                                              | Fri 13 Nov, 10:00 CET                   | E02 spec                  |
+| Zone          | The viewer's own zone; the Warsaw time is added where the hours limit is stated | In Europe/Warsaw: Fri 13 Nov, 10:00 CET | E02 spec                  |
+| Machine value | Kept in `dateTime` on `<time>`                                                  | `2026-11-13T09:00:00Z`                  | HTML                      |
+| Money         | Whole zloty with the currency; two decimals only when needed                    | 120 PLN, 74.40 PLN                      | R05, E03 proposal         |
+| Counts        | "x of y" in words, tabular figures                                              | 2 of 5                                  | N01.1, stage 1 decision 5 |
+| Lengths       | Number and unit in words                                                        | 25 minutes                              | R05                       |
+| Durations     | Number and unit                                                                 | 3 h 10 min                              | E05 proposal              |
+| Limits        | Said where they apply, with a count                                             | Up to 2000 characters. 140 used.        | Form pattern              |

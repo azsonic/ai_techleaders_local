@@ -1,0 +1,117 @@
+import { Meta, Canvas, Unstyled } from "@storybook/addon-docs/blocks";
+import * as Session from "../product/e04/screen-session.stories";
+import * as Conversation from "../product/e04/conversation.stories";
+
+<Meta title="Patterns/Conversation" />
+
+# Conversation
+
+How the text session is laid out and how a message moves from written to sent: the session screen (E04-S01). This is a proposal pattern: no E04 specification exists yet, so every rule cites the references and the brief, and the ones without a source say so.
+
+## Purpose
+
+Two people exchange a bounded run of text, and neither has to hunt for the box to write in or wonder whether a message went out.
+
+## When to use
+
+- The session screen between a mentee and a mentor, and the operator reading it in a dispute.
+
+## When not to use
+
+| Situation                             | Use instead                                                                                           |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| A one-off question with a save button | The [form pattern](?path=/docs/patterns-form--docs) (the booking question)                            |
+| Notices about bookings                | `NotificationRow` on the notifications page. There is no chat-style notification stream (R02.4, P04). |
+
+## Rules
+
+| #   | Rule                                                                                                                         | How it is built                                                                                                       | Source                            |
+| --- | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| 1   | The conversation is the focus. Session information stays small and secondary.                                                | `SessionHeader` is one line of name, phase and time; the conversation takes the rest of the screen.                   | R02.1, P03                        |
+| 2   | The composer is always visible while the conversation is.                                                                    | `Conversation` is a flex column one screen tall: the log scrolls, the composer stays below it, also with 60 messages. | R02.2                             |
+| 3   | Every message shows its author and its time.                                                                                 | `MessageItem`: name and time on the first line, text below. Your own messages say "You".                              | R02.3                             |
+| 4   | One column, no bubbles, no alignment by author, no avatars.                                                                  | Plain rows separated by space. Attribution comes from the name, not from the side.                                    | Proposal (R02.3, A01, AC02)       |
+| 5   | The state of a message is written beside that message: "Sending…", "Sent" or "Message wasn't sent."                          | `MessageItem` `delivery`. It is words, never a colour, a tick or a spinner alone.                                     | P12.1, WCAG 1.4.1                 |
+| 6   | A failed message offers a retry and keeps its text.                                                                          | A "Try again" button inside the failure line, which is announced (`role="alert"`).                                    | P12.2, P10.1                      |
+| 7   | Writing is not blocked while a message is sending. The field clears at once.                                                 | `Composer` sends and clears; the message's own state lives in the log, so two messages can be in flight.              | Proposal (R02.2, P12.1)           |
+| 8   | "Sent" stays on your latest message only.                                                                                    | `Conversation` hides "Sent" on earlier ones. A "Sent" on every line is clutter.                                       | Proposal (AC02)                   |
+| 9   | The composer has a visible label. A placeholder is not its name. An empty message is refused with a reason and focus.        | `FieldLabel` "Message"; "Write a message to send." and the field takes focus.                                         | Form pattern, WCAG 3.3.2          |
+| 10  | When nobody can write, the composer stays and says why.                                                                      | `disabledReason` is written beside the field and read with it (`aria-describedby`).                                   | WCAG 3.3.2, stage 2 disabled rule |
+| 11  | The message list is a named log that a keyboard user can focus and scroll. New messages are announced politely.              | `role="log"` named "Messages", `tabIndex={0}`; it scrolls to the newest message when one is added.                    | WAI-ARIA log, WCAG 2.1.1          |
+| 12  | No timers, progress bars or decorative motion. The end time is written.                                                      | `SessionHeader` says "Ends Fri 13 Nov, 10:25 CET". Nothing counts down.                                               | N01.1, P11.1                      |
+| 13  | Only the two participants, and the operator in a dispute, can open a session. Everyone else gets the same "no access" state. | `EmptyState` "This session does not exist, or you cannot see it" with a way out.                                      | D10, R02, P10.1                   |
+| 14  | Text is plain, line breaks are kept and long unbroken text wraps.                                                            | `whitespace-pre-wrap` and `wrap-anywhere` on the message text.                                                        | R01.2 (code font not designed)    |
+
+## States, each as a story
+
+| State                                    | Story                                                                                                                                                                    |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Not started                              | [Not started](?path=/story/product-e04-text-session-screens-session--not-started)                                                                                        |
+| In progress                              | [Live](?path=/story/product-e04-text-session-screens-session--live)                                                                                                      |
+| Sending                                  | [Sending](?path=/story/product-e04-text-session-screens-session--sending), [pending](?path=/story/product-e04-text-session-screens-session--send-pending)                |
+| Sent, after the server confirmed         | [Sent](?path=/story/product-e04-text-session-screens-session--send-success)                                                                                              |
+| Not sent: server error, offline          | [Server error](?path=/story/product-e04-text-session-screens-session--send-server-error), [offline](?path=/story/product-e04-text-session-screens-session--send-offline) |
+| Not sent, with retry                     | [Not sent](?path=/story/product-e04-text-session-screens-session--not-sent), [retry](?path=/story/product-e04-text-session-conversation--retry-after-failure)            |
+| Ended, composer disabled with the reason | [Ended](?path=/story/product-e04-text-session-screens-session--ended)                                                                                                    |
+| Loading, error                           | [Loading](?path=/story/product-e04-text-session-screens-session--loading), [error](?path=/story/product-e04-text-session-screens-session--load-error)                    |
+| Does not exist or no access              | [Not found](?path=/story/product-e04-text-session-screens-session--not-found)                                                                                            |
+| Lots of data                             | [60 messages](?path=/story/product-e04-text-session-screens-session--many)                                                                                               |
+| Long name and unbroken text              | [Long text](?path=/story/product-e04-text-session-screens-session--long-text)                                                                                            |
+
+### In progress
+
+<Canvas of={Session.Live} story={{ inline: false, height: "640px" }} />
+
+### A message was not sent
+
+<Canvas of={Session.NotSent} story={{ inline: false, height: "640px" }} />
+
+### Without a conversation yet
+
+<Canvas of={Conversation.Empty} story={{ inline: false, height: "460px" }} />
+
+## Code
+
+```tsx
+<SessionHeader counterpartName={name} startsAt={startsAt} minutes={25} now={now} />
+<Conversation
+  messages={messages}      // each own message carries delivery: "sending" | "sent" | "failed"
+  onSend={send}            // add the message as "sending", call the API, then mark it sent or failed
+  onRetry={retry}
+  disabledReason={ended ? "This session has ended." : undefined}
+/>
+```
+
+The page gives the conversation its height (`flex h-dvh flex-col`, with `main` as the flex child); the component fills what is left.
+
+## Good and bad
+
+<Unstyled>
+  <div className="grid gap-between-groups sm:grid-cols-2 text-interface">
+    <div className="border border-border bg-card p-panel">
+      <p className="font-emphasis">Do</p>
+      <p>
+        "Message wasn't sent." with a Try again button next to the message that
+        failed, while the composer stays ready for the next one.
+      </p>
+    </div>
+    <div className="border border-border bg-card p-panel">
+      <p className="font-emphasis">Don’t</p>
+      <p>
+        A toast saying "Error" that disappears, a red dot, or a disabled
+        composer while a message is sending.
+      </p>
+    </div>
+  </div>
+</Unstyled>
+
+## Known limits
+
+- Code in messages: R01.2 and P09.2 ask for a monospace font for code and filenames, but no specification says how code is marked in a message (backticks, a code button). Recorded for "What is missing".
+- No keyboard shortcut to send is decided (R02.2 infers none): Enter adds a line, the button sends.
+- No message length limit is decided. The booking question allows 2000 characters; the composer has no limit until E04 sets one.
+- "Report a problem" (D32, 24 hours after the session) and attendance ("Anna has not joined yet", R16) are not designed.
+
+## Related
+
+[Form](?path=/docs/patterns-form--docs), [Detail view](?path=/docs/patterns-detail-view--docs), [Alert](?path=/docs/primitives-alert--docs).

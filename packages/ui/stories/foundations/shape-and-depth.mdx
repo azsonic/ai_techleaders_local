@@ -1,0 +1,32 @@
+import { Meta, Unstyled } from "@storybook/addon-docs/blocks";
+import { RadiusScale } from "../../.storybook/docs/helpers";
+
+<Meta title="Foundations/Shape and depth" />
+
+# Shape and depth
+
+The references decide how surfaces separate, not how round they are.
+
+## Decided
+
+| Rule                                                                                                                                  | Source                       |
+| ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| Adjacent rows are separated by a thin line, 1px (`--border-width-divider`) in `--border`.                                             | R01.3                        |
+| Surfaces are opaque. A panel is distinguished by its border, not by blur or translucency.                                             | A01.2                        |
+| A shadow is never the only way to separate content.                                                                                   | A01 (generic AI look), A01.2 |
+| Controls and boundaries use full-opacity `--border`, because the fill difference between surfaces is too small to identify a control. | WCAG 1.4.11                  |
+
+## Radii
+
+The radius scale is the shadcn default, derived from one `--radius` (0.625rem) and not yet reviewed against the references. They are shown here as they exist.
+
+<Unstyled>
+  <RadiusScale />
+</Unstyled>
+
+## Approved proposals
+
+No reference decides these. The Product owner approved them on 2026-10-25.
+
+- `--radius` stays at 0.625rem. (Component-level use is confirmed in stage 2.)
+- Nothing in the system uses a shadow. Popovers and dialogs separate by border and an opaque surface.

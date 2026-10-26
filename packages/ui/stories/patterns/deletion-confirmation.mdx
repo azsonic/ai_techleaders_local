@@ -1,0 +1,119 @@
+import { Meta, Canvas, Unstyled } from "@storybook/addon-docs/blocks";
+import * as WindowList from "../product/e01/window-list.stories";
+
+<Meta title="Patterns/Deletion confirmation" />
+
+# Deletion confirmation
+
+How DevMentor asks before it removes something that cannot be brought back. Built on the [confirmation dialog](?path=/docs/primitives-confirmation-dialog--docs) and used for removing an availability window.
+
+## Purpose
+
+A person never removes something by accident, and always knows what will happen to it.
+
+## When to use
+
+- Removing an availability window (E01-S02).
+- Any removal that has no undo: later, a profile link or an invitation.
+
+## When not to use
+
+| Situation                                           | Use instead                                                               |
+| --------------------------------------------------- | ------------------------------------------------------------------------- |
+| Cancelling a booking, which has a refund outcome    | The cancellation dialog (E02), same structure with the outcome written in |
+| Something that can be undone or added again at once | Do it, and say so next to the item. Do not confirm every action.          |
+| An operator action that needs a reason              | The operator action pattern (E05)                                         |
+
+## Rules
+
+| #   | Rule                                                                                                 | How it is built                                                                                      | Source               |
+| --- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------- |
+| 1   | The question names the object: "Remove Fri 13 Nov, 10:00 to 12:00?"                                  | `AlertDialogTitle` built from the item's own description.                                            | P10.1, WCAG 3.3.4    |
+| 2   | The text says what happens, and what does not.                                                       | "Mentees can no longer book this window. A session that is already booked is not cancelled by this." | P10.1, E01 spec      |
+| 3   | Cancel is easy to find: it comes first and takes initial focus, so Enter never confirms by accident. | `AlertDialogCancel` before `AlertDialogAction` in the DOM.                                           | WAI-ARIA alertdialog |
+| 4   | The removing button is labelled with a verb and an object, never "OK" or "Yes".                      | "Remove window"; the safe button says what it keeps: "Keep window".                                  | P10.1                |
+| 5   | The dialog stays open until the server answered. The item disappears only after that.                | `Button loading` ("Removing…"); `onRemove` resolves with the API envelope.                           | P12.1                |
+| 6   | A failure appears inside the dialog, in words, and the person can try again or cancel.               | Alert in the dialog: server message, or "The server did not answer" when offline.                    | P12.2                |
+| 7   | A click outside does not dismiss the question.                                                       | `alertdialog` role; no outside-press close.                                                          | WAI-ARIA alertdialog |
+
+## States, each as a story
+
+| State                                       | Story                                                                                           |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Item with its remove action                 | [Window list](?path=/story/product-e01-mentor-supply-window-list--playground)                   |
+| Question open                               | [Dialog: open](?path=/story/product-e01-mentor-supply-window-list--dialog-open)                 |
+| Confirmed, closes after the server answered | [Remove and confirm](?path=/story/product-e01-mentor-supply-window-list--remove-and-confirm)    |
+| Removing (pending)                          | [Dialog: pending](?path=/story/product-e01-mentor-supply-window-list--dialog-pending)           |
+| Server error                                | [Dialog: server error](?path=/story/product-e01-mentor-supply-window-list--dialog-server-error) |
+| Offline                                     | [Dialog: offline](?path=/story/product-e01-mentor-supply-window-list--dialog-offline)           |
+
+### Question open
+
+<Canvas of={WindowList.DialogOpen} />
+
+### Removing
+
+<Canvas of={WindowList.DialogPending} />
+
+### Server error
+
+<Canvas of={WindowList.DialogServerError} />
+
+### Offline
+
+<Canvas of={WindowList.DialogOffline} />
+
+## Code
+
+```tsx
+<AlertDialog open={target !== null} onOpenChange={(open) => !open && close()}>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Remove Fri 13 Nov, 10:00 to 12:00?</AlertDialogTitle>
+      <AlertDialogDescription>
+        Mentees can no longer book this window.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Keep window</AlertDialogCancel>
+      <AlertDialogAction
+        variant="destructive"
+        loading={removing}
+        loadingLabel="Removing…"
+        onClick={confirm}
+      >
+        Remove window
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+## Good and bad
+
+<Unstyled>
+  <div className="grid gap-between-groups sm:grid-cols-2 text-interface">
+    <div className="border border-border bg-card p-panel">
+      <p className="font-emphasis">Do</p>
+      <p>
+        “Remove Tuesday 18:00 to 20:00?” with “Keep window” and “Remove window”.
+      </p>
+    </div>
+    <div className="border border-border bg-card p-panel">
+      <p className="font-emphasis">Don’t</p>
+      <p>
+        “Are you sure?” with “OK” and “Cancel”, where “OK” is the strongest
+        button.
+      </p>
+    </div>
+  </div>
+</Unstyled>
+
+## Known limits
+
+- After the item is removed, where focus goes is the page's decision. Move it to the list heading, not to the page top.
+- No undo exists. If the product adds one, this pattern is replaced by "do it and offer undo" for that object.
+
+## Related
+
+[Confirmation dialog](?path=/docs/primitives-confirmation-dialog--docs), [Menu](?path=/docs/primitives-menu--docs) (a "Remove…" item opens this dialog), [Form](?path=/docs/patterns-form--docs).

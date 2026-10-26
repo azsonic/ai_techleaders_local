@@ -1,0 +1,117 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import { Button } from "@devmentor/ui/components/ui/button";
+import { ErrorMessage } from "@devmentor/ui/backend/feedback/error-message";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./error-state.stories";
+
+<Meta of={Stories} />
+
+# Error state
+
+The component is `ErrorMessage`, in `@devmentor/ui/backend/feedback/error-message`.
+
+## 1. Purpose
+
+Takes the place of content that could not load or does not exist, and says what happened and what to do.
+
+## 2. When to use
+
+- A list or page that failed to load: My bookings, the directory.
+- "Does not exist or no access" on a detail view.
+- A failure of an action that leaves the page in a state the person must resolve.
+
+## 3. When not to use
+
+| Situation                        | Use instead                                                            |
+| -------------------------------- | ---------------------------------------------------------------------- |
+| A wrong value in a field         | The error in the [Form field](?path=/docs/primitives-form-field--docs) |
+| A notice next to working content | [Alert](?path=/docs/primitives-alert--docs)                            |
+| Nothing exists yet               | [Empty state](?path=/docs/primitives-empty-state--docs)                |
+| A short confirmation             | A toast (batch 4). **An error that needs action is never a toast.**    |
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>Icon (always), `aria-hidden`, in `--destructive`.</li>
+    <li>Title (default "Something went wrong"): what happened.</li>
+    <li>Message (recommended): what to do, in foreground text.</li>
+    <li>Action (recommended): the next step, usually "Try again".</li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+One variant. Use words to tell cases apart.
+
+<Canvas of={Stories.Playground} />
+
+<Canvas of={Stories.NoAccess} />
+
+Not found and no access are one message on purpose: the page does not reveal which objects exist.
+
+## 6. States
+
+An error state is a data state. It has no hover, focus, pressed, disabled or loading state of its own; its action is a button. After a retry, show the [Loading skeleton](?path=/docs/primitives-loading-skeleton--docs) again.
+
+## 7. Behavior and accessibility
+
+- `role="alert"`: announced when it appears. Do not move focus to it unless the page is useless without a reaction.
+- The title is in `--destructive` (6.15:1 on card, 5.89:1 on the page, 5.11:1 on a muted surface). Details are in the foreground color for the best contrast.
+- The action is reachable by keyboard and comes after the text.
+
+<Canvas of={Stories.RetryByKeyboard} />
+
+## 8. Content
+
+- Title: what happened, in plain words ("Your bookings did not load"). Message: what to do ("Check your connection and try again").
+- Never raw error codes or stack traces. Say whether data was lost or money was charged when it matters.
+- Wording follows P10.1: short, direct, respectful, with the next step.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- Full width of its container; the icon keeps its column and text wraps at 320px.
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} include={["title", "message", "action"]} />
+
+Also `className`. The action is new in this version; the earlier props are unchanged.
+
+## 11. Code
+
+```tsx
+<ErrorMessage
+  title="Your bookings did not load"
+  message="We could not reach the server. Check your connection and try again."
+  action={
+    <Button variant="secondary" onClick={retry}>
+      Try again
+    </Button>
+  }
+/>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <ErrorMessage
+        title="Your bookings did not load"
+        message="Check your connection and try again."
+        action={<Button variant="secondary">Try again</Button>}
+      />
+    }
+    goodWhy="What happened and what to do, with the button."
+    bad={<ErrorMessage title="Error 500" />}
+    badWhy="A code the person cannot act on."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Alert](?path=/docs/primitives-alert--docs), [Empty state](?path=/docs/primitives-empty-state--docs), [Loading skeleton](?path=/docs/primitives-loading-skeleton--docs).
+- Patterns: detail view ("does not exist or no access"), form (server error), filtered list.

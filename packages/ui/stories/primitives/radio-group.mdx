@@ -1,0 +1,165 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import {
+  Field,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+  FieldContent,
+  FieldDescription,
+} from "@devmentor/ui/components/ui/field";
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@devmentor/ui/components/ui/radio-group";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./radio-group.stories";
+
+<Meta of={Stories} />
+
+# Radio group
+
+## 1. Purpose
+
+Lets a person choose exactly one option while seeing all the options.
+
+## 2. When to use
+
+- Session length: 25 or 50 minutes, with both prices visible before the choice (R05).
+- A mentor's cancellation reason from a fixed list: question out of scope, I am unavailable, other (D34).
+- Two to four options where comparing them matters.
+
+## 3. When not to use
+
+| Situation                       | Use instead                                       |
+| ------------------------------- | ------------------------------------------------- |
+| Five or more options            | [Select](?path=/docs/primitives-select--docs)     |
+| Several options can apply       | [Checkbox](?path=/docs/primitives-checkbox--docs) |
+| An on or off setting            | [Switch](?path=/docs/primitives-switch--docs)     |
+| Choosing a time slot among many | A slot picker (stage 3), grouped by day           |
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>Legend naming the question (required): "Session length".</li>
+    <li>
+      Options (required, at least two): ring, dot when chosen, and a label.
+    </li>
+    <li>Hint per option (optional): the price, for example.</li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+One variant, always vertical so every label can be read.
+
+<Canvas of={Stories.SessionLength} />
+
+## 6. States
+
+<Canvas of={Stories.StateMatrixStory} />
+
+| State            | Behavior                                                               | Source                |
+| ---------------- | ---------------------------------------------------------------------- | --------------------- |
+| Unchecked        | Empty ring.                                                            | WCAG 1.4.11           |
+| Checked          | A dot inside the ring and a primary border. A shape, not only a color. | tokens.md, WCAG 1.4.1 |
+| Hover            | Border darkens to `--foreground`.                                      | R01.5                 |
+| Focus            | 2px ring in `--ring`, offset 2px.                                      | tokens.md, WCAG 2.4.7 |
+| Disabled         | `--muted` fill. **State why next to the option.**                      | WCAG 3.3.2            |
+| Error            | Border in `--destructive` and a message for the group.                 | WCAG 3.3.1            |
+| Pressed, loading | Not applicable.                                                        | n/a                   |
+
+Preselect the most common option when one exists (25 minutes). Never leave a required choice looking answered when it is not.
+
+## 7. Behavior and accessibility
+
+- Keyboard: Tab enters the group on the chosen option (or the first). Arrow keys move and choose. Tab leaves the group.
+- Roles: `radiogroup` with `radio` items, named by the legend inside a `FieldSet` (WAI-ARIA Authoring Practices).
+- The label makes the row clickable. The ring has a 28px hit area (WCAG 2.5.8).
+
+<Canvas of={Stories.ChooseWithArrowKeys} />
+
+## 8. Content
+
+- Legend: the question as a noun phrase. Labels: parallel and short ("25 minutes").
+- Put the consequence in the hint ("90 PLN"), not in the label, so labels stay scannable.
+- Long labels wrap; keep to one sentence.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: one column, labels wrap. 768px and 1440px: same. Do not lay options in a row.
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} include={["defaultValue", "disabled"]} />
+
+`RadioGroup` also takes `value`, `onValueChange`, `name`, `required`. Each `RadioGroupItem` takes `value` and `disabled`.
+
+## 11. Code
+
+```tsx
+<FieldSet>
+  <FieldLegend>Session length</FieldLegend>
+  <RadioGroup defaultValue="25">
+    <Field orientation="horizontal">
+      <RadioGroupItem value="25" />
+      <FieldContent>
+        <FieldLabel>25 minutes</FieldLabel>
+        <FieldDescription>90 PLN</FieldDescription>
+      </FieldContent>
+    </Field>
+  </RadioGroup>
+</FieldSet>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <FieldSet>
+        <FieldLegend>Session length</FieldLegend>
+        <RadioGroup defaultValue="25">
+          <Field orientation="horizontal">
+            <RadioGroupItem value="25" />
+            <FieldContent>
+              <FieldLabel>25 minutes</FieldLabel>
+              <FieldDescription>90 PLN</FieldDescription>
+            </FieldContent>
+          </Field>
+          <Field orientation="horizontal">
+            <RadioGroupItem value="50" />
+            <FieldContent>
+              <FieldLabel>50 minutes</FieldLabel>
+              <FieldDescription>180 PLN</FieldDescription>
+            </FieldContent>
+          </Field>
+        </RadioGroup>
+      </FieldSet>
+    }
+    goodWhy="Both prices are visible before the person chooses."
+    bad={
+      <FieldSet>
+        <FieldLegend>Session length</FieldLegend>
+        <RadioGroup defaultValue="25">
+          <Field orientation="horizontal">
+            <RadioGroupItem value="25" />
+            <FieldLabel>25 minutes</FieldLabel>
+          </Field>
+          <Field orientation="horizontal">
+            <RadioGroupItem value="50" />
+            <FieldLabel>50 minutes</FieldLabel>
+          </Field>
+        </RadioGroup>
+      </FieldSet>
+    }
+    badWhy="The price is hidden until after the choice; R05 requires both prices first."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Checkbox](?path=/docs/primitives-checkbox--docs), [Select](?path=/docs/primitives-select--docs), [Switch](?path=/docs/primitives-switch--docs).
+- Patterns: booking, mentor cancellation.

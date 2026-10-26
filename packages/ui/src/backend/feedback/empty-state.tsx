@@ -2,6 +2,11 @@ import type { ReactNode } from "react";
 
 import { cn } from "../../lib/utils";
 
+/*
+ * Says why a place is empty and what to do next (title, one sentence, one action). Left aligned: nothing
+ * is centered for effect. Two cases use this one component with different words: "nothing here yet"
+ * (action: create) and "no results for these filters" (action: clear filters).
+ */
 export function EmptyState({
   title,
   description,
@@ -14,9 +19,15 @@ export function EmptyState({
   className?: string;
 }) {
   return (
-    <div className={cn("flex flex-col items-center gap-2 rounded-lg border border-dashed p-8 text-center", className)}>
-      <p className="text-sm font-medium">{title}</p>
-      {description && <p className="text-sm text-muted-foreground">{description}</p>}
+    <div
+      data-slot="empty-state"
+      className={cn(
+        "flex flex-col items-start gap-within-group rounded-panel border border-border bg-card p-panel",
+        className,
+      )}
+    >
+      <p className="text-conversation font-emphasis">{title}</p>
+      {description && <p className="text-interface text-muted-foreground">{description}</p>}
       {action}
     </div>
   );

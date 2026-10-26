@@ -1,0 +1,175 @@
+/*
+ * DevMentor design tokens: the only file that may contain colour literals.
+ * Source of truth: lekcja-06/tokeny.md (approved by the Product owner 2026-10-25).
+ * Reference IDs (R01.4, P09.1, A01 ...) point to lekcja-06/referencje.md.
+ *
+ * Layers:
+ *   1. raw       values, never used by components
+ *   2. semantic  named by purpose, consumed by components and Tailwind classes
+ *   3. component only where a component needs its own value (Card spacing)
+ *
+ * Contrast of every supported pair is measured in
+ * packages/ui/stories/foundations/contrast.ts and shown on Foundations / Color.
+ */
+
+:root {
+  /* 1. raw ------------------------------------------------------------ */
+  /* R01.4: warm grays from the installed Tailwind stone palette */
+  --color-stone-50: oklch(98.5% 0.001 106.423);
+  --color-stone-100: oklch(97% 0.001 106.424);
+  --color-stone-200: oklch(92.3% 0.003 48.717);
+  --color-stone-300: oklch(86.9% 0.005 56.366);
+  --color-stone-400: oklch(70.9% 0.01 56.259);
+  --color-stone-500: oklch(55.3% 0.013 58.071);
+  --color-stone-600: oklch(44.4% 0.011 73.639);
+  --color-stone-800: oklch(26.8% 0.007 34.298);
+  --color-stone-900: oklch(21.6% 0.006 56.043);
+  --color-stone-950: oklch(14.7% 0.004 49.25);
+  /* P12.1: accessible error shades */
+  --color-red-200: oklch(88.5% 0.062 18.334);
+  --color-red-300: oklch(80.8% 0.114 19.571);
+  --color-red-700: oklch(50.5% 0.213 27.518);
+  --color-red-800: oklch(44.4% 0.177 26.899);
+
+  /* R01.1, P03: one spacing step, multipliers 1 2 3 4 6 8 12 */
+  --spacing: 0.25rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.428571;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: calc(1.75 / 1.125);
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: calc(2 / 1.5);
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+  /* R01.3: numeric reading of "thin" */
+  --raw-stroke-1: 1px;
+
+  /* Existing, unchanged by the references: shape and charts */
+  --radius: 0.625rem;
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+}
+
+/* Derived aliases are declared on every theme scope so they re-resolve against that scope's own values. */
+:root,
+.light,
+.dark {
+  --card-foreground: var(--foreground); /* R01.5, A01.2 */
+  --popover: var(--card); /* A01.2 */
+  --popover-foreground: var(--foreground); /* R01.5 */
+  --secondary: var(--muted); /* R01.5, R02.6 */
+  --secondary-foreground: var(--foreground); /* R01.5 */
+  --accent: var(--muted); /* R01.5, R02.6 */
+  --accent-foreground: var(--foreground); /* R01.5 */
+  --sidebar: var(--card); /* R02.6 */
+  --sidebar-foreground: var(--foreground); /* R02.6 */
+  --sidebar-primary: var(--primary); /* R01.5, R02.6 */
+  --sidebar-primary-foreground: var(--primary-foreground); /* R01.5, R02.6 */
+  --sidebar-accent: var(--accent); /* R02.6 */
+  --sidebar-accent-foreground: var(--accent-foreground); /* R02.6 */
+  --sidebar-border: var(--border); /* R01.3, R02.6 */
+  --sidebar-ring: var(--ring); /* R01.5, R02.6 */
+}
+
+:root,
+.light {
+  /* 2. semantic: colour, light ------------------------------------------ */
+  --background: var(--color-stone-100); /* R01.4, A01.1 */
+  --foreground: var(--color-stone-900); /* R01.5, R02.3 */
+  --card: var(--color-stone-50); /* R01.4, A01.2 */
+  --muted: var(--color-stone-200); /* R01.4, R01.5 */
+  --muted-foreground: var(--color-stone-600); /* R01.5, R02.3 */
+  --primary: var(--color-stone-900); /* R01.5, existing neutral primary role */
+  --primary-foreground: var(--color-stone-50); /* R01.5 */
+  --primary-hover: var(--color-stone-800); /* R01.5, P11.1: opaque hover */
+  --destructive: var(--color-red-700); /* P12.1-P12.2 */
+  /* Approved 2026-10-25: opaque hover and pressed fill */
+  --destructive-hover: var(--color-red-800);
+  --destructive-foreground: var(--color-stone-50); /* P12.1-P12.2 */
+  --border: var(--color-stone-500); /* R01.3, R01.5: 3:1 */
+  --input: var(--color-stone-500); /* R01.3, R01.5: 3:1 */
+  --ring: var(--color-stone-600); /* R01.5, P11.1: 3:1, full opacity */
+}
+
+:root {
+  /* 2. semantic: typography ---------------------------------------------- */
+  --font-interface: var(--font-sans); /* P09.1 */
+  --font-code: var(--font-mono); /* R01.2, P09.2 */
+  --font-size-interface: var(--text-sm); /* R01.1, R02.3 */
+  --line-height-interface: var(--text-sm--line-height); /* R01.1, R02.3 */
+  --font-size-conversation: var(--text-base); /* R02.1 */
+  --line-height-conversation: var(--text-base--line-height); /* R02.1 */
+  /* Approved proposal (no reference): heading sizes on existing Tailwind steps */
+  --font-size-heading-page: var(--text-2xl);
+  --line-height-heading-page: var(--text-2xl--line-height);
+  --font-size-heading-section: var(--text-lg);
+  --line-height-heading-section: var(--text-lg--line-height);
+  --weight-body: var(--font-weight-normal); /* R01.1 */
+  --weight-emphasis: var(--font-weight-semibold); /* R01.5 */
+
+  /* 2. semantic: spacing ---------------------------------------------------- */
+  --space-inline: calc(var(--spacing) * 1); /* R02.3: 4px */
+  --space-within-group: calc(var(--spacing) * 2); /* R01.1, R02.3: 8px */
+  --space-between-groups: calc(var(--spacing) * 4); /* R01.1, P03: 16px */
+  --space-panel: calc(var(--spacing) * 4); /* R01.1, A01.2: 16px */
+  --space-panel-compact: calc(var(--spacing) * 3); /* R01.1: 12px */
+  --space-section: calc(var(--spacing) * 8); /* P03: 32px */
+  --space-page-inline: calc(var(--spacing) * 6); /* P03: 24px */
+
+  /* Approved proposal (no reference): maximum content width */
+  --size-content-browse: 72rem; /* browsing and booking pages */
+
+  /* Approved proposal; P11.1 keeps motion functional: colour and border changes only */
+  --duration-functional: 150ms;
+
+  /* Approved 2026-10-25 (stage 2 shape and density decisions; no reference source) */
+  --radius-control: calc(
+    var(--radius) * 0.8
+  ); /* 8px: buttons, inputs, selects */
+  --radius-panel: var(--radius); /* 10px: panels, popovers, dialogs */
+  --control-height: calc(
+    var(--spacing) * 10
+  ); /* 40px: forms, booking, conversation (R02.1) */
+  --control-height-dense: calc(
+    var(--spacing) * 8
+  ); /* 32px: browsing rows, tables (R01.1, P03) */
+  --control-height-min: calc(
+    var(--spacing) * 6
+  ); /* 24px: smallest click target, WCAG 2.5.8 */
+  --control-padding-x: calc(var(--spacing) * 4); /* 16px */
+  --control-padding-x-dense: calc(var(--spacing) * 3); /* 12px */
+  --focus-ring-width: 2px; /* tokens.md: full-opacity ring */
+  --focus-ring-offset: 2px; /* tokens.md: separated from the control by the surface */
+
+  /* Proposal (batch 4, no reference source): flat dim behind a modal dialog. A01.2: opaque surfaces, no blur */
+  --scrim: color-mix(in oklab, var(--color-stone-950) 60%, transparent);
+
+  /* 2. semantic: stroke -------------------------------------------------- */
+  --border-width-divider: var(--raw-stroke-1); /* R01.3 */
+
+  /* 3. component --------------------------------------------------------- */
+  --card-spacing: var(--space-panel); /* R01.1, A01.2: Card padding and gap */
+}
+
+.dark {
+  --background: var(--color-stone-950); /* R01.4, A01.1 */
+  --foreground: var(--color-stone-50); /* R01.5, R02.3 */
+  --card: var(--color-stone-900); /* R01.4, A01.2 */
+  --muted: var(--color-stone-800); /* R01.4, R01.5 */
+  --muted-foreground: var(--color-stone-300); /* R01.5, R02.3 */
+  --primary: var(--color-stone-200); /* R01.5 */
+  --primary-foreground: var(--color-stone-950); /* R01.5 */
+  --primary-hover: var(--color-stone-300); /* R01.5, P11.1 */
+  --destructive: var(--color-red-300); /* P12.1-P12.2 */
+  /* Approved 2026-10-25: opaque hover and pressed fill */
+  --destructive-hover: var(--color-red-200);
+  --destructive-foreground: var(--color-stone-950); /* P12.1-P12.2 */
+  --border: var(--color-stone-400); /* R01.3, R01.5: 3:1 */
+  --input: var(--color-stone-400); /* R01.3, R01.5: 3:1 */
+  --ring: var(--color-stone-400); /* R01.5, P11.1: 3:1 */
+}

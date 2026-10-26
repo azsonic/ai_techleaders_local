@@ -1,0 +1,151 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@devmentor/ui/components/ui/table";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./table.stories";
+
+<Meta of={Stories} />
+
+# Table
+
+## 1. Purpose
+
+Lets a person compare the same facts across many objects, such as invitations or bookings, in dense rows.
+
+## 2. When to use
+
+- The operator's invitations (invited, status, sent, revoke) and bookings.
+- Any list where people compare columns: status, date, price.
+
+## 3. When not to use
+
+| Situation                                                | Use instead                                                     |
+| -------------------------------------------------------- | --------------------------------------------------------------- |
+| A mentor or booking where the person reads one at a time | [Card](?path=/docs/primitives-card--docs)                       |
+| Layout of a page                                         | Layout and spacing, never a table                               |
+| Two or three facts per row on a phone                    | Rows with a [Separator](?path=/docs/primitives-separator--docs) |
+
+Sources: R01.1 (dense rows), R01.3 (thin separators).
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>Container that scrolls sideways and has a name (required).</li>
+    <li>Caption (recommended): what the table lists.</li>
+    <li>Header row with column headers (required).</li>
+    <li>Body rows with cells, separated by a 1px line (required).</li>
+    <li>Footer (optional): totals.</li>
+  </ol>
+</Unstyled>
+
+<Canvas of={Stories.Playground} />
+
+## 5. Variants
+
+One variant. Rows are at least 32px high (dense, R01.1). There is no zebra striping; rows are separated by a thin line (R01.3).
+
+## 6. States
+
+<Canvas of={Stories.StateMatrixStory} />
+
+| State                              | Behavior                                                                                                                                                               | Source                |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| Default                            | Cells on the page canvas, 1px `--border` under each row.                                                                                                               | R01.3                 |
+| Row hover                          | The row fill changes to `--accent`. The row is not a control; do not rely on hover to show an action.                                                                  | R01.5                 |
+| Focus                              | The scroll container shows the 2px ring when focused.                                                                                                                  | tokens.md, WCAG 2.4.7 |
+| Selected, disabled, loading, error | Not built in. Show loading with [Skeleton](?path=/docs/primitives-loading-skeleton--docs) rows, empty with an [Empty state](?path=/docs/primitives-empty-state--docs). | n/a                   |
+
+## 7. Behavior and accessibility
+
+- Native `table`, `th` and `td`. Column headers have `scope="col"`; use `scope="row"` for a row header.
+- The scroll container is a named `region` and focusable, so keyboard users can scroll it (WCAG 2.1.1).
+- Actions in a row are buttons with their own names ("Revoke invitation for jan.nowak@example.com" when it is not clear from context).
+- An empty column header (actions) needs a visually hidden label.
+
+<Canvas of={Stories.ScrollRegionByKeyboard} />
+
+## 8. Content
+
+- Header: a noun ("Status", "Sent"). Cells: short values; a status is a [Status badge](?path=/docs/primitives-status-badge--docs).
+- Dates in one format everywhere. Numbers keep their unit ("90 PLN").
+- Long text wraps in the cell only when it must; otherwise scroll the table.
+
+## 9. Responsiveness
+
+- 320px: the table scrolls sideways inside its container. The page does not.
+- 768px and 1440px: the table fills the container up to `max-w-content`.
+
+<Canvas of={Stories.WideOnNarrowScreen} />
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} include={["label"]} />
+
+Parts: `TableHeader`, `TableBody`, `TableFooter`, `TableRow`, `TableHead` (takes `scope`), `TableCell`, `TableCaption`.
+
+## 11. Code
+
+```tsx
+<Table label="Invitations">
+  <TableCaption>Invitations sent in October</TableCaption>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Invited</TableHead>
+      <TableHead>Status</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>jan.nowak@example.com</TableCell>
+      <TableCell>
+        <Badge variant="secondary">Pending</Badge>
+      </TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <Table label="Bookings">
+        <TableHeader>
+          <TableRow>
+            <TableHead>When</TableHead>
+            <TableHead>Mentor</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell>Tue 14:00</TableCell>
+            <TableCell>Anna Kowalska</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    }
+    goodWhy="Real headers, named region, thin row lines."
+    bad={
+      <div className="flex flex-col gap-within-group text-interface">
+        <div className="flex justify-between">
+          <span>Tue 14:00</span>
+          <span>Anna Kowalska</span>
+        </div>
+      </div>
+    }
+    badWhy="Divs in rows have no headers: screen readers cannot read the columns."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Card](?path=/docs/primitives-card--docs), [Separator](?path=/docs/primitives-separator--docs), [Status badge](?path=/docs/primitives-status-badge--docs).
+- Patterns: filtered list.

@@ -1,0 +1,47 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Design system/Screens and state maps" />
+
+# Screens and state maps
+
+Every backlog epic has a page with its flow, its screens and a state map: each state of each screen is one story, with its source. This page lists them all. Counts are the stories under `Product / <epic> / Screens`, counted from the built Storybook.
+
+**Specified** means the epic has a specification in `.ai/specs/`. **Proposal** means it has none: the screens come from the brief's decisions and need approval before they are requirements.
+
+| Epic                      | Basis     | Screen            | Route                       | States | Epic page                                                                              |
+| ------------------------- | --------- | ----------------- | --------------------------- | ------ | -------------------------------------------------------------------------------------- |
+| E01 Mentor supply         | Specified | Join              | `/join/[token]`             | 8      | [E01 Mentor supply](?path=/docs/design-system-e01-mentor-supply--docs)                 |
+| E01 Mentor supply         | Specified | Profile           | `/mentor/profile`           | 5      | [E01 Mentor supply](?path=/docs/design-system-e01-mentor-supply--docs)                 |
+| E01 Mentor supply         | Specified | Availability      | `/mentor/availability`      | 6      | [E01 Mentor supply](?path=/docs/design-system-e01-mentor-supply--docs)                 |
+| E01 Mentor supply         | Specified | Admin invitations | `/admin/invitations`        | 9      | [E01 Mentor supply](?path=/docs/design-system-e01-mentor-supply--docs)                 |
+| E02 Find and book         | Specified | Directory         | `/mentors`                  | 7      | [E02 Find and book](?path=/docs/design-system-e02-find-and-book--docs)                 |
+| E02 Find and book         | Specified | Mentor page       | `/mentors/[slug]`           | 7      | [E02 Find and book](?path=/docs/design-system-e02-find-and-book--docs)                 |
+| E02 Find and book         | Specified | Booking page      | `/book/[slug]`              | 11     | [E02 Find and book](?path=/docs/design-system-e02-find-and-book--docs)                 |
+| E02 Find and book         | Specified | My bookings       | `/bookings`                 | 10     | [E02 Find and book](?path=/docs/design-system-e02-find-and-book--docs)                 |
+| E02 Find and book         | Specified | Mentor bookings   | `/mentor/bookings`          | 7      | [E02 Find and book](?path=/docs/design-system-e02-find-and-book--docs)                 |
+| E02 Find and book         | Specified | Notifications     | `/notifications`            | 5      | [E02 Find and book](?path=/docs/design-system-e02-find-and-book--docs)                 |
+| E03 Payments              | Proposal  | Payment step      | last step of `/book/[slug]` | 8      | [E03 Payments](?path=/docs/design-system-e03-payments--docs)                           |
+| E03 Payments              | Proposal  | Mentor earnings   | `/mentor/earnings`          | 6      | [E03 Payments](?path=/docs/design-system-e03-payments--docs)                           |
+| E04 Text session          | Proposal  | Session           | `/sessions/[id]`            | 15     | [E04 Text session](?path=/docs/design-system-e04-text-session--docs)                   |
+| E04 Text session          | Proposal  | Usefulness check  | `/sessions/[id]/feedback`   | 7      | [E04 Text session](?path=/docs/design-system-e04-text-session--docs)                   |
+| E05 Supply gate and pilot | Proposal  | Gate              | `/admin/gate`               | 7      | [E05 Supply gate and pilot](?path=/docs/design-system-e05-supply-gate-and-pilot--docs) |
+| E05 Supply gate and pilot | Proposal  | Metrics           | `/admin/metrics`            | 5      | [E05 Supply gate and pilot](?path=/docs/design-system-e05-supply-gate-and-pilot--docs) |
+| E05 Supply gate and pilot | Proposal  | Suspend a mentor  | `/admin/mentors/[id]`       | 11     | [E05 Supply gate and pilot](?path=/docs/design-system-e05-supply-gate-and-pilot--docs) |
+| E05 Supply gate and pilot | Proposal  | Audit log         | `/admin/audit`              | 6      | [E05 Supply gate and pilot](?path=/docs/design-system-e05-supply-gate-and-pilot--docs) |
+
+18 screens, 140 states. Specified epics: 10 screens, 75 states. Proposal epics: 8 screens, 65 states.
+
+## Patterns used by the screens
+
+| Pattern                                                                   | Used by                                                                                                                            |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| [Form](?path=/docs/patterns-form--docs)                                   | Profile, Availability, Booking page, Payment step, Usefulness check, the cancel dialog for a mentor and the operator action dialog |
+| [Deletion confirmation](?path=/docs/patterns-deletion-confirmation--docs) | Availability (remove a window)                                                                                                     |
+| [Filtered list](?path=/docs/patterns-filtered-list--docs)                 | Directory                                                                                                                          |
+| [Detail view](?path=/docs/patterns-detail-view--docs)                     | Mentor page                                                                                                                        |
+| [Conversation](?path=/docs/patterns-conversation--docs)                   | Session                                                                                                                            |
+| [Operator action](?path=/docs/patterns-operator-action--docs)             | Suspend a mentor (and revoke an invitation, once wired)                                                                            |
+
+## Reading a state map
+
+Each epic page has one table per screen: the state, the story that shows it and the source of the state (a specification section, a decision, a rule or a reference). A screen that takes an action has pending, server error and offline states where the epic page lists them. States a screen does not have are not listed, and gaps are recorded for "What is missing" rather than assumed here.

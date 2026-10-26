@@ -1,0 +1,65 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Design system/E03 Payments" />
+
+# E03 Payments
+
+A mentee pays at booking, a refund or a payout follows the rules, and a mentor sees what they receive. **No E03 specification exists yet.** The components and screens here are proposals drawn from the brief: decisions D08, D09, D13, D18, D22, D32, D33 and rules R04, R05, R07, R09, R15, R16. Each needs approval before it becomes a requirement. Backlog: E03-S01 (pay at booking), E03-S02 (refunds, cancellations and no-shows), E03-S03 (a mentor receives their price minus 20%).
+
+## Flow
+
+1. The mentee picks a slot and writes a question (E02), then reaches the **Payment step**: summary, test-mode notice, Stripe's payment details, "Pay 120 PLN and book". Money is taken only for a confirmed booking (R06).
+2. A cancellation or an absence ends in a money outcome worded by **Refund outcome line**: full refund, no refund, or the same-day refund when the mentor cancels or does not attend (R04, R09, R15, R16).
+3. The mentor sees each paid session in **Mentor earnings** with the price, the 20% commission and what they receive; a payout is held until the 24-hour report window closes (R05, R16).
+
+## Product components
+
+| Component           | Purpose                                                      | Data states covered                                   | Stories                                                                                     |
+| ------------------- | ------------------------------------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Refund outcome line | One line: the money outcome, amount first, then the reason   | Seven outcomes, due and made, highest price, narrow   | [Refund outcome line](?path=/story/product-e03-payments-refund-outcome-line--every-outcome) |
+| Payout row          | One session in the earnings table: price, commission, payout | Four statuses, amounts with grosze, long name, narrow | [Payout row](?path=/story/product-e03-payments-payout-row--every-status)                    |
+
+The card form is Stripe's. It is not designed here; the screen marks its place with a documentation helper (see "Product work that remains").
+
+## Screens and state map
+
+### Payment step (last step of `/book/[slug]`)
+
+| State                                 | Story                                                                                | Source        |
+| ------------------------------------- | ------------------------------------------------------------------------------------ | ------------- |
+| Summary, question and payment details | [Ready](?path=/story/product-e03-payments-screens-payment-step--ready)               | R04, R06, D18 |
+| Paying (pending)                      | [Pending](?path=/story/product-e03-payments-screens-payment-step--pending)           | P12.1         |
+| Card declined                         | [Declined](?path=/story/product-e03-payments-screens-payment-step--declined)         | P12.2, P10.1  |
+| Slot taken, nothing charged           | [Slot taken](?path=/story/product-e03-payments-screens-payment-step--slot-taken)     | R06, E02 spec |
+| Server error                          | [Server error](?path=/story/product-e03-payments-screens-payment-step--server-error) | P12.2         |
+| Offline                               | [Offline](?path=/story/product-e03-payments-screens-payment-step--offline)           | P12.2         |
+| Paid, after the server confirmed      | [Paid](?path=/story/product-e03-payments-screens-payment-step--paid)                 | P12.1         |
+| Long name and question                | [Long text](?path=/story/product-e03-payments-screens-payment-step--long-text)       | R01.1         |
+
+### Mentor earnings (`/mentor/earnings`)
+
+| State                                      | Story                                                                             | Source   |
+| ------------------------------------------ | --------------------------------------------------------------------------------- | -------- |
+| Held, paid, refunded and disputed sessions | [List](?path=/story/product-e03-payments-screens-mentor-earnings--list)           | R05, R16 |
+| No paid sessions yet                       | [Empty](?path=/story/product-e03-payments-screens-mentor-earnings--empty)         | P10.1    |
+| Loading                                    | [Loading](?path=/story/product-e03-payments-screens-mentor-earnings--loading)     | P11.1    |
+| Error                                      | [Error](?path=/story/product-e03-payments-screens-mentor-earnings--load-error)    | P12.2    |
+| Lots of data                               | [30 sessions](?path=/story/product-e03-payments-screens-mentor-earnings--many)    | R01.1    |
+| Long name                                  | [Long text](?path=/story/product-e03-payments-screens-mentor-earnings--long-text) | R01.1    |
+
+The refund outcome in the cancel dialog is still E02's wording ("due when payments process"). `RefundOutcomeLine` is the E03 wording; moving the dialog to it is a decision for E03-S02.
+
+## Source files
+
+| Part                                 | Path                                                        |
+| ------------------------------------ | ----------------------------------------------------------- |
+| Components                           | `packages/ui/src/components/payments/`                      |
+| Stories                              | `packages/ui/stories/product/e03/`                          |
+| Documentation helpers (not exported) | `packages/ui/.storybook/docs/{e03-data,stripe-placeholder}` |
+
+## Product work that remains
+
+- **Not designed, recorded for "What is missing":** Stripe's payment form and its field errors (hosted by Stripe); the mentor's Stripe Connect onboarding and payout details (E03-S03-T01 is open); the receipt or invoice; payment history for the mentee; a refund shown on the booking's own page.
+- The outcome (`grace`, `full`, `late`, ...) is computed by the booking policy in `core`; the component only words it. The commission is 20% of a whole-zloty price, so it is always a whole number of grosze.
+- "Test mode" wording stays until a legal, tax and invoicing owner is named (D18, R07, Q11).
+- Status names (Held, Paid, Refunded, In dispute) and the two totals on the earnings page are proposals.

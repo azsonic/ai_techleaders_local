@@ -1,0 +1,118 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import {
+  Field,
+  FieldLabel,
+  FieldDescription,
+} from "@devmentor/ui/components/ui/field";
+import { Textarea } from "@devmentor/ui/components/ui/textarea";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./textarea.stories";
+
+<Meta of={Stories} />
+
+# Textarea
+
+## 1. Purpose
+
+Lets a person write several lines, such as the question a mentor will answer.
+
+## 2. When to use
+
+- The mentee's question at booking (plain text, at most 2,000 characters).
+- A cancellation note ("other" reason, optional) from a mentor.
+- Experience description on a mentor profile.
+
+## 3. When not to use
+
+| Situation                   | Use instead                                                        |
+| --------------------------- | ------------------------------------------------------------------ |
+| One short line              | [Text input](?path=/docs/primitives-text-input--docs)              |
+| A message in a live session | The session composer (stage 3); it stays visible beside the thread |
+| Formatted text              | Not supported. The question is plain text (E02 spec)               |
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>
+      Label (required), always visible. Inside a [Form
+      field](?path=/docs/primitives-form-field--docs).
+    </li>
+    <li>Field with a 1px border; grows with its content (required).</li>
+    <li>Placeholder: an example question (optional).</li>
+    <li>Hint with the limit, and error (optional).</li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+One variant. The field grows from 40px with its content. Written text uses the conversation size, 16px/24px (R02.1).
+
+## 6. States
+
+<Canvas of={Stories.StateMatrixStory} />
+
+| State                      | Behavior                                                    | Source                |
+| -------------------------- | ----------------------------------------------------------- | --------------------- |
+| Hover                      | Border darkens to `--foreground`.                           | R01.5                 |
+| Focus                      | 2px ring in `--ring`, offset 2px.                           | tokens.md, WCAG 2.4.7 |
+| Disabled                   | `--muted` fill, muted text. Say why in the hint.            | WCAG 3.3.2            |
+| Error                      | Border in `--destructive`, a message below, `aria-invalid`. | WCAG 1.4.1, 3.3.1     |
+| Pressed, loading, selected | Not applicable.                                             | —                     |
+
+## 7. Behavior and accessibility
+
+- Keyboard: Tab focuses, Enter adds a new line. A form is submitted with its button, not with Enter.
+- Role: native `textbox` (multiline). Hint and error connect through the Form field.
+- State the limit before the person reaches it, in the hint ("up to 2,000 characters"). Do not cut text silently.
+- Border contrast 4.41:1 light, 7.63:1 dark (WCAG 1.4.11).
+
+## 8. Content
+
+- Placeholder: a real example from the product ("For example: my migration fails with a foreign key error on staging.").
+- Never put instructions only in the placeholder: it disappears.
+- Long text wraps. Keep line length readable: place the field in a column no wider than `max-w-prose`.
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- 320px: full width. 768px and 1440px: a single column no wider than 65 characters.
+
+## 10. API
+
+<ArgTypes of={Stories.Playground} include={["disabled", "maxLength", "rows"]} />
+
+All native textarea props are accepted.
+
+## 11. Code
+
+```tsx
+<Field>
+  <FieldLabel>Your question</FieldLabel>
+  <Textarea maxLength={2000} />
+  <FieldDescription>Plain text, up to 2,000 characters.</FieldDescription>
+</Field>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <Field>
+        <FieldLabel>Your question</FieldLabel>
+        <Textarea maxLength={2000} />
+        <FieldDescription>Plain text, up to 2,000 characters.</FieldDescription>
+      </Field>
+    }
+    goodWhy="The limit is stated up front."
+    bad={<Textarea aria-label="Your question" maxLength={2000} />}
+    badWhy="The limit is enforced silently; the person loses text without a warning."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Text input](?path=/docs/primitives-text-input--docs), [Form field](?path=/docs/primitives-form-field--docs).
+- Patterns: form, booking, session composer.

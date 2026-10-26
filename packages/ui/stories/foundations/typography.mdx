@@ -1,0 +1,33 @@
+import { Meta, Unstyled } from "@storybook/addon-docs/blocks";
+import { TypeRoles } from "../../.storybook/docs/helpers";
+
+<Meta title="Foundations/Typography" />
+
+# Typography
+
+Geist Sans carries the interface and conversation text (P09.1). Geist Mono carries code and filenames (R01.2, P09.2). The fonts ship with the project, so Storybook and the app load no external font service.
+
+Type is chosen by **role**, not by size. A role maps to the semantic tokens `--font-size-interface`, `--font-size-conversation`, `--weight-body` and `--weight-emphasis`, available as the classes `text-interface`, `text-conversation`, `font-body` and `font-emphasis`.
+
+## Roles
+
+<Unstyled>
+  <TypeRoles />
+</Unstyled>
+
+## Rules
+
+| Rule                                                                                                              | Source                |
+| ----------------------------------------------------------------------------------------------------------------- | --------------------- |
+| Browsing rows, labels and metadata use the interface size (14/20px).                                              | R01.1, R02.3          |
+| Messages and written answers use the conversation size (16/24px), code included.                                  | R02.1                 |
+| Emphasis (semibold) marks the main action, the current status and key labels. Not every label, not every message. | R01.5                 |
+| Body text is at most about 65 characters per line (`max-w-prose`).                                                | WCAG 1.4.8 (advisory) |
+| Code and filenames always use the code font.                                                                      | R01.2, P09.2          |
+
+## Approved proposals
+
+These have no source in the references. The Product owner approved them on 2026-10-25.
+
+- Page heading: `text-heading-page` (24/32px). Section heading: `text-heading-section` (18/28px). Both use emphasis weight.
+- Numbers use tabular figures (`tabular-nums`) so prices and times align.

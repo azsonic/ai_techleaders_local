@@ -1,0 +1,23 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Motion" />
+
+# Motion
+
+Motion never decorates. State changes must be understandable without any movement (P11.1).
+
+## Decided
+
+| Rule                                                                                                                                                | Source              |
+| --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| No decorative animation: no entrance effects, floating, shimmer on content.                                                                         | P11.1               |
+| Every state change has a non-motion signal: text, border or fill. A message shows "Sending", "Sent" or "Not sent" beside it, with Retry on failure. | P11.1, P12.1, P12.2 |
+| No promise of response time or latency in the interface.                                                                                            | R02.2 clarification |
+
+## Duration
+
+One functional duration, `--duration-functional` (150 ms), applies to color and border changes. Nothing animates layout. Approved proposal, no reference source (P11.1 sets the direction only).
+
+## Reduced motion
+
+`globals.css` reduces transitions and animations to a negligible duration under `prefers-reduced-motion: reduce` (WCAG 2.3.3). Approved proposal.

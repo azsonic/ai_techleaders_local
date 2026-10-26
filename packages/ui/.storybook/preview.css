@@ -1,0 +1,76 @@
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+@import "../src/styles/globals.css";
+
+/* Tailwind scans only the importing folder: register the documentation helpers and stories. */
+@source "./docs";
+@source "../stories";
+
+/* Mirrors packages/app/src/app/globals.css: aliases for the app's next/font variables. */
+:root {
+  --font-geist-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-geist-mono: "Geist Mono Variable", ui-monospace, monospace;
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Documentation only: wide Markdown tables scroll inside the page instead of widening it. */
+.sbdocs-content table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Documentation only: the docs page follows the active theme, so dark mode is checked on real pages. */
+.sbdocs-wrapper,
+.sbdocs {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.sbdocs :is(h1, h2, h3, h4, p, li, td, th, summary, label) {
+  color: inherit;
+}
+
+html .sbdocs.sbdocs-content table tr {
+  background: var(--card);
+}
+
+html .sbdocs.sbdocs-content table tr:nth-of-type(2n) {
+  background: var(--muted);
+}
+
+html .sbdocs.sbdocs-content table tr :is(td, th) {
+  border-color: var(--border);
+}
+
+.sbdocs-content :not(pre) > code {
+  background: var(--muted);
+  border-color: var(--border);
+  color: var(--foreground);
+}
+
+html .sbdocs.sbdocs-content table tr :is(td, th) {
+  color: var(--foreground);
+}
+
+.sbdocs [class*="toc"] :is(a, li) {
+  color: var(--muted-foreground);
+}
+
+/*
+ * Documentation only: frozen previews of hover, focus and pressed. These re-define the variants so
+ * the component's own `hover:`, `focus-visible:` and `active:` classes also match an element marked
+ * data-preview-state. The declarations come from the component; nothing is copied here.
+ */
+@custom-variant hover (&:hover, &[data-preview-state="hover"]);
+@custom-variant focus-visible (&:focus-visible, &[data-preview-state="focus"]);
+@custom-variant active (&:active, &[data-preview-state="pressed"]);
+
+html .sbdocs.sbdocs-content :not(pre) > code {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}

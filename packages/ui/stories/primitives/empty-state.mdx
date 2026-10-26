@@ -1,0 +1,124 @@
+import { Meta, Canvas, ArgTypes, Unstyled } from "@storybook/addon-docs/blocks";
+import { Button } from "@devmentor/ui/components/ui/button";
+import { EmptyState } from "@devmentor/ui/backend/feedback/empty-state";
+import { GoodBad } from "../../.storybook/docs/states";
+import * as Stories from "./empty-state.stories";
+
+<Meta of={Stories} />
+
+# Empty state
+
+## 1. Purpose
+
+Explains why a place has nothing in it and gives the one next step.
+
+## 2. When to use
+
+- My bookings before the first booking.
+- The directory when no mentor has a bookable slot (E02 spec).
+- A filtered list with no results for the current filters.
+- The operator's invitations before the first one.
+
+## 3. When not to use
+
+| Situation                         | Use instead                                                       |
+| --------------------------------- | ----------------------------------------------------------------- |
+| Content is still loading          | [Loading skeleton](?path=/docs/primitives-loading-skeleton--docs) |
+| Content failed to load            | [Error state](?path=/docs/primitives-error-state--docs)           |
+| A temporary notice on a full page | [Alert](?path=/docs/primitives-alert--docs)                       |
+
+## 4. Anatomy
+
+<Unstyled>
+  <ol className="list-decimal pl-between-groups text-interface">
+    <li>Title (required): what is empty.</li>
+    <li>Description (recommended): why, in one sentence.</li>
+    <li>Action (required unless nothing can be done): the next step.</li>
+    <li>Panel: opaque card fill with a 1px border, left aligned.</li>
+  </ol>
+</Unstyled>
+
+## 5. Variants
+
+There is one component and two cases, told apart by the words and the action.
+
+| Case                         | Choose it when                                                         | Action                                        |
+| ---------------------------- | ---------------------------------------------------------------------- | --------------------------------------------- |
+| Nothing here yet             | The list is empty because nothing was ever created.                    | Create: "Create invitation", "Find a mentor". |
+| No results for these filters | Filters hide everything. The filters are visible and the count says 0. | "Clear filters".                              |
+| Nothing available            | Empty and there is nothing the person can do (nobody bookable).        | None; say when to check back.                 |
+
+<Canvas of={Stories.NothingHereYet} />
+
+<Canvas of={Stories.NoResultsForFilters} />
+
+<Canvas of={Stories.NobodyBookable} />
+
+## 6. States
+
+An empty state is a data state. It has no hover, focus, pressed, disabled or error state of its own; its action is a button. It is replaced when data arrives.
+
+## 7. Behavior and accessibility
+
+- The panel is plain content, read in order: title, description, action. Do not use `role="alert"`: an empty list is not an emergency.
+- The action is a real button or link, reachable by keyboard.
+- Text: foreground on card 16.76:1, muted on card 7.32:1 (WCAG 1.4.3).
+
+<Canvas of={Stories.ClearFilters} />
+
+## 8. Content
+
+- Title: name what is missing ("No bookings yet"), not a joke or an exclamation.
+- Description: why it is empty and what happens next. No emoji, no illustration (R02.5).
+- Action label: verb and object ("Clear filters", "Create invitation").
+
+<Canvas of={Stories.LongContentNarrow} />
+
+## 9. Responsiveness
+
+- Full width of its container, left aligned, at every size. It is not centered in the page for effect.
+
+## 10. API
+
+<ArgTypes
+  of={Stories.Playground}
+  include={["title", "description", "action"]}
+/>
+
+Also `className`.
+
+## 11. Code
+
+```tsx
+<EmptyState
+  title="No mentors match TypeScript and Python"
+  description="Remove a filter to see more mentors with a free slot."
+  action={
+    <Button variant="secondary" onClick={clearFilters}>
+      Clear filters
+    </Button>
+  }
+/>
+```
+
+## 12. Good and bad
+
+<Unstyled>
+  <GoodBad
+    good={
+      <EmptyState
+        title="No bookings yet"
+        description="When you book a session it appears here with its status."
+        action={<Button variant="secondary">Find a mentor</Button>}
+      />
+    }
+    goodWhy="It says why it is empty and gives the next step."
+    bad={<EmptyState title="Nothing to see here" />}
+    badWhy="No reason and no way forward."
+  />
+</Unstyled>
+
+## 13. Related
+
+- [Loading skeleton](?path=/docs/primitives-loading-skeleton--docs), [Error state](?path=/docs/primitives-error-state--docs).
+- Patterns: filtered list (both empty cases), detail view.
