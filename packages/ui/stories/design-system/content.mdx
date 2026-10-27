@@ -70,10 +70,12 @@ A toast confirms a small thing the server accepted. The title names the object a
 
 ## Removing something: failure wording
 
-| Case                    | Alert title                       | Alert text                                                                                          |
-| ----------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------- |
-| The server broke        | "The mentor was not removed"      | The server's message, then "They are still in your favorites."                                      |
-| No answer from the server | "The mentor was not removed"    | "The server did not answer. Check your connection and try again." then "They are still in your favorites." |
+Pattern: the title names the object ("The mentor was not removed"), then comes the server's message, then a sentence saying the object is still in the list ("They are still in your favorites.").
+
+| Case                      | Alert text                                                                                              |
+| ------------------------- | ------------------------------------------------------------------------------------------------------- |
+| The server broke          | The server's message, then "They are still in your favorites."                                          |
+| No answer from the server | "The server did not answer. Check your connection and try again." then "They are still in your favorites." |
 
 ## A mentor's headline
 

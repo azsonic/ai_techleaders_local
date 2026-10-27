@@ -337,7 +337,7 @@ Names one of the four stacks a mentor works in.
 
 ### Mentor card
 
-The main-object card for a mentor: name, stacks, price range and nearest slot. With `headline` and `actions` it also shows a saved mentor (`variant="saved"`): name, one-line headline, stacks and a secondary action.
+The main-object card for a mentor: name, stacks, price range and nearest slot. With `headline` and `actions` it also shows a mentor in the person's own list (`variant="listed"`): name, one-line headline, stacks and a secondary action.
 
 `@devmentor/ui/components/mentors/mentor-card { MentorCard, MentorCardSkeleton }` · [Stories](?path=/story/product-e01-mentor-supply-mentor-card--playground) · [Epic page](?path=/docs/design-system-e01-mentor-supply--docs)
 
@@ -646,4 +646,5 @@ The mentee's saved mentors with a stack filter and a remove action that confirms
 | Part          | Import                                                    | What it is                                                                                                             | Documentation                                   |
 | ------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
 | Form feedback | `@devmentor/ui/components/form-feedback { FormFeedback }` | Outcome of a form submit above the button: success after the server confirmed, or what failed.                         | [Form pattern](?path=/docs/patterns-form--docs) |
+| useItemRemoval | `@devmentor/ui/hooks/use-item-removal { useItemRemoval }` | Removing an item the person can restore: only that item is pending, a toast names it, a failure is a message, focus moves on. | [Filtered list pattern](?path=/docs/patterns-filtered-list--docs) |
 | useForm       | `@devmentor/ui/hooks/use-form { useForm }`                | The Form pattern as one hook: validation on blur and submit, focus on the first error, kept entries, no double submit. | [Form pattern](?path=/docs/patterns-form--docs) |

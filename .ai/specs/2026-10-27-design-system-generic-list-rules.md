@@ -1,6 +1,6 @@
 ---
 title: Make the list and item-action rules generic and reusable
-status: draft
+status: in-progress
 created: 2026-10-27
 updated: 2026-10-27
 owner: azsonic

@@ -30,6 +30,8 @@ Confirms in a few words that the server accepted something the person just did, 
 | A choice that needs an answer                              | [Confirmation dialog](?path=/docs/primitives-confirmation-dialog--docs)             |
 | Before the server has answered                             | The button's `loading` state. Never show success first.                             |
 
+**Who mounts the provider.** The application shell mounts one `ToastProvider`. A component never mounts its own and fails without one, so a story that shows a toast wraps itself in a provider (the demo helpers do).
+
 Sources: WCAG 4.1.3 (status messages), WCAG 2.2.1 (timing), P04, P12.1, P12.2, R02.4 (no notification clutter).
 
 ## 4. Anatomy
