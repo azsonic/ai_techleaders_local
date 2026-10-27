@@ -138,6 +138,7 @@ Run from the repo root (npm workspaces):
 - `docker compose up -d`: local PostgreSQL (matches `.env.example`).
 - `npm run dev` / `npm run build` / `npm run start`: the Next.js app.
 - `npm run lint` / `npm run typecheck`: every package.
+- `npm run check:tokens` / `npm run check:docs`: non-token values in UI code and docs; the three design system component lists (`docs/design-system.md`, Start here, Components) must name the same components.
 - `npm run test`: unit tests. Coverage of application code must stay at 100%.
 - `npm run test:integration`: build the app, install the agent-browser Chrome, and run the Testcontainers + agent-browser suite.
 - `npm run db:migration:create` / `db:migrate` / `db:migration:list` / `db:migration:down`: MikroORM migrations (`@devmentor/db`). Commit `src/migrations/*` and `.snapshot-*.json`.
