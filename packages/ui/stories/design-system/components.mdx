@@ -53,6 +53,7 @@ import * as S50 from "../product/e05/gate-status.stories";
 import * as S51 from "../product/e05/metric-row.stories";
 import * as S52 from "../product/e05/operator-action-dialog.stories";
 import * as S53 from "../product/e05/audit-row.stories";
+import * as S54 from "../product/favorites/favorite-mentors.stories";
 
 <Meta title="Design system/Components" />
 
@@ -336,7 +337,7 @@ Names one of the four stacks a mentor works in.
 
 ### Mentor card
 
-The main-object card for a mentor: name, stacks, price range and nearest slot.
+The main-object card for a mentor: name, stacks, price range and nearest slot. With `headline` and `actions` it also shows a saved mentor (`variant="saved"`): name, one-line headline, stacks and a secondary action.
 
 `@devmentor/ui/components/mentors/mentor-card { MentorCard, MentorCardSkeleton }` · [Stories](?path=/story/product-e01-mentor-supply-mentor-card--playground) · [Epic page](?path=/docs/design-system-e01-mentor-supply--docs)
 
@@ -620,6 +621,24 @@ One logged operator action: when, who, what, why.
 
 <Unstyled>
   <Story of={S53.Playground} />
+</Unstyled>
+
+## Favorites
+
+### Filtered list
+
+The filtered list pattern as one component: visible filters, an announced count, two empty states, loading and error. `MentorDirectory` and `FavoriteMentors` are built on it. See [Filtered list](?path=/docs/patterns-filtered-list--docs).
+
+`@devmentor/ui/components/lists/filtered-list { FilteredList }` · [Pattern](?path=/docs/patterns-filtered-list--docs) · [Favorites page](?path=/docs/design-system-favorites--docs)
+
+### Favorite mentors
+
+The mentee's saved mentors with a stack filter and a remove action that confirms with a toast.
+
+`@devmentor/ui/components/favorites/favorite-mentors { FavoriteMentors }` · [Stories](?path=/story/product-favorites-favorite-mentors--playground) · [Favorites page](?path=/docs/design-system-favorites--docs)
+
+<Unstyled>
+  <Story of={S54.Playground} />
 </Unstyled>
 
 ## Shared parts

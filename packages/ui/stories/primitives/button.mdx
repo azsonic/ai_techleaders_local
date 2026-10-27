@@ -103,6 +103,10 @@ Sizes:
 
 All native button props are also accepted (`type`, `onClick`, `aria-describedby` and others). The component is a Base UI button; see the technical note in Contributing for the origin of the base.
 
+### An action on one item of a list
+
+Use `variant="secondary"` with `size="dense"`, last inside the card. The `destructive` variant is only for an action that cannot be undone (cancel a booking, suspend a mentor). Removing a favorite is undoable, so it is `secondary`. When the same label repeats on every row, add the object in visually hidden text (see Usage and accessibility).
+
 ## 11. Code
 
 Minimal:

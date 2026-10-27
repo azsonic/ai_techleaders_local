@@ -24,6 +24,15 @@ A person never removes something by accident, and always knows what will happen 
 | Something that can be undone or added again at once | Do it, and say so next to the item. Do not confirm every action.          |
 | An operator action that needs a reason              | The operator action pattern (E05)                                         |
 
+## Dialog or direct action
+
+| Question                                                               | If yes                                      |
+| ---------------------------------------------------------------------- | ------------------------------------------- |
+| Can the person add it back at once, with no money moved and no data lost? | Do it directly: a button, then a toast after the server confirmed. No dialog, no Undo in the toast. |
+| Does it move money, notify someone else or lose what was typed?        | A confirmation dialog (the rules below).    |
+
+Worked example of the direct case: removing a mentor from favorites ([Favorites page](?path=/docs/design-system-favorites--docs)). The button reads "Remove from favorites", is `secondary` and `dense`, and the toast reads "Anna Kowalska removed from favorites" with "You can save this mentor again from their profile."
+
 ## Rules
 
 | #   | Rule                                                                                                 | How it is built                                                                                      | Source               |

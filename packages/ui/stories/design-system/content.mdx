@@ -4,7 +4,7 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 # Content and messages
 
-The product's words are short, direct and respectful. A message names the action, the outcome and the next step, and warmth comes from being helpful, not from decoration (P10.1, C02). All examples below are strings the system already uses. The product language is English.
+The product's words are short, direct and respectful. A message names the action, the outcome and the next step, and warmth comes from being helpful, not from decoration (P10.1, C02). All examples below are strings the system already uses. The product language is American English (see Spelling below).
 
 ## What the product says, and what it does not
 
@@ -51,7 +51,33 @@ An error says what happened, what is safe and what to do. It never blames the pe
 | Invitations (operator)           | "No invitations yet." "Create the first one above. The mentor gets a link to open."                                              | E01 spec                                  |
 | Audit log                        | "No operator actions yet." "Revoking an invitation, suspending a mentor and viewing a session in dispute are logged here."       | R13                                       |
 | Directory, filters match nothing | "No mentors for these filters" with the action "Clear filters"                                                                   | Filtered list pattern                     |
+| Favorites, nothing saved         | "You have not saved any mentors yet" and "Save a mentor from the directory and they will appear here." with a link "Find a mentor" | Favorites screen                          |
+| Favorites, filters match nothing | "No favorite mentors for these filters" with the action "Clear filters" | Filtered list pattern                     |
 | Directory, no mentor listed      | "No mentors are listed yet" (a different state from "no results"; a mentee cannot create a mentor, so there is no create action) | Filtered list pattern, batch B decision 2 |
+
+## Spelling and the product's words
+
+American English: favorites, color, behavior. One exception: the status words approved in stage 3 keep their wording ("Cancelled by you", "Cancelled by mentor") because they are the state machine's own words. Amounts keep the currency code (`PLN`), never "zloty" in the interface. The product word for a mentor's technology is **Stack** (D07): a request that says "technology" means stacks, and filters use the four stacks the system has.
+
+## Toast messages
+
+A toast confirms a small thing the server accepted. The title names the object and the outcome; one short sentence says the next step. Never an error.
+
+| Case                       | Title                                      | Sentence                                             |
+| -------------------------- | ------------------------------------------ | ---------------------------------------------------- |
+| A mentor removed from favorites | "Anna Kowalska removed from favorites"  | "You can save this mentor again from their profile." |
+| Availability saved         | "Availability saved"                       | "Mentees see the new windows now."                   |
+
+## Removing something: failure wording
+
+| Case                    | Alert title                       | Alert text                                                                                          |
+| ----------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------- |
+| The server broke        | "The mentor was not removed"      | The server's message, then "They are still in your favorites."                                      |
+| No answer from the server | "The mentor was not removed"    | "The server did not answer. Check your connection and try again." then "They are still in your favorites." |
+
+## A mentor's headline
+
+One line about the mentor's work, written by the mentor: at most 200 characters (confirmed by the Product owner). It wraps and is never cut with an ellipsis. A mentor without one shows nothing in its place.
 
 ## Statuses
 

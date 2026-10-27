@@ -27,4 +27,8 @@ Dense rows for browsing mentors and bookings use `--space-panel-compact`. The se
 
 **Maximum content width (approved proposal, no reference source).** Browsing and booking pages `--size-content-browse` (72rem, class `max-w-content`). Forms and conversation `max-w-prose` (65 characters).
 
+**A page and its frame.** A page is one `h1` and its content inside the maximum width, with `px-page-inline` at the sides and `gap-section` between sections. The header, navigation and unread count (the application shell) are not designed; the stories use `ScreenFrame`, a documentation helper that is not exported and not a product component.
+
+**Actions inside a card.** An action on a card sits under the content, never beside the name, so it fits at 320 px. Lists of cards are one column below `md` and two from `md`.
+
 **Not decided.** Where the composer sits when an on-screen keyboard is open (listed as a gap in the references).

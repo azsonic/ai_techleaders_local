@@ -15,17 +15,17 @@ The system stays small on purpose (rule: add nothing outside the plan). A change
 | An existing component almost fits                                      | Propose a **variant** only if it has a reason in a reference, a decision or WCAG. Otherwise change nothing. |
 | You want a different look for one screen                               | Nothing. A different look is a decision about the product, not about a screen.                              |
 
-Where it goes (AGENTS.md): a shadcn primitive in `packages/ui/src/components/ui/` (added with `npx shadcn@latest add` from `packages/app`, never hand-written, and checked afterwards for dependencies the plan does not list); a component tied to one concept in `packages/ui/src/components/<concept>/`; a generic admin pattern in `packages/ui/src/backend/<category>/`. Built only from base components. No new dependency without an approved plan.
+Where it goes (AGENTS.md): the component in `packages/ui/src/components/<concept>/<kebab-case-name>.tsx` with its test beside it; its stories in `packages/ui/stories/product/<concept>/` (Storybook loads only `stories/**`; a story placed next to the component is never shown); and a shadcn primitive in `packages/ui/src/components/ui/` (added with `npx shadcn@latest add` from `packages/app`, never hand-written, and checked afterwards for dependencies the plan does not list); a component tied to one concept in `packages/ui/src/components/<concept>/`; a generic admin pattern in `packages/ui/src/backend/<category>/`. Built only from base components. No new dependency without an approved plan.
 
 ## What a new component needs
 
 1. **Unit tests** at 100% statements, branches, functions and lines (`npm run test`).
-2. **Tokens only**: no colour, palette class or arbitrary value (`npm run check:tokens`).
-3. **A documentation page**. A base component has the same 13 sections: purpose, when to use, when not to use, anatomy, variants, states, behaviour and accessibility, content, responsiveness, API, code, good and bad, related. A product component has stories and a row on its epic page.
-4. **Stories**: a playground with controls, every variant and size, a state matrix with frozen hover and focus (base components), long content and a narrow screen, the data states (loading, empty, error, partial, lots of data, long text) and a play function for the main behaviour.
+2. **Tokens only**: no color, palette class or arbitrary value (`npm run check:tokens`).
+3. **A documentation page**. A base component has the same 13 sections: purpose, when to use, when not to use, anatomy, variants, states, behavior and accessibility, content, responsiveness, API, code, good and bad, related. A product component has stories and a row on its epic page.
+4. **Stories**: a playground with controls, every variant and size, a state matrix with frozen hover and focus (base components), long content and a narrow screen, the data states (loading, empty, error, partial, lots of data, long text) and a play function for the main behavior.
 5. **Accessibility**: every story passes axe in both themes or has a documented exception.
 6. **Sources**: every rule on the page cites a reference, a decision or WCAG. A rule with no source is marked as a proposal and goes to the Product owner.
-7. **Catalogue entries**: the row in [Components](?path=/docs/design-system-components--docs), the table in [Start here](?path=/docs/design-system-start-here--docs), the agent file `docs/design-system.md`, and [What is missing](?path=/docs/design-system-what-is-missing--docs) if it closes or opens a gap.
+7. **Catalog entries**: the row in [Components](?path=/docs/design-system-components--docs), the table in [Start here](?path=/docs/design-system-start-here--docs), the agent file `docs/design-system.md`, and [What is missing](?path=/docs/design-system-what-is-missing--docs) if it closes or opens a gap.
 
 ## After a token change
 
@@ -34,8 +34,8 @@ A token change can break contrast without changing a component. After any change
 1. Run `npm run check:contrast -w @devmentor/ui`. Every pair must say `ok` in both themes; if a pair falls below 4.5 : 1 for text or 3 : 1 for interface elements, stop and ask.
 2. Run `npm run check:tokens`.
 3. Run `npm run test:stories -w @devmentor/ui` and `npm run test:stories:dark -w @devmentor/ui`.
-4. Recheck the [Foundations](?path=/docs/foundations-color--docs) colour page and one dialog and one menu in dark.
-5. Check component opacity modifiers: contrast must be recalculated after opacity is applied, not only for the base colours.
+4. Recheck the [Foundations](?path=/docs/foundations-color--docs) color page and one dialog and one menu in dark.
+5. Check component opacity modifiers: contrast must be recalculated after opacity is applied, not only for the base colors.
 
 ## Who approves
 
