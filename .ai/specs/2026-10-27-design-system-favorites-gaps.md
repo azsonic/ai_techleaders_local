@@ -71,7 +71,7 @@ Decisions already made by the user (2026-10-27):
 - [ ] An epic page (or section of the Screens page) lists the favorites screen and its state map; counts come from the built `index.json`, not memory.
 - [ ] `design-system.md`, Components, Start here, Filtered list, Deletion confirmation, Content, What is missing, Contributing updated and consistent.
 - [ ] `check:tokens` clean; `check:contrast` all ok; Storybook tests pass in both themes; every favorites story swept at 320 px with no overflow.
-- [ ] Re-run of the original probe prompt (fresh agent, same task text) finishes with GUESSING at 0 or only items listed in "What is missing".
+- [ ] Re-run of the probe with a fresh agent finishes with GUESSING at 0 or only items listed in "What is missing". Not met: run on 2026-10-27 gave 14 of 44 guessed (see the run log for the new gaps).
 - [ ] `npm run lint`, `typecheck`, `test`, `build` pass; `test:integration` unaffected (no user-visible route changed).
 
 ## Technical approach
