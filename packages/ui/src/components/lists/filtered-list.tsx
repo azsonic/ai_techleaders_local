@@ -36,6 +36,7 @@ export function FilteredList<
   skeleton,
   loadingLabel,
   errorTitle,
+  errorMessage = "Nothing was changed. Try again.",
   noResults,
   nothingYet,
   notice,
@@ -56,6 +57,8 @@ export function FilteredList<
   skeleton: ReactNode;
   loadingLabel: string;
   errorTitle: string;
+  /** One sentence under the error title. Say what is safe and what to do. */
+  errorMessage?: string;
   /** Filters are set and nothing matches. */
   noResults: { title: string; description: string };
   /** No filter is set and the list is empty. `action` is a create or find action, when the viewer has one. */
@@ -112,7 +115,7 @@ export function FilteredList<
       {!loading && (error || !items) && (
         <ErrorMessage
           title={errorTitle}
-          message="Nothing was changed. Try again."
+          message={errorMessage}
           action={
             onRetry && (
               <Button variant="secondary" size="dense" onClick={onRetry}>

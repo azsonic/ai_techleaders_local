@@ -86,6 +86,18 @@ describe("FilteredList", () => {
     expect(onRetry).toHaveBeenCalled();
   });
 
+  it("says what is safe in its own words when the error message is given", () => {
+    renderList({
+      items: undefined,
+      error: true,
+      errorMessage: "Your things are safe. Try again.",
+    });
+    expect(screen.getByRole("alert").textContent).toContain(
+      "Your things are safe. Try again.",
+    );
+    expect(screen.queryByText("Nothing was changed. Try again.")).toBeNull();
+  });
+
   it("treats missing items as an error even without the flag", () => {
     renderList({ items: undefined });
     expect(screen.getByRole("alert")).toBeTruthy();
