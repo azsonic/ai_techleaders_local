@@ -50,12 +50,12 @@ The first probe silently ran on `main` (agent worktree isolation starts from the
 
 ## Acceptance criteria
 
-- [ ] G25 to G37 each resolved as in the table, or moved to "What is missing" with a reason.
-- [ ] `useItemRemoval` exists with unit tests at 100%; `FavoriteMentors` uses it and its tests and stories pass unchanged in behavior.
-- [ ] `MentorCard variant="listed"` replaces `saved` everywhere (code, tests, stories, docs).
-- [ ] Rules in `docs/design-system.md` and Storybook read generically; favorites appears only as the worked example.
-- [ ] `check:docs`, `check:tokens`, `lint`, `typecheck`, `test` (100%), `build`, `test:stories` in both themes pass; changed docs pages loaded in the browser; component stories swept at 320 px.
-- [ ] A new fresh-agent probe on a screen of another object type than mentors and than favorites ("Past sessions" for a mentee, with a status filter and a "Hide from list" action) run on the committed branch HEAD finishes with GUESSING at 0, or with every guess listed in "What is missing" in the same PR. The tested commit is recorded in the run log. If it still fails, record the new gaps and stop; do not loop more than two probe rounds without asking the owner.
+- [x] G25 to G37 each resolved as in the table, or moved to "What is missing" with a reason.
+- [x] `useItemRemoval` exists with unit tests at 100%; `FavoriteMentors` uses it and its tests and stories pass unchanged in behavior.
+- [x] `MentorCard variant="listed"` replaces `saved` everywhere (code, tests, stories, docs).
+- [x] Rules in `docs/design-system.md` and Storybook read generically; favorites appears only as the worked example.
+- [x] `check:docs`, `check:tokens`, `lint`, `typecheck`, `test` (100%), `build`, `test:stories` in both themes pass; changed docs pages loaded in the browser; component stories swept at 320 px.
+- [x] A new fresh-agent probe on a screen of another object type than mentors and than favorites ("Past sessions" for a mentee, with a status filter and a "Hide from list" action) run on the committed branch HEAD finishes with GUESSING at 0, or with every guess listed in "What is missing" in the same PR. The tested commit is recorded in the run log. If it still fails, record the new gaps and stop; do not loop more than two probe rounds without asking the owner. Result (commit `77eee29`, "Past sessions"): 12 of 52 guessed; criterion met by its second branch, all 12 guesses listed in "What is missing" in the same PR. Not zero.
 
 ## Technical approach
 

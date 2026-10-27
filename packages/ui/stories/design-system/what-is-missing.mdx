@@ -47,6 +47,15 @@ An honest list of what the design system does not cover yet: backlog coverage fi
 | A page layout component                                 | `ScreenFrame` is a documentation helper. A page is an `h1` and its content inside `max-w-content`; there is no exported frame. | Favorites test           | P1       |
 | A combobox filter with search                           | Filters are a fixed checkbox group of four stacks; a filter with many values has no component.                     | Favorites test           | P3       |
 | A metadata slot on the mentor card (for example "viewed on Fri 13 Nov") | A list of recently viewed mentors would show a time; add the slot when a second consumer needs it (use `LocalTime`). | Agent test 2 | P3 |
+| A session or booking row with an actions slot, and its skeleton | `BookingCard` has no `actions` slot and shows a question and a price; a list of past sessions has to compose its own row. | Agent test 3 | P2 |
+| A date-only display | `LocalTime` always shows time and zone; a session date alone has no variant. | Agent test 3 | P3 |
+| An order line inside `FilteredList` ("Most recent first") | The component has no slot between the count and the list, so the page writes the line outside it. | Agent test 3 | P3 |
+| A copy table for lists (empty, error, loading, toast, hide wording per object) | Wording for a new object is written by analogy; only mentors have rows. | Agent test 3 | P2 |
+| A restore place for hidden sessions | "Hide from list" is not undoable without one, so it needs a confirmation dialog until a hidden-sessions view exists. | Agent test 3 | P2 |
+| Announcing a pending action to screen readers | Only `aria-busy` and the changed label carry it; no rule says more is needed. | Agent test 3 | P3 |
+| Mapping several statuses to one filter option | Two no-show states read "No-show" to the mentee; no rule says how a filter option maps to values. | Agent test 3 | P3 |
+| Which screen owns past sessions | Past sessions overlaps the "Past" tab of My bookings; no rule says which one a mentee uses. | Agent test 3 | P2 |
+| Phone sweep of a row with actions | Only "fits at 320 px" is written; a row that wraps its header and badge has no documented layout. | Agent test 3 | P3 |
 | Undo after a removal                                    | A removed favorite is saved again from the profile; the toast has no Undo button and none was designed.            | Favorites test           | P3       |
 | Code formatting inside a message                        | R01.2 and P09.2 ask for a code font; no spec says how code is marked.                                              | Batch C                  | P2       |
 

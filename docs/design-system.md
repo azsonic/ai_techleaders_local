@@ -114,14 +114,14 @@ These answer the questions a list screen raises, for any object (mentors, bookin
 | Which filter options | A fixed list (all four stacks), never derived from the visible items, so the filter does not jump. Filters combine as "any of" (OR). While the list loads or refetches, the filter stays usable and only the list area shows the state. |
 | Order | The server's order. When it is not obvious, write it in words above the list ("Most recent first"). Never a rating. A time on an item uses `LocalTime`; a metadata slot on the card is added when a second consumer needs it (see "What is missing"). |
 | Heading levels | Page `h1`; an item heading is `h2` (`headingLevel`, default 2); inside a section whose heading is `h2`, items are `h3`. |
-| Link to the object | The item's name is the one link to it. No second "View profile" link with the same target. |
+| Link to the object | The item's main text is the one link to it: a mentor's name, a booking's time (as `BookingCard` does). No second "View profile" link with the same target. Put that link inside the item's `h2`: `useItemRemoval` finds the next item to focus as `a` inside `h2`. |
 | An item that is no longer available | A list shows only what is available: an item that disappeared between loads is absent and the count reflects it. A direct link to it uses the "does not exist or no access" state (Detail view). |
 | Headline of a mentor | One line under the name: `text-interface text-muted-foreground`, wraps (`wrap-anywhere`), never truncated, at most 200 characters. Omit it when there is none (no placeholder). |
 | Partial data on a mentor card | No headline: the line is omitted. No image: initials. No stacks: the stack list is omitted. |
 | Card for an item in the person's own list | `MentorCard variant="listed"` with `headline` and `actions`: identity only, no price, no slot. |
 | Action on one item | `Button variant="secondary" size="dense"`, last inside the card, under the content (never beside the name), so it also fits at 320 px. `destructive` is for irreversible actions only. |
 | Name of a repeated action | Keep the visible label and add the object in `sr-only` text: "Remove from favorites" plus `<span className="sr-only">: Anna Kowalska</span>`. |
-| Remove: dialog or direct | Undoable means the person can restore it themselves from a place the toast names, with no money moved, nobody notified and nothing typed lost: a direct button, a toast after the server confirmed, no Undo in the toast. Anything else needs a confirmation dialog (Deletion confirmation, with examples). |
+| Remove: dialog or direct | Undoable means the person can restore it themselves from a place the toast names, with no money moved, nobody notified and nothing typed lost: a direct button, a toast after the server confirmed, no Undo in the toast. Anything else needs a confirmation dialog (Deletion confirmation, with examples). Hiding an item with no place to bring it back from (a past session hidden from its list) is not undoable: use the dialog, or first build the place to restore from. |
 | How to build the removal | `useItemRemoval` (`@devmentor/ui/hooks/use-item-removal`): it owns pending, failure, toast and focus. Spread its `areaProps` on the wrapper of the list. The page supplies `onRemove` and the toast words. |
 | While removing | Only that item's button is `loading` ("Removing…"). Other items stay usable. |
 | Removal failed | A destructive `Alert` above the filters: title "The <object> was not removed", the server's message (offline, code `network_error`: "The server did not answer. Check your connection and try again."), then "They are still in <the list>." The item stays. The alert clears on the next attempt. |
@@ -130,7 +130,7 @@ These answer the questions a list screen raises, for any object (mentors, bookin
 | Action callback | `(id) => Promise<ApiResult<unknown>>` from `@devmentor/core`. It resolves with the envelope and never rejects (`apiCall` guarantees this). The page updates the list before or as `onRemove` resolves. |
 | Error text of a list | `FilteredList errorMessage` says what is safe and what to do; the default is "Nothing was changed. Try again." |
 | Skeleton | A skeleton copies the footprint of the item it stands in for (`MentorCardSkeleton`, or the item's own skeleton exported next to it). No free height or width utilities. |
-| Where a list screen lives | In the folder of the concept it lists (mentors in a list: `components/mentors/`); a new folder only for a new concept. Its stories: `stories/product/<concept>/`. |
+| Where a list screen lives | In the folder of the concept it lists (mentors in a list: `components/mentors/`); a new folder only for a new concept. Its stories: `stories/product/<concept>/`, titled `Product/<Concept>/...` (an epic folder such as `e02` only for the screens of that epic), and a screen story file is named `screen-<name>.stories.tsx`. |
 | Stories a list screen needs | The component's stories carry partial, lots (30) and long text; the screen's stories carry the states of its screen map. |
 
 ## Semantic tokens
