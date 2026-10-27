@@ -10,13 +10,13 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { colorRoles, spacingRoles } from "./tokens-data";
 
-/** Reads the actual sRGB value the browser paints for a CSS colour, through a canvas. */
-const toRgb = (colour: string): [number, number, number] => {
+/** Reads the actual sRGB value the browser paints for a CSS color, through a canvas. */
+const toRgb = (color: string): [number, number, number] => {
   const ctx = document
     .createElement("canvas")
     .getContext("2d", { willReadFrequently: true })!;
   ctx.fillStyle = "black";
-  ctx.fillStyle = colour;
+  ctx.fillStyle = color;
   ctx.fillRect(0, 0, 1, 1);
   const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
   return [r, g, b];
@@ -130,7 +130,7 @@ export const ContrastTable = () => {
     const [light, dark] = [scopes[0], scopes[1]];
     const value = (el: HTMLElement, token: string) =>
       getComputedStyle(el).getPropertyValue(token).trim();
-    const colour = (el: HTMLElement, token: string) => {
+    const color = (el: HTMLElement, token: string) => {
       const swatch = document.createElement("span");
       swatch.style.color = `var(${token})`;
       el.appendChild(swatch);
@@ -144,8 +144,8 @@ export const ContrastTable = () => {
         bg,
         min,
         use,
-        light: contrastRatio(colour(light, fg), colour(light, bg)),
-        dark: contrastRatio(colour(dark, fg), colour(dark, bg)),
+        light: contrastRatio(color(light, fg), color(light, bg)),
+        dark: contrastRatio(color(dark, fg), color(dark, bg)),
       })),
     );
   }, []);

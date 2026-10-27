@@ -11,7 +11,7 @@ const TITLE: Record<NotificationKind, string> = {
 
 /*
  * One in-product notice (R10, D21, P04): only the two booking events exist. An unread notice says "New" in words and is
- * semibold, so unread is never a dot or a colour alone (WCAG 1.4.1). A mentor's reason is shown to the mentee (D34).
+ * semibold, so unread is never a dot or a color alone (WCAG 1.4.1). A mentor's reason is shown to the mentee (D34).
  */
 export function NotificationRow({
   kind,

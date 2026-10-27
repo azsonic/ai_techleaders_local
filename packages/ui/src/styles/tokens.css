@@ -1,5 +1,5 @@
 /*
- * DevMentor design tokens: the only file that may contain colour literals.
+ * DevMentor design tokens: the only file that may contain color literals.
  * Source of truth: lekcja-06/tokeny.md (approved by the Product owner 2026-10-25).
  * Reference IDs (R01.4, P09.1, A01 ...) point to lekcja-06/referencje.md.
  *
@@ -78,7 +78,7 @@
 
 :root,
 .light {
-  /* 2. semantic: colour, light ------------------------------------------ */
+  /* 2. semantic: color, light ------------------------------------------ */
   --background: var(--color-stone-100); /* R01.4, A01.1 */
   --foreground: var(--color-stone-900); /* R01.5, R02.3 */
   --card: var(--color-stone-50); /* R01.4, A01.2 */
@@ -124,7 +124,7 @@
   /* Approved proposal (no reference): maximum content width */
   --size-content-browse: 72rem; /* browsing and booking pages */
 
-  /* Approved proposal; P11.1 keeps motion functional: colour and border changes only */
+  /* Approved proposal; P11.1 keeps motion functional: color and border changes only */
   --duration-functional: 150ms;
 
   /* Approved 2026-10-25 (stage 2 shape and density decisions; no reference source) */

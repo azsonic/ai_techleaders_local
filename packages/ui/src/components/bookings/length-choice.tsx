@@ -27,7 +27,7 @@ type Length = "25" | "50";
 
 /*
  * Both prices side by side before a length is chosen (R05, D08). The whole row is the target and the chosen row shows
- * a dot and a heavier border, so the choice is never colour alone.
+ * a dot and a heavier border, so the choice is never color alone.
  */
 export function LengthChoice({
   prices,
