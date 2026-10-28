@@ -70,6 +70,8 @@ A skeleton is a loading state. It has no hover, focus, pressed, disabled, select
 
 ## 8. Content
 
+- A skeleton for a product item copies that item's footprint: reuse `MentorCardSkeleton`, or export the item's own skeleton next to it. Do not size blocks with free height or width utilities (a number of the scale); use the control sizes (`h-control`, `h-control-min`) and proportional widths.
+
 - Match the real layout: the same number of lines, rows and widths vary slightly so it does not read as a table of one value.
 - Status text names the thing: "Loading your bookings…". Default "Loading…".
 

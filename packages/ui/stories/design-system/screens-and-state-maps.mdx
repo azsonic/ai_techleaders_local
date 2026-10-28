@@ -17,8 +17,8 @@ Every backlog epic has a page with its flow, its screens and a state map: each s
 | E02 Find and book         | Specified | Directory         | `/mentors`                  | 7      | [E02 Find and book](?path=/docs/design-system-e02-find-and-book--docs)                 |
 | E02 Find and book         | Specified | Mentor page       | `/mentors/[slug]`           | 7      | [E02 Find and book](?path=/docs/design-system-e02-find-and-book--docs)                 |
 | E02 Find and book         | Specified | Booking page      | `/book/[slug]`              | 11     | [E02 Find and book](?path=/docs/design-system-e02-find-and-book--docs)                 |
-| E02 Find and book         | Specified | My bookings       | `/bookings`                 | 10     | [E02 Find and book](?path=/docs/design-system-e02-find-and-book--docs)                 |
-| E02 Find and book         | Specified | Mentor bookings   | `/mentor/bookings`          | 7      | [E02 Find and book](?path=/docs/design-system-e02-find-and-book--docs)                 |
+| E02 Find and book         | Specified | My bookings       | `/bookings`                 | 12     | [E02 Find and book](?path=/docs/design-system-e02-find-and-book--docs)                 |
+| E02 Find and book         | Specified | Mentor bookings   | `/mentor/bookings`          | 8      | [E02 Find and book](?path=/docs/design-system-e02-find-and-book--docs)                 |
 | E02 Find and book         | Specified | Notifications     | `/notifications`            | 5      | [E02 Find and book](?path=/docs/design-system-e02-find-and-book--docs)                 |
 | E03 Payments              | Proposal  | Payment step      | last step of `/book/[slug]` | 8      | [E03 Payments](?path=/docs/design-system-e03-payments--docs)                           |
 | E03 Payments              | Proposal  | Mentor earnings   | `/mentor/earnings`          | 6      | [E03 Payments](?path=/docs/design-system-e03-payments--docs)                           |
@@ -30,7 +30,7 @@ Every backlog epic has a page with its flow, its screens and a state map: each s
 | E05 Supply gate and pilot | Proposal  | Audit log         | `/admin/audit`              | 6      | [E05 Supply gate and pilot](?path=/docs/design-system-e05-supply-gate-and-pilot--docs) |
 | Favorites                 | Proposal  | Favorite mentors  | `/favorites`                | 5      | [Favorites](?path=/docs/design-system-favorites--docs)                                 |
 
-19 screens, 145 states. Specified epics: 10 screens, 75 states. Proposal epics: 9 screens, 70 states.
+19 screens, 148 states. Specified epics: 10 screens, 78 states. Proposal epics: 9 screens, 70 states.
 
 ## Patterns used by the screens
 
@@ -38,7 +38,7 @@ Every backlog epic has a page with its flow, its screens and a state map: each s
 | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | [Form](?path=/docs/patterns-form--docs)                                   | Profile, Availability, Booking page, Payment step, Usefulness check, the cancel dialog for a mentor and the operator action dialog |
 | [Deletion confirmation](?path=/docs/patterns-deletion-confirmation--docs) | Availability (remove a window); Favorite mentors uses its rule for undoable actions (no dialog)                                    |
-| [Filtered list](?path=/docs/patterns-filtered-list--docs)                 | Directory, Favorite mentors                                                                                                        |
+| [Filtered list](?path=/docs/patterns-filtered-list--docs)                 | Directory, Favorite mentors, the Past tab of My bookings and Mentor bookings                                                                                                        |
 | [Detail view](?path=/docs/patterns-detail-view--docs)                     | Mentor page                                                                                                                        |
 | [Conversation](?path=/docs/patterns-conversation--docs)                   | Session                                                                                                                            |
 | [Operator action](?path=/docs/patterns-operator-action--docs)             | Suspend a mentor (and revoke an invitation, once wired)                                                                            |

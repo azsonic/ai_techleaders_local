@@ -74,7 +74,7 @@ Where a new reusable component goes:
 3. Component tied to one concept's data shape → `ui/src/components/<concept>/`.
 4. Used by exactly one page → colocate it next to that `page.tsx` until a second page needs it.
 
-File names are kebab-case (`api-call.ts`, `mentor-card.tsx`), also when a task names a PascalCase file; components are PascalCase, functions camelCase. A component lives in `packages/ui/src/components/<concept>/` and its stories in `packages/ui/stories/product/<concept>/`: Storybook loads only `stories/**`, so a story next to the component is never shown. Product UI text is American English (`favorites`); see the Content page in Storybook.
+File names are kebab-case (`api-call.ts`, `mentor-card.tsx`), also when a task names a PascalCase file; components are PascalCase, functions camelCase. A component lives in `packages/ui/src/components/<concept>/` and its stories in `packages/ui/stories/product/<concept>/`: Storybook loads only `stories/**`, so a story next to the component is never shown. A screen that lists objects lives in the folder of the concept it lists (a list of mentors goes in `components/mentors/`); a new folder appears only when a new concept does. Product UI text is American English (`favorites`); see the Content page in Storybook.
 
 ### `packages/app` (Next.js)
 

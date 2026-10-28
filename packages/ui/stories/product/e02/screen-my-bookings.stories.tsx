@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import { BookingsScreen } from "../../../.storybook/docs/bookings-screen";
 
@@ -26,6 +27,33 @@ export const JustBooked: Story = {
 export const Empty: Story = {
   name: "No bookings yet",
   args: { state: "empty" },
+};
+export const PastFilter: Story = {
+  name: "Past: filter by outcome",
+  args: { state: "past" },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("status")).toHaveTextContent("2 bookings");
+    expect(canvas.getByText("Most recent first")).toBeVisible();
+
+    await userEvent.click(
+      canvas.getByRole("checkbox", { name: "You did not attend" }),
+    );
+    await waitFor(() =>
+      expect(canvas.getByRole("status")).toHaveTextContent("1 booking"),
+    );
+
+    await userEvent.click(
+      canvas.getByRole("button", { name: "Clear filters" }),
+    );
+    await waitFor(() =>
+      expect(canvas.getByRole("status")).toHaveTextContent("2 bookings"),
+    );
+  },
+};
+export const PastNoResults: Story = {
+  name: "Past: no results for the outcome",
+  args: { state: "past-no-results" },
 };
 export const Loading: Story = { args: { state: "loading" } };
 export const LoadError: Story = {

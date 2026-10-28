@@ -18,7 +18,7 @@ A mentee keeps a short list of mentors to come back to, narrows it by stack and 
 | ---------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
 | Filtered list    | Visible filters, announced count, two empty states, loading and error         | Used by the directory and by favorites; see the [pattern](?path=/docs/patterns-filtered-list--docs)           | [Directory](?path=/story/product-e02-find-and-book-mentor-directory--playground)   |
 | Favorite mentors | Saved mentors on the filtered list, each with a remove action                 | Loading, nothing saved, no results, error, partial, 30 mentors, long text, narrow, pending, server error, offline | [Favorite mentors](?path=/story/product-favorites-favorite-mentors--playground) |
-| Mentor card      | `variant="saved"`: name, headline, stacks and `actions`; no price and no slot | Partial (no headline, no stacks), long text                                                                  | [Mentor card](?path=/story/product-e01-mentor-supply-mentor-card--playground)      |
+| Mentor card      | `variant="listed"`: name, headline, stacks and `actions`; no price and no slot | Partial (no headline, no stacks), long text                                                                  | [Mentor card](?path=/story/product-e01-mentor-supply-mentor-card--playground)      |
 
 ## Screens and state map
 
@@ -46,7 +46,7 @@ The states of the remove action are stories of the component:
 
 | Part                                 | Path                                                         |
 | ------------------------------------ | ------------------------------------------------------------ |
-| Components                           | `packages/ui/src/components/favorites/`, `packages/ui/src/components/lists/` |
+| Components and hook                  | `packages/ui/src/components/favorites/`, `packages/ui/src/components/lists/`, `packages/ui/src/hooks/use-item-removal.ts` |
 | Stories                              | `packages/ui/stories/product/favorites/`                     |
 | Documentation helpers (not exported) | `packages/ui/.storybook/docs/favorites-data.ts`, `favorites-demo.tsx`              |
 

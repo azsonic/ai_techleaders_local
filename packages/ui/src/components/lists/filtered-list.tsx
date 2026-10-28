@@ -30,12 +30,14 @@ export function FilteredList<
   selected,
   onSelectedChange,
   noun,
+  description,
   loading = false,
   error = false,
   onRetry,
   skeleton,
   loadingLabel,
   errorTitle,
+  errorMessage = "Nothing was changed. Try again.",
   noResults,
   nothingYet,
   notice,
@@ -49,13 +51,17 @@ export function FilteredList<
   onSelectedChange: (selected: Value[]) => void;
   /** Word for one item in the count: "1 mentor", "2 mentors". */
   noun: { singular: string; plural: string };
+  /** One short line between the count and the list, for example the order: "Most recent first". */
+  description?: string;
   loading?: boolean;
   error?: boolean;
   onRetry?: () => void;
-  /** Placeholders with the footprint of an item, shown under `loadingLabel` while loading. */
-  skeleton: ReactNode;
-  loadingLabel: string;
-  errorTitle: string;
+  /** Placeholders with the footprint of an item, shown under `loadingLabel` while loading. Omit `skeleton`, `loadingLabel` and `errorTitle` when the page owns loading and error (for example inside a tab). */
+  skeleton?: ReactNode;
+  loadingLabel?: string;
+  errorTitle?: string;
+  /** One sentence under the error title. Say what is safe and what to do. */
+  errorMessage?: string;
   /** Filters are set and nothing matches. */
   noResults: { title: string; description: string };
   /** No filter is set and the list is empty. `action` is a create or find action, when the viewer has one. */
@@ -112,7 +118,7 @@ export function FilteredList<
       {!loading && (error || !items) && (
         <ErrorMessage
           title={errorTitle}
-          message="Nothing was changed. Try again."
+          message={errorMessage}
           action={
             onRetry && (
               <Button variant="secondary" size="dense" onClick={onRetry}>
@@ -158,6 +164,11 @@ export function FilteredList<
               ? `1 ${noun.singular}`
               : `${items.length} ${noun.plural}`}
           </p>
+          {description && (
+            <p className="text-interface text-muted-foreground">
+              {description}
+            </p>
+          )}
           <ul className={listClassName}>
             {items.map((item) => (
               <li key={item.id}>{renderItem(item)}</li>
