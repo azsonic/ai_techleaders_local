@@ -1,0 +1,57 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Design system/Favorites" />
+
+# Favorites
+
+A mentee keeps a short list of mentors to come back to, narrows it by stack and removes one when they no longer want it. **No specification exists yet.** The screen is a proposal drawn from the design system's own rules, built as the first test of whether those rules are enough for a new screen (2026-10-26). There is no backend: the list takes data by props.
+
+## Flow
+
+1. The mentee opens **Favorite mentors** (`/favorites`) and sees saved mentors with name, headline and stacks. Each name links to the mentor's page.
+2. They narrow the list with the visible Stack filter. The count is announced.
+3. They press **Remove from favorites** on a card. Only that card is pending. After the server confirms, the card goes, a toast names the mentor, and focus moves to the next card. The mentor can be saved again from their profile, so there is no confirmation dialog.
+
+## Product components
+
+| Component        | Purpose                                                                       | Data states covered                                                                                          | Stories                                                                            |
+| ---------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| Filtered list    | Visible filters, announced count, two empty states, loading and error         | Used by the directory and by favorites; see the [pattern](?path=/docs/patterns-filtered-list--docs)           | [Directory](?path=/story/product-e02-find-and-book-mentor-directory--playground)   |
+| Favorite mentors | Saved mentors on the filtered list, each with a remove action                 | Loading, nothing saved, no results, error, partial, 30 mentors, long text, narrow, pending, server error, offline | [Favorite mentors](?path=/story/product-favorites-favorite-mentors--playground) |
+| Mentor card      | `variant="saved"`: name, headline, stacks and `actions`; no price and no slot | Partial (no headline, no stacks), long text                                                                  | [Mentor card](?path=/story/product-e01-mentor-supply-mentor-card--playground)      |
+
+## Screens and state map
+
+### Favorite mentors (`/favorites`)
+
+| State                                | Story                                                                                                    | Source                                |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| Saved mentors with a stack filter    | [List](?path=/story/product-favorites-screens-favorite-mentors--list)                                    | Filtered list pattern                 |
+| Loading                              | [Loading](?path=/story/product-favorites-screens-favorite-mentors--loading)                              | P11.1                                 |
+| Nothing saved yet                    | [Nothing saved yet](?path=/story/product-favorites-screens-favorite-mentors--nothing-saved-yet)          | P10.1, Filtered list rule 5           |
+| No results for the filter            | [No results](?path=/story/product-favorites-screens-favorite-mentors--no-results)                        | Filtered list rule 5                  |
+| Error                                | [Error](?path=/story/product-favorites-screens-favorite-mentors--load-error)                             | P12.2                                 |
+
+The states of the remove action are stories of the component:
+
+| State                                  | Story                                                                                              | Source                      |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------- |
+| Removing (only that card is pending)   | [Removing](?path=/story/product-favorites-favorite-mentors--remove-pending)                        | P12.1                       |
+| Remove failed, server                  | [Server error](?path=/story/product-favorites-favorite-mentors--remove-server-error)               | P12.2, Filtered list rule 11 |
+| Remove failed, offline                 | [Offline](?path=/story/product-favorites-favorite-mentors--remove-offline)                         | P12.2                       |
+| Filter, remove, focus moves on         | [Filter and remove](?path=/story/product-favorites-favorite-mentors--filter-and-remove)            | WCAG 2.4.3                  |
+| Partial data, lots of data, long text  | [Partial](?path=/story/product-favorites-favorite-mentors--partial-data), [30 mentors](?path=/story/product-favorites-favorite-mentors--many-mentors), [long text](?path=/story/product-favorites-favorite-mentors--long-text) | Rules for lists and actions |
+
+## Source files
+
+| Part                                 | Path                                                         |
+| ------------------------------------ | ------------------------------------------------------------ |
+| Components                           | `packages/ui/src/components/favorites/`, `packages/ui/src/components/lists/` |
+| Stories                              | `packages/ui/stories/product/favorites/`                     |
+| Documentation helpers (not exported) | `packages/ui/.storybook/docs/favorites-data.ts`, `favorites-demo.tsx`              |
+
+## Product work that remains
+
+- **Not built, recorded for "What is missing":** the "save a mentor" button on the mentor page, the API and the page that loads the list, a combobox filter, and an Undo after a removal.
+- The headline limit of 200 characters is confirmed by the Product owner; the field itself belongs to the mentor profile and is not in the profile form yet.
+- The filter uses the four stacks the system has. A mentor with no stack matches no filter and appears only in the unfiltered list.

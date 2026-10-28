@@ -15,7 +15,7 @@ import { zoneName } from "./local-time";
 
 /*
  * Slots grouped by day for the chosen length (E02-S02). One radio group: arrow keys move between slots, so sixty slots
- * are one tab stop, not sixty. The chosen slot shows a check and a heavier border (never colour alone). Times use the
+ * are one tab stop, not sixty. The chosen slot shows a check and a heavier border (never color alone). Times use the
  * viewer's zone, written out once above the list.
  */
 export function SlotPicker({

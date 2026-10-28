@@ -2,7 +2,7 @@
 
 This is the summary an AI agent reads first when it builds or changes a screen. The long version is the Storybook in `packages/ui` (`npm run storybook -w @devmentor/ui`): start at **Design system / Start here**. `AGENTS.md` links here. If this file and Storybook disagree, fix the one that is wrong and tell the user.
 
-Where the style comes from: `lekcja-06/referencje.md` (references and negative references), `lekcja-06/tokeny.md` (tokens and contrast), the brief `.ai/specs/product-brief.md` and the specs in `.ai/specs/`. Decisions made while building are in `packages/ui/POSTEP.md`. Do not invent style. If something is missing, ask, and mark your own idea as a proposal.
+This file is the summary and wins when it disagrees with another page: fix the other page. Where the style comes from (provenance, not required reading): the brief `.ai/specs/product-brief.md`, the specs in `.ai/specs/`, and the course material `lekcja-06/referencje.md` (references) and `lekcja-06/tokeny.md` (tokens and contrast). Decisions made while building are in `packages/ui/POSTEP.md`. Do not invent style. If something is missing, ask, and mark your own idea as a proposal. The Product owner approves rule changes.
 
 ## Hard rules
 
@@ -16,11 +16,11 @@ Where the style comes from: `lekcja-06/referencje.md` (references and negative r
 8. Color is never the only carrier of meaning. Statuses are words.
 9. Both themes must work. Stories run as tests with axe errors in light and dark.
 10. Call the API only through `apiCall` / `apiCallOrThrow` (`@devmentor/ui/backend/api/api-call`).
-11. Product UI language is English. Wording: short, direct, names the action, the outcome and the next step (P10.1).
+11. Product UI language is American English (`favorites`, `color`; amounts stay in `PLN`). Wording: short, direct, names the action, the outcome and the next step (P10.1). The product word for a mentor's technology is **Stack** (D07).
 
 ## Product character
 
-DevMentor connects a developer who is blocked with an experienced mentor for a paid 25 or 50 minute text session; the goal is a written answer (N01.1). The interface is **clear**, **warm** and **focused** (C01 to C03): the main action or current status is stronger than metadata (R01.5), surfaces are warm gray, flat and opaque (R01.4, A01.1, A01.2), the conversation is the centre of a session and the composer stays visible (R02.1, R02.2). It is never **cold**, **cluttered** or **generic** (AC01 to AC03).
+DevMentor connects a developer who is blocked with an experienced mentor for a paid 25 or 50 minute text session; the goal is a written answer (N01.1). The interface is **clear**, **warm** and **focused** (C01 to C03): the main action or current status is stronger than metadata (R01.5), surfaces are warm gray, flat and opaque (R01.4, A01.1, A01.2), the conversation is the center of a session and the composer stays visible (R02.1, R02.2). It is never **cold**, **cluttered** or **generic** (AC01 to AC03).
 
 ## Components
 
@@ -54,7 +54,7 @@ Imports are package subpaths: `@devmentor/ui/components/ui/button` and so on. Ba
 | Popover                | `@devmentor/ui/components/ui/popover { Popover, PopoverTrigger, PopoverContent }`                                                                              | A short note behind a "Why?" link, such as why a time is shown in the person's zone.         | The name of an icon button (use Tooltip); a list of commands (use Menu).                               |
 | Tooltip                | `@devmentor/ui/components/ui/tooltip { Tooltip, TooltipTrigger, TooltipContent }`                                                                              | An icon button with no text, such as "Copy booking link".                                    | Information needed to take an action; why a control is disabled (use visible text).                    |
 | Stack badge            | `@devmentor/ui/components/mentors/stack-badge { StackBadge }`                                                                                                  | A mentor's stacks on a card, profile and form.                                               | A status (use Status badge).                                                                           |
-| Mentor card            | `@devmentor/ui/components/mentors/mentor-card { MentorCard, MentorCardSkeleton }`                                                                              | The directory and the public profile (`variant="profile"`).                                  | A list the person scans by columns (use Table).                                                        |
+| Mentor card            | `@devmentor/ui/components/mentors/mentor-card { MentorCard, MentorCardSkeleton }`                                                                              | The directory, the public profile (`variant="profile"`) and a saved mentor (`variant="saved"`, with `headline` and `actions`). | A list the person scans by columns (use Table).                                                        |
 | Share link             | `@devmentor/ui/components/mentors/share-link { ShareLink }`                                                                                                    | The mentor's profile page.                                                                   | Navigating (use Text link).                                                                            |
 | Profile form           | `@devmentor/ui/components/mentors/profile-form { ProfileForm }`                                                                                                | Creating and editing a mentor profile (E01-S01).                                             | Any other form (compose Form field and `useForm`).                                                     |
 | Window form            | `@devmentor/ui/components/availability/window-form { WindowForm }`                                                                                             | A mentor publishing availability (E01-S02).                                                  | Editing an existing window (not in the system).                                                        |
@@ -70,7 +70,9 @@ Imports are package subpaths: `@devmentor/ui/components/ui/button` and so on. Ba
 | Booking card           | `@devmentor/ui/components/bookings/booking-card { BookingCard }`                                                                                               | My bookings and Mentor bookings.                                                             | A single booking's full page (not in the system).                                                      |
 | Cancel dialog          | `@devmentor/ui/components/bookings/cancel-dialog { CancelDialog }`                                                                                             | Cancelling a booking (E02-S04, E02-S05).                                                     | Operator actions (use Operator action dialog).                                                         |
 | Notification row       | `@devmentor/ui/components/bookings/notification-row { NotificationRow }`                                                                                       | The notifications page.                                                                      | Any other event: only these two exist (R10).                                                           |
-| Mentor directory       | `@devmentor/ui/components/mentors/mentor-directory { MentorDirectory }`                                                                                        | The directory page.                                                                          | A list of another object (follow the Filtered list pattern).                                           |
+| Filtered list          | `@devmentor/ui/components/lists/filtered-list { FilteredList }`                                                                                                | Any list narrowed by a few known filters: visible filters, an announced count, two empty states, loading and error. | One item looked up by a word (a search field is not in the system); a list with no filter (compose the states yourself). |
+| Mentor directory       | `@devmentor/ui/components/mentors/mentor-directory { MentorDirectory }`                                                                                        | The directory page.                                                                          | A list of another object (build it on Filtered list).                                                  |
+| Favorite mentors       | `@devmentor/ui/components/favorites/favorite-mentors { FavoriteMentors }`                                                                                      | The mentee's saved mentors, with a stack filter and a remove action.                         | A mentor's own list of anything else (build it on Filtered list).                                      |
 | Refund outcome line    | `@devmentor/ui/components/payments/refund-outcome-line { RefundOutcomeLine }`                                                                                  | Where a cancellation or absence ends in money (proposal).                                    | Marketing copy about refunds.                                                                          |
 | Payout row             | `@devmentor/ui/components/payments/payout-row { PayoutRow }`                                                                                                   | Mentor earnings (proposal).                                                                  | The mentee's payment history (not in the system).                                                      |
 | Message item           | `@devmentor/ui/components/messages/message-item { MessageItem }`                                                                                               | Inside the session conversation (proposal).                                                  | A notification (use Notification row).                                                                 |
@@ -92,13 +94,32 @@ Not in the system (do not invent them): a search field with results, a side pane
 | Screen type                              | Pattern                                                                                                                              |
 | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | A form                                   | Form: `Field`, `useForm`, `FormFeedback`                                                                                             |
-| A list the person filters                | Filtered list: `MentorDirectory`; two different empty states ("no results for these filters" with Clear filters, "nothing here yet") |
+| A list the person filters                | Filtered list: `FilteredList` (used by `MentorDirectory` and `FavoriteMentors`); two different empty states ("no results for these filters" with Clear filters, "nothing here yet") |
 | A page about one object                  | Detail view: main information and main action visible without scrolling, "does not exist or no access" state                         |
-| Deleting something                       | Deletion confirmation: the object in the question, Cancel first, a verb button ("Remove window")                                     |
+| Deleting something                       | Deletion confirmation: the object in the question, Cancel first, a verb button ("Remove window"). Something undoable (a favorite) is a direct button plus a toast, no dialog |
 | A session conversation                   | Conversation: `Conversation` with `MessageItem` and `Composer`, state beside each message                                            |
 | An operator changing someone else's data | Operator action: `OperatorActionDialog`, reason required (max 1000 characters), logged                                               |
 
-All 18 screens and 140 states are in Storybook under Product / <epic> / Screens, with state maps on each epic page (E01 to E05). E03, E04 and E05 have no specification: they are proposals.
+All 19 screens and 145 states are in Storybook under Product / <epic> / Screens, with state maps on each epic page (E01 to E05) and on the Favorites page. E03, E04, E05 and Favorites have no specification: they are proposals.
+
+## Rules for lists and for actions on an item
+
+These answer the questions a list screen raises. Details and sources are in Storybook: Patterns / Filtered list and Patterns / Deletion confirmation.
+
+| Question | Rule |
+| --- | --- |
+| Page frame | A page is an `h1` and its content inside `max-w-content`. `ScreenFrame` in `.storybook/docs` is a documentation helper, not a product component; the application shell is not designed (see "What is missing"). |
+| Which filter options | A fixed list (all four stacks), never derived from the visible items, so the filter does not jump. While the list loads or refetches, the filter stays usable and only the list area shows the state. |
+| Heading levels | Page `h1`; an item heading is `h2` (`headingLevel`, default 2); inside a section whose heading is `h2`, items are `h3`. |
+| Headline of a mentor | One line under the name: `text-interface text-muted-foreground`, wraps (`wrap-anywhere`), never truncated, at most 200 characters. Omit it when there is none (no placeholder). |
+| Partial data on a mentor card | No headline: the line is omitted. No image: initials. No stacks: the stack list is omitted. |
+| Action on one item | `Button variant="secondary" size="dense"`, last inside the card, under the content (never beside the name), so it also fits at 320 px. `destructive` is for irreversible actions only. |
+| Name of a repeated action | Keep the visible label and add the object in `sr-only` text: "Remove from favorites" plus `<span className="sr-only">: Anna Kowalska</span>`. |
+| Remove: dialog or direct | Undoable (it can be added again at once, no money, no data lost): a direct button, a toast after the server confirmed, no Undo in the toast. Otherwise a confirmation dialog (Deletion confirmation). |
+| While removing | Only that card's button is `loading` ("Removing…"). Other cards stay usable. |
+| Removal failed | A destructive `Alert` above the filters (title "The mentor was not removed", the server's message, "They are still in your favorites."). The card stays. The alert clears on the next attempt. Offline (`code` `network_error`): "The server did not answer. Check your connection and try again." |
+| After a removal | The count (`role="status"`) announces the new number. Focus moves to the link of the card that took its place, or to the list area when none is left. If the last item goes, the unfiltered list shows "nothing here yet"; a filtered list shows "no results for these filters". |
+| Action callback | `(id) => Promise<ApiResult<unknown>>` from `@devmentor/core`. It resolves with the envelope and never rejects (`apiCall` guarantees this). The component owns pending and failure; the page updates the list before or as `onRemove` resolves. |
 
 ## Semantic tokens
 
@@ -173,6 +194,6 @@ Run from the repository root.
 | Tokens                               | `packages/ui/src/styles/tokens.css` (bridged in `globals.css`) |
 | Base components                      | `packages/ui/src/components/ui/`                               |
 | Product components                   | `packages/ui/src/components/<concept>/`                        |
-| Stories and documentation            | `packages/ui/stories/`                                         |
+| Stories and documentation            | `packages/ui/stories/` (stories of a concept: `stories/product/<concept>/`; Storybook loads only `stories/**`) |
 | Documentation helpers (not exported) | `packages/ui/.storybook/docs/`                                 |
 | Decisions and progress               | `packages/ui/POSTEP.md`                                        |

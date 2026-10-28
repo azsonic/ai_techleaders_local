@@ -35,6 +35,12 @@ The rules every screen follows. Each cites its source: a reference (R, C, AC, P,
 | A failure says what happened and what to do, in plain words.                           | `ErrorMessage`, `FormFeedback`.                                            | P10.1, P12.2                    |
 | An error that needs action is never a toast.                                           | Alerts and field errors.                                                   | WCAG 2.2.1                      |
 
+### Repeated actions and headings
+
+- The same action on every row ("Remove from favorites") keeps its visible label and adds the object in visually hidden text, so the accessible name is "Remove from favorites: Anna Kowalska" (WCAG 2.4.6, 2.5.3: the visible words stay at the start of the name).
+- The page has one `h1`. An item in a list is an `h2` (`headingLevel`); inside a section that has its own `h2`, items are `h3`. Never skip a level (WCAG 1.3.1).
+- When an item disappears after an action, the count is announced (`role="status"`) and focus moves to the link of the next item, or to the list area when none is left, so focus is never lost to the page (WCAG 2.4.3).
+
 ## Color
 
 | Rule                                                                           | How the system does it                                                                                           | Source                        |

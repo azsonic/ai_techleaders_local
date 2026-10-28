@@ -74,7 +74,7 @@ Where a new reusable component goes:
 3. Component tied to one concept's data shape → `ui/src/components/<concept>/`.
 4. Used by exactly one page → colocate it next to that `page.tsx` until a second page needs it.
 
-File names are kebab-case (`api-call.ts`, `mentor-card.tsx`); components are PascalCase, functions camelCase.
+File names are kebab-case (`api-call.ts`, `mentor-card.tsx`), also when a task names a PascalCase file; components are PascalCase, functions camelCase. A component lives in `packages/ui/src/components/<concept>/` and its stories in `packages/ui/stories/product/<concept>/`: Storybook loads only `stories/**`, so a story next to the component is never shown. Product UI text is American English (`favorites`); see the Content page in Storybook.
 
 ### `packages/app` (Next.js)
 
@@ -125,7 +125,7 @@ File names are kebab-case (`api-call.ts`, `mentor-card.tsx`); components are Pas
 
 Unit tests use [Vitest](https://vitest.dev). Colocate them with the source as `*.test.ts` or `*.test.tsx` (`*.test.mjs` for root `scripts/`, which start with `// @vitest-environment node`).
 
-- **Every new feature is 100% covered by unit tests.** That means statements, branches, functions, and lines. `npm run test` enforces the threshold on `packages/*/src/**/*.{ts,tsx}`, `packages/app/next.config.ts` and `scripts/**/*.mjs`, and it fails if coverage drops below 100%. A feature is not done while that command fails. Don't lower the threshold, and don't exclude a file to get a change through — test the behavior.
+- **Every new feature is 100% covered by unit tests.** The only exception is a throwaway probe (for example a design system sufficiency test) whose task says so; its files are then not committed. That means statements, branches, functions, and lines. `npm run test` enforces the threshold on `packages/*/src/**/*.{ts,tsx}`, `packages/app/next.config.ts` and `scripts/**/*.mjs`, and it fails if coverage drops below 100%. A feature is not done while that command fails. Don't lower the threshold, and don't exclude a file to get a change through — test the behavior.
 - Integration tests live in `packages/app/test/integration/`. They start PostgreSQL 17 with [Testcontainers](https://node.testcontainers.org), apply migrations, boot the production app (`next start`) against that database, and drive the pages with [`agent-browser`](https://agent-browser.dev). Run them with `npm run test:integration`. When a change has a user-visible flow, add a scenario there.
 - Helpers for new scenarios: `startEphemeralApp()` in `ephemeral-app.ts` and `browser()` in `browser.ts`.
 - Vitest aliases `server-only` to an empty module (`vitest/server-only.ts`) so server modules can be imported. Don't import the real `server-only` package from a unit test.
@@ -138,6 +138,7 @@ Run from the repo root (npm workspaces):
 - `docker compose up -d`: local PostgreSQL (matches `.env.example`).
 - `npm run dev` / `npm run build` / `npm run start`: the Next.js app.
 - `npm run lint` / `npm run typecheck`: every package.
+- `npm run check:tokens` / `npm run check:docs`: non-token values in UI code and docs; the three design system component lists (`docs/design-system.md`, Start here, Components) must name the same components.
 - `npm run test`: unit tests. Coverage of application code must stay at 100%.
 - `npm run test:integration`: build the app, install the agent-browser Chrome, and run the Testcontainers + agent-browser suite.
 - `npm run db:migration:create` / `db:migrate` / `db:migration:list` / `db:migration:down`: MikroORM migrations (`@devmentor/db`). Commit `src/migrations/*` and `.snapshot-*.json`.

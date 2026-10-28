@@ -69,6 +69,35 @@ describe("MentorCard", () => {
     expect(screen.getByText("Sessions are text only.")).toBeTruthy();
     expect(screen.queryByText("Price")).toBeNull();
   });
+
+  it("shows a headline that wraps and the actions last", () => {
+    render(
+      <MentorCard
+        variant="saved"
+        displayName="Anna Kowalska"
+        headline="Senior frontend engineer"
+        stacks={["react"]}
+        actions={<button type="button">Remove from favorites</button>}
+      />,
+    );
+
+    expect(screen.getByText("Senior frontend engineer").className).toContain(
+      "wrap-anywhere",
+    );
+    expect(
+      screen.getByRole("button", { name: "Remove from favorites" }),
+    ).toBeTruthy();
+    expect(screen.queryByText("Price")).toBeNull();
+    expect(screen.queryByText("Sessions are text only.")).toBeNull();
+  });
+
+  it("leaves out the headline, the stack list and the actions when there are none", () => {
+    render(<MentorCard variant="saved" displayName="Anna" stacks={[]} />);
+
+    expect(screen.queryByRole("list")).toBeNull();
+    expect(screen.queryByRole("button")).toBeNull();
+    expect(document.querySelector("p")).toBeNull();
+  });
 });
 
 describe("MentorCardSkeleton", () => {

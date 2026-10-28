@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { textLinkClassName } from "../../frontend/text-link";
 import { Avatar } from "../ui/avatar";
 import { Card, CardContent } from "../ui/card";
@@ -6,9 +8,11 @@ import { StackBadge } from "./stack-badge";
 import { formatPln, type Stack } from "./pricing";
 
 type MentorCardProps = {
-  /** `listing` is a directory row with price and nearest slot. `profile` is the read-only public card (E01). */
-  variant?: "listing" | "profile";
+  /** `listing` is a directory row with price and nearest slot. `profile` is the read-only public card (E01). `saved` is a row of the mentee's favorites: identity only, with `actions`. */
+  variant?: "listing" | "profile" | "saved";
   displayName: string;
+  /** One line about the mentor's work. Wraps, never truncated; at most 200 characters. Omitted when the mentor has none. */
+  headline?: string;
   avatarSrc?: string;
   stacks: Stack[];
   /** Listing: the lowest of the two prices, in whole zloty. Null while the mentor has not saved prices. */
@@ -17,6 +21,8 @@ type MentorCardProps = {
   nearestSlot?: string | null;
   /** Listing: where the name links to. */
   href?: string;
+  /** Secondary actions for this mentor, shown last (for example "Remove from favorites"). */
+  actions?: ReactNode;
   /** Heading level of the name, so the card fits the page outline. */
   headingLevel?: 1 | 2 | 3;
   className?: string;
@@ -29,11 +35,13 @@ type MentorCardProps = {
 export function MentorCard({
   variant = "listing",
   displayName,
+  headline,
   avatarSrc,
   stacks,
   priceFrom,
   nearestSlot,
   href,
+  actions,
   headingLevel = 2,
   className,
 }: MentorCardProps) {
@@ -53,14 +61,21 @@ export function MentorCard({
               displayName
             )}
           </Heading>
-          <ul aria-label="Stacks" className="flex flex-wrap gap-inline">
-            {stacks.map((stack) => (
-              <li key={stack}>
-                <StackBadge stack={stack} />
-              </li>
-            ))}
-          </ul>
-          {variant === "listing" ? (
+          {headline && (
+            <p className="text-interface text-muted-foreground wrap-anywhere">
+              {headline}
+            </p>
+          )}
+          {stacks.length > 0 && (
+            <ul aria-label="Stacks" className="flex flex-wrap gap-inline">
+              {stacks.map((stack) => (
+                <li key={stack}>
+                  <StackBadge stack={stack} />
+                </li>
+              ))}
+            </ul>
+          )}
+          {variant === "saved" ? null : variant === "listing" ? (
             <dl className="grid grid-cols-[auto_1fr] gap-x-within-group gap-y-inline text-interface">
               <dt className="text-muted-foreground">Price</dt>
               <dd className="font-emphasis">
@@ -78,6 +93,7 @@ export function MentorCard({
               Sessions are text only.
             </p>
           )}
+          {actions && <div>{actions}</div>}
         </div>
       </CardContent>
     </Card>
