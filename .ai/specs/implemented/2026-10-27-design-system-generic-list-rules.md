@@ -1,8 +1,8 @@
 ---
 title: Make the list and item-action rules generic and reusable
-status: in-progress
+status: implemented
 created: 2026-10-27
-updated: 2026-10-27
+updated: 2026-10-28
 owner: azsonic
 ---
 
@@ -79,3 +79,5 @@ None open. Answered 2026-10-27:
 ## Notes
 
 Stacked on PR #32 (`design-system-favorites-gaps`). The first probe's baseline (49 decisions, about 40% to 49% guessed) and the second probe's findings are in `.ai/runs/2026-10-27-design-system-favorites-gaps.md`. This spec is a draft until the owner approves it.
+
+Closed by the owner on 2026-10-28 as implemented. The owner accepted the reading that the agent-test criterion was met by its second branch (12 of 52 decisions guessed, all listed in "What is missing"). The remaining items were decided on 2026-10-28 and applied by `2026-10-28-past-sessions-decisions.md`.
