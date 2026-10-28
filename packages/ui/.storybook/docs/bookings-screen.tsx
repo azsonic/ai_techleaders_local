@@ -7,7 +7,12 @@ import {
   BookingCard,
   type BookingView,
 } from "@devmentor/ui/components/bookings/booking-card";
-import type { BookingViewer } from "@devmentor/ui/components/bookings/booking-status";
+import {
+  bookingStatusLabel,
+  type BookingStatusValue,
+  type BookingViewer,
+} from "@devmentor/ui/components/bookings/booking-status";
+import { FilteredList } from "@devmentor/ui/components/lists/filtered-list";
 import { CancelDialog } from "@devmentor/ui/components/bookings/cancel-dialog";
 import type { RefundOutcome } from "../../src/components/bookings/refund-outcome";
 import { Button } from "@devmentor/ui/components/ui/button";
@@ -30,8 +35,16 @@ export type BookingsState =
   | "loading"
   | "load-error"
   | "many"
+  | "past"
+  | "past-no-results"
   | "just-booked"
   | "cancel-open";
+
+const PAST_STATUSES: BookingStatusValue[] = [
+  "completed",
+  "no_show_mentee",
+  "no_show_mentor",
+];
 
 const TABS = [
   { value: "upcoming", label: "Upcoming", statuses: ["pending", "confirmed"] },
@@ -65,11 +78,63 @@ export function BookingsScreen({
   const [cancelling, setCancelling] = useState<BookingView | null>(
     state === "cancel-open" ? BOOKINGS[0] : null,
   );
+  const [outcomes, setOutcomes] = useState<BookingStatusValue[]>(
+    state === "past-no-results" ? ["no_show_mentor"] : [],
+  );
   const title = viewer === "mentee" ? "My bookings" : "Mentor bookings";
   const source =
     state === "many" ? MANY_BOOKINGS : state === "empty" ? [] : BOOKINGS;
 
+  const card = (booking: BookingView) => (
+    <BookingCard
+      key={booking.id}
+      booking={booking}
+      viewer={viewer}
+      zone="Europe/Warsaw"
+      href={`${viewer === "mentee" ? "/bookings" : "/mentor/bookings"}/${booking.id}`}
+      justBooked={state === "just-booked" && booking.id === "b1"}
+      onCancel={() => setCancelling(booking)}
+    />
+  );
+
+  /* Past: the outcome filter on the shared filtered list. Loading and error stay with the tab (they are the page's). */
+  const past = () => {
+    const rows = source
+      .filter((booking) => PAST_STATUSES.includes(booking.status))
+      .sort((a, b) => b.startsAt.localeCompare(a.startsAt));
+    const shown = outcomes.length
+      ? rows.filter((booking) => outcomes.includes(booking.status))
+      : rows;
+    return (
+      <FilteredList
+        items={shown}
+        renderItem={card}
+        filter={{
+          legend: "Outcome",
+          options: PAST_STATUSES.map((value) => ({
+            value,
+            label: bookingStatusLabel(value, viewer),
+          })),
+        }}
+        selected={outcomes}
+        onSelectedChange={setOutcomes}
+        noun={{ singular: "booking", plural: "bookings" }}
+        description="Most recent first"
+        noResults={{
+          title: "No past bookings for this outcome",
+          description: "Remove a filter to see more past bookings.",
+        }}
+        nothingYet={{
+          title: "No past bookings",
+          description: "They appear here once there is something to show.",
+        }}
+        listClassName="flex flex-col"
+      />
+    );
+  };
+
   const panel = (statuses: readonly string[], tab: string) => {
+    if (tab === "past") return past();
     const rows = source.filter((booking) => statuses.includes(booking.status));
     if (rows.length === 0) {
       return (
@@ -92,21 +157,7 @@ export function BookingsScreen({
         />
       );
     }
-    return (
-      <div className="flex flex-col">
-        {rows.map((booking) => (
-          <BookingCard
-            key={booking.id}
-            booking={booking}
-            viewer={viewer}
-            zone="Europe/Warsaw"
-            href={`${viewer === "mentee" ? "/bookings" : "/mentor/bookings"}/${booking.id}`}
-            justBooked={state === "just-booked" && booking.id === "b1"}
-            onCancel={() => setCancelling(booking)}
-          />
-        ))}
-      </div>
-    );
+    return <div className="flex flex-col">{rows.map(card)}</div>;
   };
 
   return (
@@ -133,7 +184,7 @@ export function BookingsScreen({
         />
       )}
       {state !== "loading" && state !== "load-error" && (
-        <Tabs defaultValue="upcoming">
+        <Tabs defaultValue={state.startsWith("past") ? "past" : "upcoming"}>
           <TabsList aria-label={title}>
             {TABS.map((tab) => (
               <TabsTrigger key={tab.value} value={tab.value}>

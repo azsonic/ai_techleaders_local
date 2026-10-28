@@ -27,6 +27,22 @@ Where it goes (AGENTS.md): the component in `packages/ui/src/components/<concept
 6. **Sources**: every rule on the page cites a reference, a decision or WCAG. A rule with no source is marked as a proposal and goes to the Product owner.
 7. **Catalog entries**: the row in [Components](?path=/docs/design-system-components--docs), the table in [Start here](?path=/docs/design-system-start-here--docs), the agent file `docs/design-system.md`, and [What is missing](?path=/docs/design-system-what-is-missing--docs) if it closes or opens a gap.
 
+## A list screen: the checklist
+
+1. It lives in the folder of the concept it lists (a list of mentors: `components/mentors/`); a new folder only when a new concept appears. Its stories go in `stories/product/<concept>/`.
+2. It is built on `FilteredList` and, when items can be removed, on `useItemRemoval`.
+3. The component's stories carry partial data, lots (30) and long text; the screen's stories carry the states of its screen map.
+4. A story that shows a toast wraps itself in a `ToastProvider`; the application shell mounts the real one.
+
+## How to run the agent test
+
+The agent test checks that a fresh agent can build a new screen from these pages without guessing. Run it on committed work, on a screen of an object the pages do not already describe.
+
+1. Commit the work. Create a worktree from that commit: `git worktree add --detach <path> HEAD`, and symlink `node_modules`. The default isolated agent worktree starts from `main`, so it tests the wrong thing.
+2. Check `git -C <path> log -1` shows your commit before trusting any result.
+3. Give the agent absolute paths under the worktree and tell it not to read the screen that taught you the rules.
+4. Ask for the decision list with RULE, EXAMPLE and GUESSING, the gaps and the counts. Record the tested commit and the counts in the run log.
+
 ## After a token change
 
 A token change can break contrast without changing a component. After any change in `packages/ui/src/styles/tokens.css`:

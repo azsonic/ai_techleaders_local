@@ -43,6 +43,16 @@ describe("FilteredList", () => {
     expect(screen.getByText("Alpha")).toBeTruthy();
   });
 
+  it("shows a description between the count and the list, only when given", () => {
+    renderList({ description: "Most recent first" });
+    expect(screen.getByText("Most recent first")).toBeTruthy();
+  });
+
+  it("shows no description line by default", () => {
+    renderList();
+    expect(screen.queryByText("Most recent first")).toBeNull();
+  });
+
   it("uses the singular for one item", () => {
     renderList({ items: [items[0]] });
     expect(screen.getByRole("status").textContent).toBe("1 thing");
@@ -84,6 +94,18 @@ describe("FilteredList", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Try again" }));
     expect(onRetry).toHaveBeenCalled();
+  });
+
+  it("says what is safe in its own words when the error message is given", () => {
+    renderList({
+      items: undefined,
+      error: true,
+      errorMessage: "Your things are safe. Try again.",
+    });
+    expect(screen.getByRole("alert").textContent).toContain(
+      "Your things are safe. Try again.",
+    );
+    expect(screen.queryByText("Nothing was changed. Try again.")).toBeNull();
   });
 
   it("treats missing items as an error even without the flag", () => {

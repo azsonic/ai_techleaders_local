@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import type { ApiResult } from "@devmentor/core";
 
-import type { ApiErrorBody, ApiResult } from "@devmentor/core";
-
+import { useItemRemoval } from "../../hooks/use-item-removal";
 import { TextLink } from "../../frontend/text-link";
 import { FilteredList } from "../lists/filtered-list";
 import { MentorCard, MentorCardSkeleton } from "../mentors/mentor-card";
 import { STACKS, type Stack } from "../mentors/pricing";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Button } from "../ui/button";
-import { useToast } from "../ui/toast";
 
 export type FavoriteMentor = {
   id: string;
@@ -44,51 +42,22 @@ export function FavoriteMentors({
   onRetry?: () => void;
   onRemove: (id: string) => Promise<ApiResult<unknown>>;
 }) {
-  const toast = useToast();
-  const [removing, setRemoving] = useState<string[]>([]);
-  const [failure, setFailure] = useState<ApiErrorBody | null>(null);
-  const areaRef = useRef<HTMLDivElement>(null);
-  const focusTarget = useRef<{ index: number; count: number } | null>(null);
-  const [removed, setRemoved] = useState(0);
-
-  // Once the list has shrunk after a removal, focus the card that took its place, else the list area.
-  // `removed` re-runs this when the list was already updated before `onRemove` resolved.
-  useEffect(() => {
-    const target = focusTarget.current;
-    if (!target || !mentors || mentors.length >= target.count) return;
-    const area = areaRef.current as HTMLDivElement;
-    const links = area.querySelectorAll<HTMLElement>("h2 a");
-    (links[Math.min(target.index, links.length - 1)] ?? area).focus();
-    focusTarget.current = null;
-  }, [mentors, removed]);
-
-  const remove = async (mentor: FavoriteMentor, index: number) => {
-    setRemoving((current) => [...current, mentor.id]);
-    setFailure(null);
-    const result = await onRemove(mentor.id);
-    setRemoving((current) => current.filter((id) => id !== mentor.id));
-    if (result.ok) {
-      focusTarget.current = {
-        index,
-        count: (mentors as FavoriteMentor[]).length,
-      };
-      setRemoved((count) => count + 1);
-      toast.add({
-        title: `${mentor.displayName} removed from favorites`,
-        description: "You can save this mentor again from their profile.",
-      });
-    } else {
-      setFailure(result.error);
-    }
-  };
+  const { areaProps, removing, failure, remove } = useItemRemoval({
+    items: mentors,
+    onRemove,
+    toast: (mentor) => ({
+      title: `${mentor.displayName} removed from favorites`,
+      description: "You can save this mentor again from their profile.",
+    }),
+  });
 
   return (
-    <div ref={areaRef} tabIndex={-1} className="focus-ring">
+    <div {...areaProps}>
       <FilteredList
         items={mentors}
         renderItem={(mentor) => (
           <MentorCard
-            variant="saved"
+            variant="listed"
             displayName={mentor.displayName}
             headline={mentor.headline}
             stacks={mentor.stacks}
@@ -99,9 +68,7 @@ export function FavoriteMentors({
                 size="dense"
                 loading={removing.includes(mentor.id)}
                 loadingLabel="Removing…"
-                onClick={() =>
-                  remove(mentor, (mentors as FavoriteMentor[]).indexOf(mentor))
-                }
+                onClick={() => remove(mentor)}
               >
                 Remove from favorites
                 <span className="sr-only">: {mentor.displayName}</span>
@@ -139,10 +106,7 @@ export function FavoriteMentors({
             <Alert variant="destructive">
               <AlertTitle>The mentor was not removed</AlertTitle>
               <AlertDescription>
-                {failure.code === "network_error"
-                  ? "The server did not answer. Check your connection and try again."
-                  : failure.message}{" "}
-                They are still in your favorites.
+                {failure} They are still in your favorites.
               </AlertDescription>
             </Alert>
           )

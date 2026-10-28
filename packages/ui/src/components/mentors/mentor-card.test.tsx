@@ -73,7 +73,7 @@ describe("MentorCard", () => {
   it("shows a headline that wraps and the actions last", () => {
     render(
       <MentorCard
-        variant="saved"
+        variant="listed"
         displayName="Anna Kowalska"
         headline="Senior frontend engineer"
         stacks={["react"]}
@@ -92,7 +92,7 @@ describe("MentorCard", () => {
   });
 
   it("leaves out the headline, the stack list and the actions when there are none", () => {
-    render(<MentorCard variant="saved" displayName="Anna" stacks={[]} />);
+    render(<MentorCard variant="listed" displayName="Anna" stacks={[]} />);
 
     expect(screen.queryByRole("list")).toBeNull();
     expect(screen.queryByRole("button")).toBeNull();

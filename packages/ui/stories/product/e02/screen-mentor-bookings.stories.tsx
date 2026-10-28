@@ -19,6 +19,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const List: Story = { name: "Upcoming, past and cancelled" };
+export const Past: Story = {
+  name: "Past: filter by outcome",
+  args: { state: "past" },
+};
 export const Empty: Story = {
   name: "No booked sessions yet",
   args: { state: "empty" },

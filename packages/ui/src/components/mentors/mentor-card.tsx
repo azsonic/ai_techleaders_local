@@ -8,8 +8,8 @@ import { StackBadge } from "./stack-badge";
 import { formatPln, type Stack } from "./pricing";
 
 type MentorCardProps = {
-  /** `listing` is a directory row with price and nearest slot. `profile` is the read-only public card (E01). `saved` is a row of the mentee's favorites: identity only, with `actions`. */
-  variant?: "listing" | "profile" | "saved";
+  /** `listing` is a directory row with price and nearest slot. `profile` is the read-only public card (E01). `listed` is a mentor in a list the person keeps or revisits (favorites, recently viewed): identity only, with `actions`. */
+  variant?: "listing" | "profile" | "listed";
   displayName: string;
   /** One line about the mentor's work. Wraps, never truncated; at most 200 characters. Omitted when the mentor has none. */
   headline?: string;
@@ -75,7 +75,7 @@ export function MentorCard({
               ))}
             </ul>
           )}
-          {variant === "saved" ? null : variant === "listing" ? (
+          {variant === "listed" ? null : variant === "listing" ? (
             <dl className="grid grid-cols-[auto_1fr] gap-x-within-group gap-y-inline text-interface">
               <dt className="text-muted-foreground">Price</dt>
               <dd className="font-emphasis">

@@ -1,8 +1,8 @@
 ---
 title: Close the design system gaps found by the Favorite mentors screen
-status: in-progress
+status: implemented
 created: 2026-10-27
-updated: 2026-10-27
+updated: 2026-10-28
 owner: azsonic
 ---
 
@@ -63,16 +63,16 @@ Decisions already made by the user (2026-10-27):
 
 ## Acceptance criteria
 
-- [ ] G1 to G24 each resolved as in the table; each written rule names its source (reference, decision, WCAG) or is marked as a proposal.
-- [ ] `MentorCard` has `headline` and `actions`, with tests and stories; directory screens unchanged visually.
-- [ ] `FilteredList` extracted; `MentorDirectory` rebuilt on it; its existing stories and tests pass unchanged.
-- [ ] `src/components/favorites/favorite-mentors.tsx` exists with unit tests at 100% (statements, branches, functions, lines).
-- [ ] Stories in `stories/product/favorites/`: list, loading, nothing saved, no results, load error, remove pending, remove server error, remove offline, partial data, lots of data (30), long text, narrow screen, filter and remove interaction.
-- [ ] An epic page (or section of the Screens page) lists the favorites screen and its state map; counts come from the built `index.json`, not memory.
-- [ ] `design-system.md`, Components, Start here, Filtered list, Deletion confirmation, Content, What is missing, Contributing updated and consistent.
-- [ ] `check:tokens` clean; `check:contrast` all ok; Storybook tests pass in both themes; every favorites story swept at 320 px with no overflow.
+- [x] G1 to G24 each resolved as in the table; each written rule names its source (reference, decision, WCAG) or is marked as a proposal.
+- [x] `MentorCard` has `headline` and `actions`, with tests and stories; directory screens unchanged visually.
+- [x] `FilteredList` extracted; `MentorDirectory` rebuilt on it; its existing stories and tests pass unchanged.
+- [x] `src/components/favorites/favorite-mentors.tsx` exists with unit tests at 100% (statements, branches, functions, lines).
+- [x] Stories in `stories/product/favorites/`: list, loading, nothing saved, no results, load error, remove pending, remove server error, remove offline, partial data, lots of data (30), long text, narrow screen, filter and remove interaction.
+- [x] An epic page (or section of the Screens page) lists the favorites screen and its state map; counts come from the built `index.json`, not memory.
+- [x] `design-system.md`, Components, Start here, Filtered list, Deletion confirmation, Content, What is missing, Contributing updated and consistent.
+- [x] `check:tokens` clean; `check:contrast` all ok; Storybook tests pass in both themes; every favorites story swept at 320 px with no overflow.
 - [ ] Re-run of the probe with a fresh agent finishes with GUESSING at 0 or only items listed in "What is missing". Not met: run on 2026-10-27 gave 14 of 44 guessed (see the run log for the new gaps).
-- [ ] `npm run lint`, `typecheck`, `test`, `build` pass; `test:integration` unaffected (no user-visible route changed).
+- [x] `npm run lint`, `typecheck`, `test`, `build` pass; `test:integration` unaffected (no user-visible route changed).
 
 ## Technical approach
 
@@ -90,3 +90,5 @@ None. Answered 2026-10-27: (1) yes, work on a branch and open a PR at the end (n
 ## Notes
 
 Probe files from 2026-10-26 (`FavoriteMentors.tsx`, `FavoriteMentors.stories.tsx`) are untracked and become the starting point of this work. High risk item: extracting `FilteredList` touches the directory screen; mitigated by keeping its tests and stories unchanged.
+
+Closed by the owner on 2026-10-28 as implemented. The agent-test criterion was not met on its own terms (the second probe still guessed 14 of 44); the remaining gaps were handled by `2026-10-27-design-system-generic-list-rules.md` and `2026-10-28-past-sessions-decisions.md`.
