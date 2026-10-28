@@ -47,6 +47,7 @@ A person narrows a list, always sees what the filters are, and always knows why 
 | 17  | A list shows only what is available. An item that vanished between loads is absent and the count follows.   | The server leaves it out. A direct link to it shows "does not exist or no access" (Detail view).                   | Proposal        |
 | 18  | A list's error text says what is safe and what to do.                                                        | `errorMessage` prop; default "Nothing was changed. Try again."                                                     | P12.2           |
 | 19  | A skeleton copies the footprint of the item it replaces.                                                     | `MentorCardSkeleton`, or the item's own skeleton next to it; no free height utilities.                             | P11.1           |
+| 20  | The order is written in one line between the count and the list when it is not obvious.                      | `description` prop of `FilteredList` ("Most recent first"). Omit `skeleton`, `loadingLabel` and `errorTitle` when a tab or page owns loading and error. | Proposal |
 
 ## States, each as a story
 

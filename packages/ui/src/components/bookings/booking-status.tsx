@@ -18,8 +18,8 @@ const LABEL: Record<BookingViewer, Record<BookingStatusValue, string>> = {
     cancelled_by_mentee: "Cancelled by you",
     cancelled_by_mentor: "Cancelled by mentor",
     completed: "Completed",
-    no_show_mentee: "No-show",
-    no_show_mentor: "No-show",
+    no_show_mentee: "You did not attend",
+    no_show_mentor: "Mentor did not attend",
   },
   mentor: {
     pending: "Pending",
@@ -27,10 +27,16 @@ const LABEL: Record<BookingViewer, Record<BookingStatusValue, string>> = {
     cancelled_by_mentee: "Cancelled by mentee",
     cancelled_by_mentor: "Cancelled by you",
     completed: "Completed",
-    no_show_mentee: "No-show",
-    no_show_mentor: "No-show",
+    no_show_mentee: "Mentee did not attend",
+    no_show_mentor: "You did not attend",
   },
 };
+
+/** The status as words for who is looking. A filter on bookings uses these same words as the badge. */
+export const bookingStatusLabel = (
+  status: BookingStatusValue,
+  viewer: BookingViewer,
+): string => LABEL[viewer][status];
 
 /** Confirmed is the one live state, so it is filled; waiting and finished are bordered; negative outcomes are red-bordered (R01.5). */
 const VARIANT: Record<
@@ -54,5 +60,9 @@ export function BookingStatus({
   status: BookingStatusValue;
   viewer: BookingViewer;
 }) {
-  return <Badge variant={VARIANT[status]}>{LABEL[viewer][status]}</Badge>;
+  return (
+    <Badge variant={VARIANT[status]}>
+      {bookingStatusLabel(status, viewer)}
+    </Badge>
+  );
 }

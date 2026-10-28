@@ -43,6 +43,16 @@ describe("FilteredList", () => {
     expect(screen.getByText("Alpha")).toBeTruthy();
   });
 
+  it("shows a description between the count and the list, only when given", () => {
+    renderList({ description: "Most recent first" });
+    expect(screen.getByText("Most recent first")).toBeTruthy();
+  });
+
+  it("shows no description line by default", () => {
+    renderList();
+    expect(screen.queryByText("Most recent first")).toBeNull();
+  });
+
   it("uses the singular for one item", () => {
     renderList({ items: [items[0]] });
     expect(screen.getByRole("status").textContent).toBe("1 thing");

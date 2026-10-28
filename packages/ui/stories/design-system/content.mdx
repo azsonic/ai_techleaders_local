@@ -81,9 +81,22 @@ Pattern: the title names the object ("The mentor was not removed"), then comes t
 
 One line about the mentor's work, written by the mentor: at most 200 characters (confirmed by the Product owner). It wraps and is never cut with an ellipsis. A mentor without one shows nothing in its place.
 
+## Lists of bookings (copy)
+
+Used by the Past tab of My bookings and Mentor bookings. Rows marked Proposal are to be approved by the Product owner in the PR that introduced them.
+
+| Place                          | Title and sentence                                                                              | Basis                |
+| ------------------------------ | ----------------------------------------------------------------------------------------------- | -------------------- |
+| Filter legend                  | "Outcome", with the options Completed and the two attendance words, as in the badge              | Proposal             |
+| Order line                     | "Most recent first"                                                                             | Proposal             |
+| Past tab, nothing yet          | "No past bookings" and "They appear here once there is something to show."                     | In use               |
+| Past tab, filter matches none  | "No past bookings for this outcome" and "Remove a filter to see more past bookings." with "Clear filters" | Proposal    |
+| Loading                        | "Loading your bookings…"                                                                        | In use               |
+| Load error                     | "Your bookings did not load" and "Nothing was changed. Try again." with "Try again"            | In use               |
+
 ## Statuses
 
-Statuses are words from the state machine, worded for who is looking (approved in stage 3): Pending, Confirmed, Cancelled by you, Cancelled by mentor (a mentor sees "Cancelled by mentee" and "Cancelled by you"), Completed, No-show. Invitations: Pending, Accepted, Expired, Revoked. Payouts (proposal): Held, Paid, Refunded, In dispute. Gate (proposal): Closed, Open, Stopped.
+Statuses are words from the state machine, worded for who is looking (approved in stage 3): Pending, Confirmed, Cancelled by you, Cancelled by mentor (a mentor sees "Cancelled by mentee" and "Cancelled by you"), Completed, and two attendance words: the mentee sees "You did not attend" and "Mentor did not attend", the mentor sees "Mentee did not attend" and "You did not attend". These replace the single word "No-show" (owner decision, 2026-10-28), and the Outcome filter on a Past tab uses the same words as the badge. Invitations: Pending, Accepted, Expired, Revoked. Payouts (proposal): Held, Paid, Refunded, In dispute. Gate (proposal): Closed, Open, Stopped.
 
 ## Dates, times, money and numbers
 

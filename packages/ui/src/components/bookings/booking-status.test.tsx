@@ -1,7 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { BookingStatus, type BookingStatusValue } from "./booking-status";
+import {
+  BookingStatus,
+  bookingStatusLabel,
+  type BookingStatusValue,
+} from "./booking-status";
 
 describe("BookingStatus", () => {
   it("writes the status for the mentee and fills only the live one", () => {
@@ -11,8 +15,8 @@ describe("BookingStatus", () => {
       ["completed", "Completed"],
       ["cancelled_by_mentee", "Cancelled by you"],
       ["cancelled_by_mentor", "Cancelled by mentor"],
-      ["no_show_mentee", "No-show"],
-      ["no_show_mentor", "No-show"],
+      ["no_show_mentee", "You did not attend"],
+      ["no_show_mentor", "Mentor did not attend"],
     ];
     for (const [status, label] of labels) {
       const { unmount } = render(
@@ -54,9 +58,16 @@ describe("BookingStatus", () => {
     expect(screen.getByText("Completed")).toBeTruthy();
     completed.unmount();
     const a = render(<BookingStatus status="no_show_mentee" viewer="mentor" />);
-    expect(screen.getByText("No-show")).toBeTruthy();
+    expect(screen.getByText("Mentee did not attend")).toBeTruthy();
     a.unmount();
     render(<BookingStatus status="no_show_mentor" viewer="mentor" />);
-    expect(screen.getByText("No-show")).toBeTruthy();
+    expect(screen.getByText("You did not attend")).toBeTruthy();
+  });
+
+  it("offers the same words to a filter", () => {
+    expect(bookingStatusLabel("no_show_mentor", "mentee")).toBe(
+      "Mentor did not attend",
+    );
+    expect(bookingStatusLabel("completed", "mentor")).toBe("Completed");
   });
 });

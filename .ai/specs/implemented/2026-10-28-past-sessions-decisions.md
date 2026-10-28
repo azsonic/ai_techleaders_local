@@ -1,6 +1,6 @@
 ---
 title: Apply the owner's Past sessions decisions to the design system
-status: draft
+status: implemented
 created: 2026-10-28
 updated: 2026-10-28
 owner: azsonic
@@ -48,12 +48,12 @@ Decisions (owner, 2026-10-28):
 
 ## Acceptance criteria
 
-- [ ] C1 to C6 done as in the table; the status words are the same in the badge, the filter, the stories and the docs (grep for "No-show" finds only historical notes).
-- [ ] `FilteredList description` has a unit test; coverage stays 100%.
-- [ ] My bookings Past tab filters by outcome in Storybook, with a "no results" story, and passes axe in both themes.
-- [ ] Content copy rows added and marked as proposals; "What is missing" lists only what is still undecided.
-- [ ] `lint`, `typecheck`, `test` (100%), `build`, `check:tokens`, `check:docs`, `test:stories` in both themes pass; changed docs pages loaded in the browser; the Past tab story swept at 320 px.
-- [ ] Labeled PR (full `SDLC.md` set with a rationale comment), stacked on PR #33.
+- [x] C1 to C6 done as in the table; the status words are the same in the badge, the filter, the stories and the docs (grep for "No-show" finds only historical notes).
+- [x] `FilteredList description` has a unit test; coverage stays 100%.
+- [x] My bookings Past tab filters by outcome in Storybook, with a "no results" story, and passes axe in both themes.
+- [x] Content copy rows added and marked as proposals; "What is missing" lists only what is still undecided.
+- [x] `lint`, `typecheck`, `test` (100%), `build`, `check:tokens`, `check:docs`, `test:stories` in both themes pass; changed docs pages loaded in the browser; the Past tab story swept at 320 px.
+- [x] Labeled PR (full `SDLC.md` set with a rationale comment), stacked on PR #33.
 
 ## Technical approach
 
@@ -64,9 +64,11 @@ Decisions (owner, 2026-10-28):
 
 ## Open questions
 
-1. **BookingCard `actions` slot (D3):** the owner chose the slot when "hide" was an option. With no hide action, nothing needs it today, and the rule is to add a component or slot when it is needed in two places. Recommendation: do not build it now; keep it in "What is missing" (C6). Confirm, or say which action needs it.
-2. **Past tab and `FilteredList` states (C2):** the tab already has its own loading, error and empty states. Recommendation: the tab keeps loading and error; `FilteredList` renders only the filter, count, description and the two empty states for the Past tab. If that is awkward to build, fall back to a filter outside the list and report it.
-3. **Mentor view:** does the mentor's "Mentor bookings" Past tab get the same outcome filter? Recommendation: yes, with the mentor's words ("Mentee did not attend", "You did not attend"), in this change since the words come from the same component.
+None open. Answered 2026-10-28 (the owner took the recommendations):
+
+1. **`actions` slot (D3):** not built. Kept in "What is missing" until a second action on a booking row exists.
+2. **Past tab and `FilteredList`:** the tab keeps loading and error; `FilteredList` renders the filter, count, description and the two empty states. `skeleton`, `loadingLabel` and `errorTitle` became optional for this.
+3. **Mentor view:** the Past tab of Mentor bookings gets the same outcome filter with the mentor's words.
 
 ## Notes
 
